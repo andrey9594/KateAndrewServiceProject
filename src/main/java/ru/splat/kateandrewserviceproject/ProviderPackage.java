@@ -12,10 +12,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class ProviderPackage {
-	@XmlAttribute
+
 	private int id;
 	
-	@XmlElement
 	private int value;
 	
 	/**
@@ -36,6 +35,7 @@ public class ProviderPackage {
 	/**
 	 * @return id
 	 */
+	@XmlAttribute
 	public int getId() {
 		return id;
 	}
@@ -43,6 +43,7 @@ public class ProviderPackage {
 	/**
 	 * @return value
 	 */
+	@XmlElement
 	public int getValue() {
 		return value;
 	}

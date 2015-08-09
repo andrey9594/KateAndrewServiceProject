@@ -4,10 +4,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Properties;
 import java.util.Random;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 /**
  * <p>
@@ -67,11 +72,32 @@ public class Provider {
 		}
 	}
 	
-	private void sendXmlObject(ProviderPackage providerPackage) {
-		System.out.println("Im xml!");
+	private void sendXmlObject(ProviderPackage providerPackage, Socket socket) throws IOException {
+		// логируй отправка xml пакета
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(ProviderPackage.class);
+			Marshaller marshaller = jaxbContext.createMarshaller();
+			//marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		//	PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+		//	String s = null;
+			marshaller.marshal(providerPackage, socket.getOutputStream());
+		//	out.flush();
+		} catch (JAXBException e) {
+			// логируй ошибку
+			e.printStackTrace();
+		}
+		/*
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(ProviderPackage.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			ProviderPackage prov = (ProviderPackage)unmarshaller.unmarshal(socket.getInputStream());
+			System.out.println(prov.getId() + "\n" + prov.getValue());
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}*/
 	}
 	
-	private void sendJsonObject(ProviderPackage providerPackage) {
+	private void sendJsonObject(ProviderPackage providerPackage, Socket socket) {
 		System.out.println("Im json!");	
 	}
 	
@@ -99,12 +125,13 @@ public class Provider {
 								// Логируй что нас прервали и мы выходим
 								return;
 							}
-							providerPackage.setId(idList[(currentPosInIdList = currentPosInIdList + 1) % idList.length]);
+							providerPackage.setId(idList[currentPosInIdList]);
+							currentPosInIdList = (currentPosInIdList + 1) % idList.length;
 							providerPackage.setValue(random.nextInt()); 
 							if (format == FORMAT_XML)
-								sendXmlObject(providerPackage);
+								sendXmlObject(providerPackage, socket);
 							else
-								sendJsonObject(providerPackage);
+								sendJsonObject(providerPackage, socket);
 						}
 					} finally {
 						socket.close();
@@ -114,30 +141,8 @@ public class Provider {
 				serverSocket.close();
 			}
 		} catch (IOException e) {
-			//
-		}
-		/*
-		ProviderPackage providerPackage = new ProviderPackage(1, 10);
-		try {
-			File file = new File("my.xml");
-			JAXBContext jaxbContext = JAXBContext.newInstance(ProviderPackage.class);	
-			Marshaller marshaller = jaxbContext.createMarshaller();
-			
-		//	marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			marshaller.marshal(providerPackage, file);
-		} catch(JAXBException e) {
+			// логируй
 			e.printStackTrace();
 		}
-		*/
-		/*
-		try {
-			File file = new File("my.xml");
-			JAXBContext jaxbContext = JAXBContext.newInstance(ProviderPackage.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			ProviderPackage prov = (ProviderPackage)unmarshaller.unmarshal(file);
-			System.out.println(prov.getId() + "\n" + prov.getValue());
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}*/
 	}
 }
