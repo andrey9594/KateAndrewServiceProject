@@ -1,14 +1,27 @@
 package ru.splat.kateandrewserviceproject;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * <p>
  * @author andrey
  * Class for transmitting information from providers 	
  *	
  */
+@XmlRootElement
 public class ProviderPackage {
+	@XmlAttribute
 	private int id;
+	
+	@XmlElement
 	private int value;
+	
+	/**
+	 * no-arg default constructor
+	 */
+	public ProviderPackage() { }
 	
 	/**
 	 * Initial constructor
