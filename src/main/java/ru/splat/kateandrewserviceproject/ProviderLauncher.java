@@ -13,5 +13,6 @@ public class ProviderLauncher {
 	 */
 	public static void main(String[] args) {
 		Provider provider = new Provider();
+		provider.start(); 
 	}
 }
