@@ -46,4 +46,20 @@ public class ProviderPackage {
 	public int getValue() {
 		return value;
 	}
+	
+	/**
+	 * setId
+	 * @param id new id value
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	/**
+	 * setValue
+	 * @param value new value 
+	 */
+	public void setValue(int value) {
+		this.value = value;
+	}
 }
