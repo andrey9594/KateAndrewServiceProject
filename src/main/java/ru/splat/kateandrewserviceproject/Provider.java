@@ -78,10 +78,10 @@ public class Provider {
 			JAXBContext jaxbContext = JAXBContext.newInstance(ProviderPackage.class);
 			Marshaller marshaller = jaxbContext.createMarshaller();
 			//marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		//	PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-		//	String s = null;
-			marshaller.marshal(providerPackage, socket.getOutputStream());
-		//	out.flush();
+			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+			marshaller.marshal(providerPackage, out);
+			out.write(0);
+			out.flush();
 		} catch (JAXBException e) {
 			// логируй ошибку
 			e.printStackTrace();
@@ -117,7 +117,7 @@ public class Provider {
 						Random random = new Random();
 						int currentPosInIdList = 0;
 						ProviderPackage providerPackage = new ProviderPackage();
-						while (true) {
+						while (!socket.isClosed()) {
 							int T = random.nextInt(periodWaitTime) + 1;
 							try {
 								Thread.sleep(T);
