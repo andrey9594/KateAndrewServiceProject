@@ -12,7 +12,9 @@ public class ProviderLauncher {
 	 * @param args 
 	 */
 	public static void main(String[] args) {
-		Provider provider = new Provider();
+//		Provider provider = new Provider("resources/config_xml.properties");
+		Provider provider = new Provider("resources/config_json.properties");
+
 		provider.start(); 
 	}
 }
