@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringBufferInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Properties;
@@ -13,6 +14,8 @@ import java.util.Random;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+
+import com.google.gson.Gson;
 
 /**
  * <p>
@@ -31,7 +34,7 @@ public class Provider {
 	private int periodWaitTime = 1000;
 	private int idList[];
 	
-	public Provider() {
+	public Provider(String propertiesPath) {
 		/**
 		 * properties:
 		 * protocol = string: xml or json
@@ -41,7 +44,7 @@ public class Provider {
 		Properties properties = new Properties();
 		//Логируй загружаем конфигурацию
 		try {
-			properties.load(new FileInputStream(new File("resources/config.properties")));
+			properties.load(new FileInputStream(new File(propertiesPath)));
 		} catch (FileNotFoundException e) {
 			//Логируй File not found! Please, take conf.ini with options into resources/";
 			e.printStackTrace();
@@ -72,7 +75,7 @@ public class Provider {
 		}
 	}
 	
-	private void sendXmlObject(ProviderPackage providerPackage, Socket socket) throws IOException {
+	private void sendXmlObject(ProviderPackage providerPackage, Socket socket) {
 		// логируй отправка xml пакета
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance(ProviderPackage.class);
@@ -82,23 +85,23 @@ public class Provider {
 			marshaller.marshal(providerPackage, out);
 			out.write(0);
 			out.flush();
-		} catch (JAXBException e) {
+		} catch (JAXBException | IOException e) {
 			// логируй ошибку
 			e.printStackTrace();
 		}
-		/*
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(ProviderPackage.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			ProviderPackage prov = (ProviderPackage)unmarshaller.unmarshal(socket.getInputStream());
-			System.out.println(prov.getId() + "\n" + prov.getValue());
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}*/
 	}
 	
 	private void sendJsonObject(ProviderPackage providerPackage, Socket socket) {
-		System.out.println("Im json!");	
+		// логируй отправка json пакета
+		Gson gson = new Gson();
+		String json = gson.toJson(providerPackage);
+		try {
+			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+			out.println(json);
+			out.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
