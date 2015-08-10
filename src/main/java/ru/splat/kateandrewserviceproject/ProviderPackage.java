@@ -63,4 +63,9 @@ public class ProviderPackage {
 	public void setValue(int value) {
 		this.value = value;
 	}
+	
+	@Override
+	public String toString() {
+		return "DataObject [id=" + id + ", value=" + value + "]";		
+	}
 }
