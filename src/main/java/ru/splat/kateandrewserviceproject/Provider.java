@@ -24,7 +24,7 @@ import com.google.gson.Gson;
  * Possible only one connection at a time
  */
 public class Provider {
-	private final static int DEFAULT_PORT = 12345;
+	private final int PORT_NUM;
 	
 	private int format = 0;
 	private static final int FORMAT_UNKNOWN = 0;
@@ -38,6 +38,7 @@ public class Provider {
 		/**
 		 * properties:
 		 * protocol = string: xml or json
+		 * port = int
 		 * periodWaitTime = int: T will be random int in (0, periodWaitTime]
 		 * idList = 1,5,7 or 6-23: IDs which the Provider will send 
 		 */
@@ -56,7 +57,8 @@ public class Provider {
 		String formatString = properties.getProperty("format");
 		format = formatString.equals("xml") ? FORMAT_XML : formatString.equals("json") ? FORMAT_JSON : FORMAT_UNKNOWN;
 		if (format == FORMAT_UNKNOWN)
-			throw new IllegalArgumentException(); // Своё исключение? 
+			throw new IllegalArgumentException(); // Своё исключение?
+		PORT_NUM = Integer.parseInt(properties.getProperty("port"));
 		periodWaitTime = Integer.parseInt(properties.getProperty("period_time"));
 		if (periodWaitTime <= 0)
 			throw new IllegalArgumentException();
@@ -110,7 +112,7 @@ public class Provider {
 	 */
 	public void start() {
 		try {
-			ServerSocket serverSocket = new ServerSocket(DEFAULT_PORT);
+			ServerSocket serverSocket = new ServerSocket(PORT_NUM);
 			try {
 				while (true) {
 					// логируй, ждем подключение
