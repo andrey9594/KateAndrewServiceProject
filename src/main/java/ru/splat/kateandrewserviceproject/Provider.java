@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringBufferInputStream;
+import java.io.StringWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Properties;
@@ -19,7 +19,6 @@ import com.google.gson.Gson;
 
 /**
  * <p>
- * @author andrey
  * Class provider of transmitting data to the server through socket
  * Possible only one connection at a time
  */
@@ -80,12 +79,12 @@ public class Provider {
 	private void sendXmlObject(ProviderPackage providerPackage, Socket socket) {
 		// логируй отправка xml пакета
 		try {
+			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			JAXBContext jaxbContext = JAXBContext.newInstance(ProviderPackage.class);
 			Marshaller marshaller = jaxbContext.createMarshaller();
-			//marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-			marshaller.marshal(providerPackage, out);
-			out.write(0);
+			StringWriter writer = new StringWriter();
+			marshaller.marshal(providerPackage, writer);
+			out.println(writer.toString());
 			out.flush();
 		} catch (JAXBException | IOException e) {
 			// логируй ошибку
