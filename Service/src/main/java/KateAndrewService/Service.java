@@ -108,8 +108,7 @@ public class Service {
         }
     }
 
-
-    /**
+        /**
      * connect with BD
      * @param  userName
      * @param  userPass

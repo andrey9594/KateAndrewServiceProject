@@ -30,7 +30,7 @@
       <file leaf-file-name="pom.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="442">
+            <state vertical-scroll-proportion="0.0" vertical-offset="289" max-vertical-offset="442">
               <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
               <folding />
             </state>
@@ -40,11 +40,11 @@
       <file leaf-file-name="Service.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/KateAndrewService/Service.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.46031746" vertical-offset="2425" max-vertical-offset="3196">
-              <caret line="173" column="0" selection-start-line="173" selection-start-column="0" selection-end-line="173" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.8201058" vertical-offset="1150" max-vertical-offset="3179">
+              <caret line="110" column="4" selection-start-line="110" selection-start-column="4" selection-end-line="110" selection-end-column="4" />
               <folding>
-                <marker date="1439385732086" expanded="true" signature="4491:4560" placeholder="UPDATE provi..." />
-                <marker date="1439385732086" expanded="true" signature="4867:4937" placeholder="UPDATE provi..." />
+                <marker date="1439386631428" expanded="true" signature="4494:4563" placeholder="UPDATE provi..." />
+                <marker date="1439386631428" expanded="true" signature="4870:4940" placeholder="UPDATE provi..." />
               </folding>
             </state>
           </provider>
@@ -53,7 +53,7 @@
       <file leaf-file-name="config.ini" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/config.ini">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="153">
+            <state vertical-scroll-proportion="0.0" vertical-offset="51" max-vertical-offset="153">
               <caret line="3" column="14" selection-start-line="3" selection-start-column="14" selection-end-line="3" selection-end-column="14" />
               <folding />
             </state>
@@ -73,7 +73,7 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/KateAndrewService/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="493">
+            <state vertical-scroll-proportion="0.0" vertical-offset="170" max-vertical-offset="493">
               <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
               <folding />
             </state>
@@ -138,7 +138,7 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -199,7 +199,7 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="Scratches" />
     </panes>
   </component>
@@ -506,15 +506,16 @@
       <workItem from="1439309816016" duration="717000" />
       <workItem from="1439311061422" duration="241000" />
       <workItem from="1439383829663" duration="1997000" />
+      <workItem from="1439386543942" duration="88000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="4898000" />
+    <option name="totallyTimeSpent" value="4986000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1036" height="738" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -572,6 +573,49 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="289" max-vertical-offset="442">
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/KateAndrewService/Service.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3196">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1439386631428" expanded="true" signature="4494:4563" placeholder="UPDATE provi..." />
+            <marker date="1439386631428" expanded="true" signature="4870:4940" placeholder="UPDATE provi..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/config.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="51" max-vertical-offset="153">
+          <caret line="3" column="14" selection-start-line="3" selection-start-column="14" selection-end-line="3" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/KateAndrewService/ProviderPackage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="287" max-vertical-offset="1173">
+          <caret line="45" column="20" selection-start-line="45" selection-start-column="20" selection-end-line="45" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/KateAndrewService/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="170" max-vertical-offset="493">
+          <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="187" max-vertical-offset="289">
           <caret line="11" column="10" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
           <folding />
@@ -583,8 +627,8 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1598">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1439385732086" expanded="true" signature="4491:4560" placeholder="UPDATE provi..." />
-            <marker date="1439385732086" expanded="true" signature="4867:4937" placeholder="UPDATE provi..." />
+            <marker date="1439386631428" expanded="true" signature="4494:4563" placeholder="UPDATE provi..." />
+            <marker date="1439386631428" expanded="true" signature="4870:4940" placeholder="UPDATE provi..." />
           </folding>
         </state>
       </provider>
@@ -626,8 +670,8 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="130" max-vertical-offset="1819">
           <caret line="19" column="6" selection-start-line="19" selection-start-column="6" selection-end-line="19" selection-end-column="6" />
           <folding>
-            <marker date="1439385732086" expanded="true" signature="4491:4560" placeholder="UPDATE provi..." />
-            <marker date="1439385732086" expanded="true" signature="4867:4937" placeholder="UPDATE provi..." />
+            <marker date="1439386631428" expanded="true" signature="4494:4563" placeholder="UPDATE provi..." />
+            <marker date="1439386631428" expanded="true" signature="4870:4940" placeholder="UPDATE provi..." />
           </folding>
         </state>
       </provider>
@@ -669,8 +713,8 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1819">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1439385732086" expanded="true" signature="4491:4560" placeholder="UPDATE provi..." />
-            <marker date="1439385732086" expanded="true" signature="4867:4937" placeholder="UPDATE provi..." />
+            <marker date="1439386631428" expanded="true" signature="4494:4563" placeholder="UPDATE provi..." />
+            <marker date="1439386631428" expanded="true" signature="4870:4940" placeholder="UPDATE provi..." />
           </folding>
         </state>
       </provider>
@@ -704,8 +748,8 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="323" max-vertical-offset="1751">
           <caret line="19" column="49" selection-start-line="19" selection-start-column="49" selection-end-line="19" selection-end-column="49" />
           <folding>
-            <marker date="1439385732086" expanded="true" signature="4491:4560" placeholder="UPDATE provi..." />
-            <marker date="1439385732086" expanded="true" signature="4867:4937" placeholder="UPDATE provi..." />
+            <marker date="1439386631428" expanded="true" signature="4494:4563" placeholder="UPDATE provi..." />
+            <marker date="1439386631428" expanded="true" signature="4870:4940" placeholder="UPDATE provi..." />
           </folding>
         </state>
       </provider>
@@ -760,11 +804,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/KateAndrewService/Service.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.46031746" vertical-offset="2425" max-vertical-offset="3196">
-          <caret line="173" column="0" selection-start-line="173" selection-start-column="0" selection-end-line="173" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.8201058" vertical-offset="1150" max-vertical-offset="3179">
+          <caret line="110" column="4" selection-start-line="110" selection-start-column="4" selection-end-line="110" selection-end-column="4" />
           <folding>
-            <marker date="1439385732086" expanded="true" signature="4491:4560" placeholder="UPDATE provi..." />
-            <marker date="1439385732086" expanded="true" signature="4867:4937" placeholder="UPDATE provi..." />
+            <marker date="1439386631428" expanded="true" signature="4494:4563" placeholder="UPDATE provi..." />
+            <marker date="1439386631428" expanded="true" signature="4870:4940" placeholder="UPDATE provi..." />
           </folding>
         </state>
       </provider>
