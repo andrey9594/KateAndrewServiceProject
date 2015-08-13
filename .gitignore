@@ -1,6 +1,9 @@
 *.class
 *.*~
 
+#Log files
+*.log
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
