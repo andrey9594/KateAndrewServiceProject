@@ -29,6 +29,10 @@
   <logger name="ru.splat.kateandrewserviceproject.Provider" level="info" >
     <appender-ref ref="sout" />
   </logger>
+    <!-- Логгер нашего класса  -->
+  <logger name="ru.splat.kateandrewserviceproject.ProviderLauncher" level="info" >
+    <appender-ref ref="sout" />
+  </logger>
   <consolePlugin />
   
 </configuration>
