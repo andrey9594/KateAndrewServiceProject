@@ -64,6 +64,10 @@ public class ProviderPackage {
 		this.value = value;
 	}
 	
+	/**
+	 * Override method for gson library (Object -> json, json -> Object)
+	 * @return String of the form 'DataObject [id = %num, value = %value]' 
+	 */
 	@Override
 	public String toString() {
 		return "DataObject [id=" + id + ", value=" + value + "]";		
