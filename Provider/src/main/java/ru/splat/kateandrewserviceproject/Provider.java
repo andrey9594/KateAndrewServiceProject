@@ -22,25 +22,25 @@ import com.google.gson.Gson;
 
 /**
  * <p>
- * Class provider of transmitting data to the server through socket
- * Possible only one connection at a time
+ * Class provider for transmitting data packages to the server through socket
+ * Possible only one connection at once
  */
 public class Provider {
 	static private final Logger log = LoggerFactory.getLogger(Provider.class);
-	
-	private final int PORT_NUM;
 	
 	private final int format;
 	private static final int FORMAT_UNKNOWN = 0;
 	private static final int FORMAT_XML = 1;
 	private static final int FORMAT_JSON = 2;
 	
+	private final int PORT_NUM;
+	
 	private final int periodWaitTime;
 	private final int idList[];
 	
 	/**
 	 * Constructor
-	 * @param propertiesPath Path to config file
+	 * @param propertiesPath Path to the config file
 	 */
 	public Provider(String propertiesPath) {
 		/**
@@ -106,7 +106,7 @@ public class Provider {
 		} catch (JAXBException | IOException e) {
 			log.error("Error sending package with id {} on the protocol xml", providerPackage.getId(), e);
 			e.printStackTrace();
-		}
+		} 
 		log.debug("The package with id {} was successfully sent on the protocol xml", providerPackage.getId());
 	}
 	
@@ -126,7 +126,7 @@ public class Provider {
 	}
 	
 	/**
-	 * main method to start a Provider 
+	 * Main method to start a Provider 
 	 */
 	public void start() {
 		try {
@@ -135,7 +135,7 @@ public class Provider {
 			log.info("ServerSocket was successfully created");
 			try {
 				while (true) {
-					log.info("Server is wating for client connetcions");
+					log.info("Server is waiting for client connections");
 					Socket socket = serverSocket.accept();
 					log.info("Client {} connected", socket.getInetAddress());
 					try {
@@ -155,10 +155,10 @@ public class Provider {
 								sendXmlObject(providerPackage, socket);
 							else
 								sendJsonObject(providerPackage, socket);
+							System.out.println(socket);
 						}
 					} finally {
 						socket.close();
-						log.info("Connection with client {} was closed", socket.getInetAddress());
 					}
 				}
 			} finally {
