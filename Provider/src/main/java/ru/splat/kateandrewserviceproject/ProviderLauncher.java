@@ -17,7 +17,6 @@ public class ProviderLauncher {
 	 * @param args 
 	 */
 	public static void main(String[] args) {
-		/*
 		log.info("Starting xml provider...");	
 		new Thread() {
 			public void run() {
@@ -26,8 +25,8 @@ public class ProviderLauncher {
 			}
 		}.start();
 		log.info("Xml provider has been started");
-		*/
-		log.info("Starting xml provider...");
+		
+		log.info("Starting json provider...");
 		new Thread() {
 			public void run() {
 				Provider jsonProvider = new Provider("resources/config_json.properties");
