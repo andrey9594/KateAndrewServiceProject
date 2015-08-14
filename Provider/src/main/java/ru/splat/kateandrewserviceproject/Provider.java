@@ -15,6 +15,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 
 /**
@@ -23,44 +26,57 @@ import com.google.gson.Gson;
  * Possible only one connection at a time
  */
 public class Provider {
+	static private final Logger log = LoggerFactory.getLogger(Provider.class);
+	
 	private final int PORT_NUM;
 	
-	private int format = 0;
+	private final int format;
 	private static final int FORMAT_UNKNOWN = 0;
 	private static final int FORMAT_XML = 1;
 	private static final int FORMAT_JSON = 2;
 	
-	private int periodWaitTime = 1000;
-	private int idList[];
+	private final int periodWaitTime;
+	private final int idList[];
 	
+	/**
+	 * Constructor
+	 * @param propertiesPath Path to config file
+	 */
 	public Provider(String propertiesPath) {
 		/**
 		 * properties:
 		 * protocol = string: xml or json
 		 * port = int
-		 * periodWaitTime = int: T will be random int in (0, periodWaitTime]
+		 * periodWaitTime = int: Send time will be random int in (0, periodWaitTime]
 		 * idList = 1,5,7 or 6-23: IDs which the Provider will send 
 		 */
 		Properties properties = new Properties();
-		//Логируй загружаем конфигурацию
+		log.info("Loading configuration from {}", propertiesPath);
 		try {
 			properties.load(new FileInputStream(new File(propertiesPath)));
 		} catch (FileNotFoundException e) {
-			//Логируй File not found! Please, take conf.ini with options into resources/";
+			log.error("Config file {} not found!", propertiesPath);
 			e.printStackTrace();
 		} catch (IOException e) {
-			//Логируй ошибка чтения файла
+			log.error("Can't read config file {}", propertiesPath);
 			e.printStackTrace();
 		}
-		// Логируй конфигурация была загружена
 		String formatString = properties.getProperty("format");
 		format = formatString.equals("xml") ? FORMAT_XML : formatString.equals("json") ? FORMAT_JSON : FORMAT_UNKNOWN;
-		if (format == FORMAT_UNKNOWN)
-			throw new IllegalArgumentException(); // Своё исключение?
-		PORT_NUM = Integer.parseInt(properties.getProperty("port"));
-		periodWaitTime = Integer.parseInt(properties.getProperty("period_time"));
-		if (periodWaitTime <= 0)
+		if (format == FORMAT_UNKNOWN) {
+			log.error("Unknown format! Required xml or json");
 			throw new IllegalArgumentException();
+		}
+		PORT_NUM = Integer.parseInt(properties.getProperty("port"));
+		if (PORT_NUM < 1 || PORT_NUM > 65_535) {
+			log.error("Illegal port id! Required number between 1 and 65535");
+			throw new IllegalArgumentException();		
+		}
+		periodWaitTime = Integer.parseInt(properties.getProperty("period_time"));
+		if (periodWaitTime <= 0) {
+			log.error("period_time must be positive number in milliseconds!");		
+			throw new IllegalArgumentException();
+		}
 		if (properties.getProperty("idList").split(",").length != 1) {
 			String[] idListString = properties.getProperty("idList").split(",");
 			idList = new int[idListString.length];
@@ -74,10 +90,11 @@ public class Provider {
 			for (int i = from; i <= to; i++)
 				idList[i - from] = i;
 		}
+		log.info("Configuration from {} has been successfully loaded", propertiesPath);
 	}
 	
 	private void sendXmlObject(ProviderPackage providerPackage, Socket socket) {
-		// логируй отправка xml пакета
+		log.debug("Start sending package with id {} on the protocol xml", providerPackage.getId());
 		try {
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			JAXBContext jaxbContext = JAXBContext.newInstance(ProviderPackage.class);
@@ -87,13 +104,14 @@ public class Provider {
 			out.println(writer.toString());
 			out.flush();
 		} catch (JAXBException | IOException e) {
-			// логируй ошибку
+			log.error("Error sending package with id {} on the protocol xml", providerPackage.getId(), e);
 			e.printStackTrace();
 		}
+		log.debug("The package with id {} was successfully sent on the protocol xml", providerPackage.getId());
 	}
 	
 	private void sendJsonObject(ProviderPackage providerPackage, Socket socket) {
-		// логируй отправка json пакета
+		log.debug("Start sending package with id {} on the protocol json", providerPackage.getId());
 		Gson gson = new Gson();
 		String json = gson.toJson(providerPackage);
 		try {
@@ -101,37 +119,38 @@ public class Provider {
 			out.println(json);
 			out.flush();
 		} catch (IOException e) {
+			log.error("Error sending package with id {} on the protocol json", providerPackage.getId(), e);
 			e.printStackTrace();
 		}
+		log.debug("The package with id {} was successfully sent on the protocol json", providerPackage.getId());
 	}
 	
 	/**
 	 * main method to start a Provider 
-	 * @param args
 	 */
 	public void start() {
 		try {
+			log.info("ServerSocket is creating...");
 			ServerSocket serverSocket = new ServerSocket(PORT_NUM);
+			log.info("ServerSocket was successfully created");
 			try {
 				while (true) {
-					// логируй, ждем подключение
+					log.info("Server is wating for client connetcions");
 					Socket socket = serverSocket.accept();
-					// логируй, к нам подключились
+					log.info("Client {} connected", socket.getInetAddress());
 					try {
 						Random random = new Random();
 						int currentPosInIdList = 0;
-						ProviderPackage providerPackage = new ProviderPackage();
 						while (!socket.isClosed()) {
 							int T = random.nextInt(periodWaitTime) + 1;
 							try {
 								Thread.sleep(T);
 							} catch (InterruptedException e) {
-								// Логируй что нас прервали и мы выходим
+								log.warn("Provider was interrupted when it was sleeping");
 								return;
 							}
-							providerPackage.setId(idList[currentPosInIdList]);
+							ProviderPackage providerPackage = new ProviderPackage(idList[currentPosInIdList], random.nextInt());
 							currentPosInIdList = (currentPosInIdList + 1) % idList.length;
-							providerPackage.setValue(random.nextInt()); 
 							if (format == FORMAT_XML)
 								sendXmlObject(providerPackage, socket);
 							else
@@ -139,13 +158,15 @@ public class Provider {
 						}
 					} finally {
 						socket.close();
+						log.info("Connection with client {} was closed", socket.getInetAddress());
 					}
 				}
 			} finally {
 				serverSocket.close();
+				log.info("ServerSocket was closed");
 			}
 		} catch (IOException e) {
-			// логируй
+			log.error("Error in ServerSocket creating", e);
 			e.printStackTrace();
 		}
 	}
