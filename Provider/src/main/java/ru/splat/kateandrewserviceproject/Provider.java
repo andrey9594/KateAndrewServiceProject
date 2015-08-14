@@ -141,7 +141,7 @@ public class Provider {
 					try {
 						Random random = new Random();
 						int currentPosInIdList = 0;
-						while (!socket.isClosed()) {
+						while (!socket.isClosed()) { // TCP сам закроет соединение через какое-то время как от нас отсоединились?
 							int T = random.nextInt(periodWaitTime) + 1;
 							try {
 								Thread.sleep(T);
