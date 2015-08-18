@@ -14,33 +14,43 @@ import java.util.Scanner;
  *         Thread For Json Provider
  */
 public class ThreadForJsonProvider implements Runnable {
+    private Socket socket;
+    private Producer producer;
+    private Service service;
 
-    Service service = new Service();
+    public ThreadForJsonProvider(Socket socket, Producer producer, Service service) {
+        this.socket = socket;
+        this.producer = producer;
+        this.service = service;
+    }
 
     @Override
     public void run() {
 
         try {
-            Socket socket = new Socket(service.getIP(), service.getPORT_json());
-            try {
-                Gson gson = new Gson();
-                Scanner scanner = new Scanner(socket.getInputStream());
-                while (true) {
-                    String json = scanner.next();
-                    ProviderPackage prov = gson.fromJson(json, ProviderPackage.class);
-                    //System.out.println(prov.getId() + ", " + prov.getValue());
-                    service.cacheJson(prov.getId(), prov.getValue());
-                }
+            Gson gson = new Gson();
+            Scanner scanner = new Scanner(socket.getInputStream());
 
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                socket.close();
+            while (true) {
+                String json = scanner.next();
+                ProviderPackage providerPackage = gson.fromJson(json, ProviderPackage.class);
+                producer.publish(providerPackage);
+                //System.out.println(prov.getId() + ", " + prov.getValue());
+                service.cacheJson(providerPackage.getId(), providerPackage.getValue());
             }
-        } catch (IOException e) {
-            System.out.println("Error here!");
+
+        } catch (SQLException e) {
             e.printStackTrace();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } finally {
+            try {
+                socket.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         }
     }
 }
+
 

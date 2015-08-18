@@ -1,6 +1,7 @@
 package KateAndrewService;
 
 import java.io.*;
+import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *         cache and save info in BD MySql
  */
 public class Service {
+    static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(Service.class);
     private static int PORT_xml;
     private static int PORT_json;
     private static String PORT_BD;
@@ -25,6 +27,7 @@ public class Service {
     private Connection connection = null;
     private Map<Integer, Integer> cache = new HashMap<>();
     private Map<Integer, ReentrantReadWriteLock> locks = new HashMap<>();
+    Producer producer;
 
     public static String getIP() {
         return IP;
@@ -57,10 +60,21 @@ public class Service {
      * take info from providers in xml and json format
      */
     public void connect() {
-        Thread threadxml = new Thread(new ThreadForXmlProvider());
-        Thread threadjson = new Thread(new ThreadForJsonProvider());
-        threadxml.start();
-        threadjson.start();
+        try {
+            Socket socket = new Socket(IP, PORT_xml);
+            Thread threadxml = new Thread(new ThreadForXmlProvider(socket, producer, this));
+            threadxml.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+        try {
+            Socket socket = new Socket(IP, PORT_json);
+            Thread threadjson = new Thread(new ThreadForJsonProvider(socket, producer, this));
+            threadjson.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
