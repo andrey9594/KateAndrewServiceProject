@@ -2,6 +2,7 @@ package KateAndrewService;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -10,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -44,7 +47,9 @@ public class Service {
     /**
      * take parameters from config file
      */
+
     public void congig() throws IOException {
+        log.info("Take parameters from config file");
         Properties props = new Properties();
 
         props.load(new FileInputStream(new File("config.ini")));
@@ -62,17 +67,23 @@ public class Service {
     public void connect() {
         try {
             Socket socket = new Socket(IP, PORT_xml);
+            log.info("Connect with xml provider");
             Thread threadxml = new Thread(new ThreadForXmlProvider(socket, producer, this));
             threadxml.start();
         } catch (IOException e) {
+            log.error("Error in connect with xml provider ");
             e.printStackTrace();
 
         }
         try {
             Socket socket = new Socket(IP, PORT_json);
+            log.info("Connect with json provider");
             Thread threadjson = new Thread(new ThreadForJsonProvider(socket, producer, this));
             threadjson.start();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
         } catch (IOException e) {
+            log.error("Error in connect with json provider ");
             e.printStackTrace();
         }
     }
@@ -85,13 +96,16 @@ public class Service {
      */
     public void connectBD(String userName, String userPass) {
         try {
+            log.info("Connect was created");
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(
                     "jdbc:mysql://" + IP + ":" + PORT_BD + "/service",
                     userName, userPass);
         } catch (SQLException e) {
+            log.error("Error in connect BD");
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
+            log.error("Class 'com.mysql.jdbc.Driver' Not Found");
             e.printStackTrace();
         }
     }
@@ -108,6 +122,7 @@ public class Service {
 
         Statement stmt = connection.createStatement();
         stmt.executeUpdate(query);
+        log.info("Value in providerxml table update");
 
     }
 
@@ -123,7 +138,33 @@ public class Service {
 
         Statement stmt = connection.createStatement();
         stmt.executeUpdate(query);
+        log.info("Value in providerjson table update");
+    }
 
+    /**
+     * insert Value in table "providerxml"
+     *
+     * @param id
+     * @param value
+     */
+    private void insertValueXml(int id, int value) throws SQLException {
+        String query = "INSERT INTO providerxml" + "(id, value) VALUES ('" + id + "','" + value + "')";
+
+        Statement stmt = connection.createStatement();
+        stmt.executeUpdate(query);
+    }
+
+    /**
+     * insert Value in table "providerjson"
+     *
+     * @param id
+     * @param value
+     */
+    private void insertValueJson(int id, int value) throws SQLException {
+        String query = "INSERT INTO providerjson" + "(id, value) VALUES ('" + id + "','" + value + "')";
+
+        Statement stmt = connection.createStatement();
+        stmt.executeUpdate(query);
     }
 
     /**
@@ -132,15 +173,18 @@ public class Service {
      * @param id
      * @param value
      */
+
     public void cacheXml(int id, int value) throws SQLException {
         if (!locks.containsKey(id)) {
             locks.put(id, new ReentrantReadWriteLock());
+            insertValueXml(id,value);
         }
         locks.get(id).writeLock().lock();
 
         updateValueXml(id, value);
 
         cache.put(id, value);
+        log.info("Cache info from provider, which send info in Xml format");
         locks.get(id).writeLock().unlock();
     }
 
@@ -153,12 +197,14 @@ public class Service {
     public void cacheJson(int id, int value) throws SQLException {
         if (!locks.containsKey(id)) {
             locks.put(id, new ReentrantReadWriteLock());
+            insertValueJson(id,value);
         }
         locks.get(id).writeLock().lock();
 
         updateValueJson(id, value);
 
         cache.put(id, value);
+        log.info("Cache info from provider, which send info in Json format");
         locks.get(id).writeLock().unlock();
     }
 
