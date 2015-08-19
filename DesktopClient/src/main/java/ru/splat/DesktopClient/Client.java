@@ -45,8 +45,8 @@ public class Client {
 	public void start() throws IOException, TimeoutException {
 		if (isRunning)
 			return;
-		createAndStartConsumer();
 		createAndStartGUI();
+		createAndStartConsumer();
 		isRunning = true;
 	}
 	
@@ -66,10 +66,14 @@ public class Client {
 					                   throws IOException {
 				String jsonString = new String(body, "UTF-8");
 				ProviderPackage providerPackage = gson.fromJson(jsonString, ProviderPackage.class);
-				System.out.println("Got: id = " + providerPackage.getId() + ", value = " + providerPackage.getValue());
+				processPackage(providerPackage);
 			}
 		};
 		channel.basicConsume(queueName, true, consumer);
+	}
+	
+	private void processPackage(ProviderPackage providerPackage) {
+		// Write your code here! ;)
 	}
 	
 	private void createAndStartGUI() {
