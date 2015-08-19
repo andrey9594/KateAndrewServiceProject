@@ -29,6 +29,10 @@
   <logger name="ru.splat.DesktopClient.ClientLauncher" level="info" >
     <appender-ref ref="sout" />
   </logger>
+    <!-- Логгер нашего класса  -->
+  <logger name="ru.splat.DesktopClient.Client" level="info" >
+    <appender-ref ref="sout" />
+  </logger>
   <consolePlugin />
   
 </configuration>
