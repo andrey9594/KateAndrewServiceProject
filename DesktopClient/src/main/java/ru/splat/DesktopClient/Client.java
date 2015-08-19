@@ -28,7 +28,7 @@ public class Client {
 	
 	private boolean isRunning;
 	
-	private static Client instance;
+	private static volatile Client instance;
 	
 	private Client() { }
 	
