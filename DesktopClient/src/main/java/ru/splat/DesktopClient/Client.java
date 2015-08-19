@@ -27,6 +27,20 @@ public class Client {
 	private static final String EXCHANGE_NAME = "packages";
 	
 	private boolean isRunning;
+	
+	private static Client instance;
+	
+	private Client() { }
+	
+	public static Client getInstance() {
+		if (instance == null) {
+			synchronized (Client.class) {
+				if (instance == null)
+					instance = new Client();
+			}
+		}
+		return instance;
+	}
 
 	public void start() throws IOException, TimeoutException {
 		if (isRunning)

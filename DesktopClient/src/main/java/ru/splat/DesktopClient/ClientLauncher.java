@@ -28,7 +28,7 @@ public class ClientLauncher {
 	private static final Logger log = LoggerFactory.getLogger(ClientLauncher.class);
 	
 	public static void main(String[] args) {
-		Client client = new Client();
+		Client client = Client.getInstance();
 		try {
 			client.start();
 		} catch (IOException | TimeoutException e) {
