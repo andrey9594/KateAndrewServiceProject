@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
+
 import org.slf4j.LoggerFactory;
 
 /**
@@ -27,6 +28,8 @@ public class Service {
     private static int PORT_json;
     private static String PORT_BD;
     private static String IP;
+    private static String Login;
+    private static String Password;
     private Connection connection = null;
     private Map<Integer, Integer> cache = new HashMap<>();
     private Map<Integer, ReentrantReadWriteLock> locks = new HashMap<>();
@@ -58,8 +61,9 @@ public class Service {
         PORT_json = Integer.valueOf(props.getProperty("PORT_json"));
         PORT_BD = props.getProperty("PORT_BD");
         IP = props.getProperty("IP");
+        Login = props.getProperty("Login");
+        Password = props.getProperty("Password");
     }
-
 
     /**
      * take info from providers in xml and json format
@@ -90,17 +94,14 @@ public class Service {
 
     /**
      * connect with BD
-     *
-     * @param userName
-     * @param userPass
      */
-    public void connectBD(String userName, String userPass) {
+    public void connectBD() {
         try {
             log.info("Connect was created");
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(
                     "jdbc:mysql://" + IP + ":" + PORT_BD + "/service",
-                    userName, userPass);
+                    Login, Password);
         } catch (SQLException e) {
             log.error("Error in connect BD");
             e.printStackTrace();
@@ -177,7 +178,7 @@ public class Service {
     public void cacheXml(int id, int value) throws SQLException {
         if (!locks.containsKey(id)) {
             locks.put(id, new ReentrantReadWriteLock());
-            insertValueXml(id,value);
+            insertValueXml(id, value);
         }
         locks.get(id).writeLock().lock();
 
@@ -197,7 +198,7 @@ public class Service {
     public void cacheJson(int id, int value) throws SQLException {
         if (!locks.containsKey(id)) {
             locks.put(id, new ReentrantReadWriteLock());
-            insertValueJson(id,value);
+            insertValueJson(id, value);
         }
         locks.get(id).writeLock().lock();
 

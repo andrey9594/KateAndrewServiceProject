@@ -1,5 +1,6 @@
 package KateAndrewService;
 
+
 import java.io.IOException;
 
 /**
@@ -17,7 +18,7 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        client.connectBD("root", "root");
+        client.connectBD();
         client.connect();
     }
 }
