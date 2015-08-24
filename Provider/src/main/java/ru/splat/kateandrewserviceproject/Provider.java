@@ -33,6 +33,8 @@ public class Provider {
 	private static final int FORMAT_XML = 1;
 	private static final int FORMAT_JSON = 2;
 	
+	private final String providerName;
+	
 	private final int PORT_NUM;
 	
 	private final int periodWaitTime;
@@ -67,6 +69,10 @@ public class Provider {
 			log.error("Unknown format! Required xml or json");
 			throw new IllegalArgumentException();
 		}
+		if (format == FORMAT_JSON)
+			providerName = "providerjson";
+		else
+			providerName = "providerxml";
 		PORT_NUM = Integer.parseInt(properties.getProperty("port"));
 		if (PORT_NUM < 1 || PORT_NUM > 65_535) {
 			log.error("Illegal port id! Required number between 1 and 65535");
@@ -149,13 +155,14 @@ public class Provider {
 								log.warn("Provider was interrupted when it was sleeping");
 								return;
 							}
-							ProviderPackage providerPackage = new ProviderPackage(idList[currentPosInIdList], random.nextInt());
-							currentPosInIdList = (currentPosInIdList + 1) % idList.length;
+							ProviderPackage providerPackage = new ProviderPackage(idList[currentPosInIdList],
+																				  random.nextInt(), providerName);
+							currentPosInIdList = (currentPosInIdList + 1)
+									% idList.length;
 							if (format == FORMAT_XML)
 								sendXmlObject(providerPackage, socket);
 							else
 								sendJsonObject(providerPackage, socket);
-							System.out.println(socket);
 						}
 					} finally {
 						socket.close();
