@@ -55,9 +55,9 @@
             <version>6.1.25</version>
         </dependency>
         <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>sqljdbc5</artifactId>
-            <version>5.1.32</version>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.26</version>
         </dependency>
     </dependencies>
 

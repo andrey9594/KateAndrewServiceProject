@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
 
@@ -33,7 +34,7 @@ public class Service {
     private Connection connection = null;
     private Map<Integer, Integer> cache = new HashMap<>();
     private Map<Integer, ReentrantReadWriteLock> locks = new HashMap<>();
-    Producer producer;
+    //Producer producer;
 
     public static String getIP() {
         return IP;
@@ -51,7 +52,7 @@ public class Service {
      * take parameters from config file
      */
 
-    public void congig() throws IOException {
+    public void config() throws IOException {
         log.info("Take parameters from config file");
         Properties props = new Properties();
 
@@ -72,22 +73,26 @@ public class Service {
         try {
             Socket socket = new Socket(IP, PORT_xml);
             log.info("Connect with xml provider");
-            Thread threadxml = new Thread(new ThreadForXmlProvider(socket, producer, this));
+            Thread threadxml = new Thread(new ThreadForXmlProvider(socket, new Producer(), this));
             threadxml.start();
         } catch (IOException e) {
             log.error("Error in connect with xml provider ");
             e.printStackTrace();
 
+        } catch (TimeoutException e) {
+            e.printStackTrace();
         }
         try {
             Socket socket = new Socket(IP, PORT_json);
             log.info("Connect with json provider");
-            Thread threadjson = new Thread(new ThreadForJsonProvider(socket, producer, this));
+            Thread threadjson = new Thread(new ThreadForJsonProvider(socket, new Producer(), this));
             threadjson.start();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
             log.error("Error in connect with json provider ");
+            e.printStackTrace();
+        } catch (TimeoutException e) {
             e.printStackTrace();
         }
     }
@@ -107,6 +112,12 @@ public class Service {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             log.error("Class 'com.mysql.jdbc.Driver' Not Found");
+            e.printStackTrace();
+        }
+        try {
+            clearProviderjsonTable();
+            clearProviderxmlTable();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -198,15 +209,40 @@ public class Service {
     public void cacheJson(int id, int value) throws SQLException {
         if (!locks.containsKey(id)) {
             locks.put(id, new ReentrantReadWriteLock());
-            insertValueJson(id, value);
         }
         locks.get(id).writeLock().lock();
 
-        updateValueJson(id, value);
+        if (!cache.containsKey(id)) {
+            insertValueJson(id, value);
+        } else updateValueJson(id, value);
 
         cache.put(id, value);
         log.info("Cache info from provider, which send info in Json format");
         locks.get(id).writeLock().unlock();
+    }
+
+    /**
+     * Clear "providerxml" table
+     */
+    public void clearProviderxmlTable() throws SQLException {
+        String query = "TRUNCATE TABLE providerxml";
+
+        Statement stmt = connection.createStatement();
+
+        stmt.executeUpdate(query);
+        log.info("'providerxml' table has been cleared");
+    }
+
+    /**
+     * Clear "providerjson" table
+     */
+    public void clearProviderjsonTable() throws SQLException {
+        String query = "TRUNCATE TABLE providerjson";
+
+        Statement stmt = connection.createStatement();
+
+        stmt.executeUpdate(query);
+        log.info("'providerjson' table has been cleared");
     }
 
 }

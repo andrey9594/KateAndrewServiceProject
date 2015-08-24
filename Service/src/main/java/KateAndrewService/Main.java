@@ -14,7 +14,7 @@ public class Main {
     public static void main(String[] args) {
         Service client = new Service();
         try {
-            client.congig();
+            client.config();
         } catch (IOException e) {
             e.printStackTrace();
         }
