@@ -1,34 +1,33 @@
 package ru.splat.DesktopClient;
 
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
-
+import com.google.gson.Gson;
+import com.rabbitmq.client.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.splat.DesktopClient.listeners.GraphListener;
+import ru.splat.DesktopClient.listeners.JsonProviderListener;
+import ru.splat.DesktopClient.listeners.TableListener;
+import ru.splat.DesktopClient.listeners.XmlProviderListener;
 
-import com.google.gson.Gson;
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Consumer;
-import com.rabbitmq.client.DefaultConsumer;
-import com.rabbitmq.client.Envelope;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 /**
- * <p/>
+ * <p>
  *
  * @author Ekaterina
  *         Desktop client
- *         Take data from Service and make desktop window
+ *         Take data from Service(by RabbitMQ) and make desktop window
  *         in which output "id" and "value" in two forms(table and graph)
  */
 
 public class Client {
+
     private static final Logger log = LoggerFactory.getLogger(Client.class);
 
     private static final String IP_BROKER = "localhost";
@@ -38,9 +37,17 @@ public class Client {
 
     private static volatile Client instance;
 
-    private Client() {
+    private Map<Integer, Integer> hashmapxml = new HashMap<Integer, Integer>();
+    private Map<Integer, Integer> hashmapjson = new HashMap<Integer, Integer>();
+
+    private int providerId = 0; // 0 - xml; 1 - json
+
+    Client() {
     }
 
+    /**
+     * Singleton Client
+     */
     public static Client getInstance() {
         if (instance == null) {
             synchronized (Client.class) {
@@ -51,6 +58,9 @@ public class Client {
         return instance;
     }
 
+    /**
+     * Start point
+     */
     public void start() throws IOException, TimeoutException {
         if (isRunning)
             return;
@@ -59,6 +69,9 @@ public class Client {
         isRunning = true;
     }
 
+    /**
+     * method create and start consumer
+     */
     private void createAndStartConsumer() throws IOException, TimeoutException {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         connectionFactory.setHost(IP_BROKER);
@@ -80,13 +93,42 @@ public class Client {
             }
         };
         channel.basicConsume(queueName, true, consumer);
+        log.info("Consumer have been created and started ");
     }
 
+
+    /**
+     * Updates data, when new packege come
+     *
+     * @param providerPackage
+     */
     private void processPackage(ProviderPackage providerPackage) {
-        // Write your code here! ;)
+        updateData(providerPackage.getId(), providerPackage.getValue(), providerPackage.getProviderName());
+        log.debug("Data from new packege have been updated");
     }
 
+    /**
+     * Update data in hashmap
+     *
+     * @param id_new       id
+     * @param value_new    value
+     * @param provider_new provider name ("providerxml" or "providerjson")
+     */
+    private void updateData(int id_new, int value_new, String provider_new) {
+        if (provider_new.equals("providerxml")) {
+            hashmapxml.put(id_new, value_new);
+            log.debug("'hashmapxml' have been updated");
+        } else {
+            hashmapjson.put(id_new, value_new);
+            log.debug("'hashmapjson' have been updated");
+        }
+    }
+
+    /**
+     * create and start GUI(draw new window with menu)
+     */
     private void createAndStartGUI() {
+
         Display display = new Display();
         log.info("Display was created");
 
@@ -95,35 +137,7 @@ public class Client {
         shlDesktopClient.setLayout(new GridLayout());
 
         Label lblXmlprovider = new Label(shlDesktopClient, SWT.NONE);
-        lblXmlprovider.setText("                                         Data from Xml Provider");
-        Table table = new Table(shlDesktopClient, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
-        table.setLinesVisible(true);
-        table.setHeaderVisible(true);
-        GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
-        data.heightHint = 300;
-        data.widthHint = 300;
-        table.setLayoutData(data);
-        String[] titles = {"id", "value"};
-        for (int i = 0; i < titles.length; i++) {
-            TableColumn column = new TableColumn(table, SWT.NONE);
-            column.setText(titles[i]);
-            System.out.print(i);
-        }
-
-        //the output values
-        int count = 100;
-        for (int i = 0; i < count; i++) {
-            TableItem item = new TableItem(table, SWT.NONE);
-            //take data
-
-            item.setText("id"); // output id
-            item.setText("value"); //output value
-
-        }
-        for (int i = 0; i < titles.length; i++) {
-            table.getColumn(i).pack();
-        }
-        shlDesktopClient.pack();
+        lblXmlprovider.setText(" ");
 
         Menu menu = new Menu(shlDesktopClient, SWT.BAR);
         shlDesktopClient.setMenuBar(menu);
@@ -151,21 +165,39 @@ public class Client {
 
         MenuItem mGraph = new MenuItem(menu_View, SWT.NONE);
         mGraph.setText("Graph");
+
+        mGraph.addSelectionListener(new GraphListener(shlDesktopClient, providerId));
+        mTable.addSelectionListener(new TableListener(shlDesktopClient, providerId));
+        mXmlProvider.addSelectionListener(new XmlProviderListener(shlDesktopClient, lblXmlprovider, providerId));
+        mJsonProvider.addSelectionListener(new JsonProviderListener(shlDesktopClient, lblXmlprovider, providerId));
+
         shlDesktopClient.open();
+        log.info("Start window have been drawn");
+
         while (!shlDesktopClient.isDisposed()) {
             if (!display.readAndDispatch()) display.sleep();
         }
         display.dispose();
         log.info("Display was disposed");
     }
-//		shlDesktopClient.addListener(SWT.KeyDown, new Listener() {
-//			@Override
-//			public void handleEvent(Event event) {
-//				if (event.type == SWT.KeyDown && event.character == SWT.ESC) {
-//					shlDesktopClient.dispose();
-//				}
-//			}
-//		});
+
+    /**
+     * Getter of class "Client" which return 'hashmapxml'
+     *
+     * @return hashmapxml
+     */
+    public Map<Integer, Integer> getHashmapxml() {
+        return hashmapxml;
+    }
+
+    /**
+     * Getter of class "Client" which return 'hashmapjson'
+     *
+     * @return hashmapjson
+     */
+    public Map<Integer, Integer> getHashmapjson() {
+        return hashmapjson;
+    }
 
 }
 
