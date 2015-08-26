@@ -1,5 +1,8 @@
 package KateAndrewService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -12,9 +15,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.logging.Logger;
 
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -24,7 +25,8 @@ import org.slf4j.LoggerFactory;
  *         cache and save info in BD MySql
  */
 public class Service {
-    static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(Service.class);
+    private static final Logger log = LoggerFactory.getLogger(Service.class);
+
     private static int PORT_xml;
     private static int PORT_json;
     private static String PORT_BD;
@@ -34,19 +36,6 @@ public class Service {
     private Connection connection = null;
     private Map<Integer, Integer> cache = new HashMap<>();
     private Map<Integer, ReentrantReadWriteLock> locks = new HashMap<>();
-    //Producer producer;
-
-    public static String getIP() {
-        return IP;
-    }
-
-    public static int getPORT_xml() {
-        return PORT_xml;
-    }
-
-    public static int getPORT_json() {
-        return PORT_json;
-    }
 
     /**
      * take parameters from config file
@@ -78,8 +67,8 @@ public class Service {
         } catch (IOException e) {
             log.error("Error in connect with xml provider ");
             e.printStackTrace();
-
         } catch (TimeoutException e) {
+            log.error("Time-out at 'threadxml' Thread");
             e.printStackTrace();
         }
         try {
@@ -88,11 +77,13 @@ public class Service {
             Thread threadjson = new Thread(new ThreadForJsonProvider(socket, new Producer(), this));
             threadjson.start();
         } catch (UnknownHostException e) {
+            log.error("Unknown Host");
             e.printStackTrace();
         } catch (IOException e) {
             log.error("Error in connect with json provider ");
             e.printStackTrace();
         } catch (TimeoutException e) {
+            log.error("Time-out at 'threadjson' Thread");
             e.printStackTrace();
         }
     }
@@ -108,7 +99,7 @@ public class Service {
                     "jdbc:mysql://" + IP + ":" + PORT_BD + "/service",
                     Login, Password);
         } catch (SQLException e) {
-            log.error("Error in connect BD");
+            log.error("Error in connect with BD");
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             log.error("Class 'com.mysql.jdbc.Driver' Not Found");
@@ -118,6 +109,7 @@ public class Service {
             clearProviderjsonTable();
             clearProviderxmlTable();
         } catch (SQLException e) {
+            log.error("Error in connect with BD");
             e.printStackTrace();
         }
     }
@@ -164,6 +156,7 @@ public class Service {
 
         Statement stmt = connection.createStatement();
         stmt.executeUpdate(query);
+        log.debug("Value: {} is insert in 'providerxml' table", value);
     }
 
     /**
@@ -177,6 +170,7 @@ public class Service {
 
         Statement stmt = connection.createStatement();
         stmt.executeUpdate(query);
+        log.debug("Value: {} is insert in 'providerjson' table", value);
     }
 
     /**
