@@ -21,7 +21,7 @@ import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 
 /**
- * <p>
+ * <p/>
  *
  * @author Ekaterina
  *         Desktop client
@@ -49,11 +49,14 @@ public class Client {
     Client() {
     }
 
+    /**
+     * take parameters from config file
+     */
     public void config() throws IOException {
         log.info("Take parameters from config file");
         Properties props = new Properties();
 
-        props.load(new FileInputStream(new File("D:\\java\\Splat\\DesktopClient\\src\\config.ini")));
+        props.load(new FileInputStream(new File("config.ini")));
 
         IP_BROKER = props.getProperty("IP_BROKER");
         EXCHANGE_NAME = props.getProperty("EXCHANGE_NAME");
