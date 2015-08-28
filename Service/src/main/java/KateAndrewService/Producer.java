@@ -1,6 +1,9 @@
 package KateAndrewService;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 
 import com.google.gson.Gson;
@@ -17,14 +20,30 @@ import org.slf4j.LoggerFactory;
 public class Producer {
     private static final Logger log = LoggerFactory.getLogger(Producer.class);
 
-    private final String IP_BROKER = "localhost";
-    private final String EXCHANGE_NAME = "packages";
+    private static String IP_BROKER;
+    private static String EXCHANGE_NAME;
+    private static String TYPE_OF_EXCHANGE;
 
     private final ConnectionFactory connectionFactory;
     private final Connection connection;
     private final Channel channel;
 
     private final Gson gson = new Gson();
+
+
+    /**
+     * take parameters from configProducer.ini file
+     */
+    public void configProducer() throws IOException {
+        log.info("Take parameters from configProduser.ini file");
+        Properties props = new Properties();
+
+        props.load(new FileInputStream(new File("configProducer.ini")));
+
+        IP_BROKER = props.getProperty("IP_BROKER");
+        EXCHANGE_NAME = props.getProperty("EXCHANGE_NAME");
+        TYPE_OF_EXCHANGE = props.getProperty("TYPE_OF_EXCHANGE");
+    }
 
     /**
      * Connect to the server RabbitMQ and get the connection object to work with him
@@ -34,11 +53,12 @@ public class Producer {
      */
     Producer() throws IOException, TimeoutException {
         log.info("connect to the server RabbitMQ");
+        configProducer();
         connectionFactory = new ConnectionFactory();
         connectionFactory.setHost(IP_BROKER);
         connection = connectionFactory.newConnection();
         channel = connection.createChannel();
-        channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
+        channel.exchangeDeclare(EXCHANGE_NAME, TYPE_OF_EXCHANGE);
         log.info("Connection is successfully installed");
     }
 
