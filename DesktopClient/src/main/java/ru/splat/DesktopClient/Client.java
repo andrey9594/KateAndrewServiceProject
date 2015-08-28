@@ -12,9 +12,12 @@ import ru.splat.DesktopClient.listeners.JsonProviderListener;
 import ru.splat.DesktopClient.listeners.TableListener;
 import ru.splat.DesktopClient.listeners.XmlProviderListener;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -30,8 +33,9 @@ public class Client {
 
     private static final Logger log = LoggerFactory.getLogger(Client.class);
 
-    private static final String IP_BROKER = "localhost";
-    private static final String EXCHANGE_NAME = "packages";
+    private static String IP_BROKER;
+    private static String EXCHANGE_NAME;
+    private static String POINT_OF_ENTER;
 
     private boolean isRunning;
 
@@ -43,6 +47,17 @@ public class Client {
     private int providerId = 0; // 0 - xml; 1 - json
 
     Client() {
+    }
+
+    public void config() throws IOException {
+        log.info("Take parameters from config file");
+        Properties props = new Properties();
+
+        props.load(new FileInputStream(new File("D:\\java\\Splat\\DesktopClient\\src\\config.ini")));
+
+        IP_BROKER = props.getProperty("IP_BROKER");
+        EXCHANGE_NAME = props.getProperty("EXCHANGE_NAME");
+        POINT_OF_ENTER = props.getProperty("POINT_OF_ENTER");
     }
 
     /**
@@ -64,8 +79,9 @@ public class Client {
     public void start() throws IOException, TimeoutException {
         if (isRunning)
             return;
-        createAndStartGUI();
+        config();
         createAndStartConsumer();
+        createAndStartGUI();
         isRunning = true;
     }
 
@@ -77,7 +93,7 @@ public class Client {
         connectionFactory.setHost(IP_BROKER);
         Connection connection = connectionFactory.newConnection();
         Channel channel = connection.createChannel();
-        channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
+        channel.exchangeDeclare(EXCHANGE_NAME, POINT_OF_ENTER);
         String queueName = channel.queueDeclare().getQueue();
         channel.queueBind(queueName, EXCHANGE_NAME, "");
         Consumer consumer = new DefaultConsumer(channel) {
