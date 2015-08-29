@@ -23,9 +23,9 @@ public class ThreadForXmlProvider implements Runnable {
 
     private Socket socket;
     private Producer producer;
-    private Service service;
+    private ServiceSQL service;
 
-    public ThreadForXmlProvider(Socket socket, Producer producer, Service service) {
+    public ThreadForXmlProvider(Socket socket, Producer producer, ServiceSQL service) {
         this.socket = socket;
         this.producer = producer;
         this.service = service;

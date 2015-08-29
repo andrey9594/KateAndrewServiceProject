@@ -24,8 +24,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *         Connect with provider and give info in xml and json format,
  *         cache and save info in BD MySql
  */
-public class Service {
-    private static final Logger log = LoggerFactory.getLogger(Service.class);
+public class ServiceSQL {
+    private static final Logger log = LoggerFactory.getLogger(ServiceSQL.class);
 
     private static int PORT_xml;
     private static int PORT_json;

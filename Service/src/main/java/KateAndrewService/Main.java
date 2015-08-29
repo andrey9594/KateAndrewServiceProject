@@ -13,10 +13,10 @@ import java.io.IOException;
  * @author Ekaterina
  */
 public class Main {
-    private static final Logger log = LoggerFactory.getLogger(Service.class);
+    private static final Logger log = LoggerFactory.getLogger(ServiceSQL.class);
 
     public static void main(String[] args) {
-        Service client = new Service();
+        ServiceSQL client = new ServiceSQL();
         try {
             client.config();
         } catch (IOException e) {
