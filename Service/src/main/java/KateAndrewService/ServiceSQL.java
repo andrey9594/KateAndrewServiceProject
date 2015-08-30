@@ -62,30 +62,30 @@ public class ServiceSQL {
         try {
             Socket socket = new Socket(IP, PORT_xml);
             log.info("Connect with xml provider");
-            Thread threadxml = new Thread(new ThreadForXmlProvider(socket, new Producer(), this));
-            threadxml.start();
+      //      Thread threadxml = new Thread(new ThreadForXmlProvider(socket, new Producer(), this));
+      //      threadxml.start();
         } catch (IOException e) {
             log.error("Error in connect with xml provider ");
             e.printStackTrace();
-        } catch (TimeoutException e) {
+        } /*(catch (TimeoutException e) {
             log.error("Time-out at 'threadxml' Thread");
             e.printStackTrace();
-        }
+        }*/
         try {
             Socket socket = new Socket(IP, PORT_json);
             log.info("Connect with json provider");
-            Thread threadjson = new Thread(new ThreadForJsonProvider(socket, new Producer(), this));
-            threadjson.start();
+       //     Thread threadjson = new Thread(new ThreadForJsonProvider(socket, new Producer(), this));
+       //     threadjson.start();
         } catch (UnknownHostException e) {
             log.error("Unknown Host");
             e.printStackTrace();
         } catch (IOException e) {
             log.error("Error in connect with json provider ");
             e.printStackTrace();
-        } catch (TimeoutException e) {
+        }/* catch (TimeoutException e) {
             log.error("Time-out at 'threadjson' Thread");
             e.printStackTrace();
-        }
+        }*/
     }
 
     /**
