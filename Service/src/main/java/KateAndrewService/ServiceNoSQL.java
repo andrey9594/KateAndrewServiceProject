@@ -41,10 +41,10 @@ import com.mongodb.WriteConcern;
 public class ServiceNoSQL {
     private static final Logger log = LoggerFactory.getLogger(ServiceNoSQL.class);
 
-    private String IP_PROVIDER;
+    private String IP_PROVIDER; 
     private int PORT_XML;
     private int PORT_JSON;
-    private int PORT_DB;
+    private int PORT_DB; 
     private String IP_DB;
     private String DATABASE_NAME;
     private String COLLECTION_NAME_FOR_JSON;
@@ -59,12 +59,11 @@ public class ServiceNoSQL {
     private Map<Integer, ReentrantReadWriteLock> locks = new HashMap<>();
 
     /**
-     * Initial constructor
-     * @throws IOException 
+     * Method for starting Service work
      */
     public void start() {
     	config();
-		connectBD();
+		connectDB();
 		loadPackagesFromDBToCache();
 		connectToProviders();
 	}
@@ -96,9 +95,9 @@ public class ServiceNoSQL {
     }
 
     /**
-     * connect with BD
+     * connect to DB
      */
-	public void connectBD() {
+	public void connectDB() {
 		log.info("Creating connection to MongoDB...");
 		
 		try {
@@ -126,6 +125,9 @@ public class ServiceNoSQL {
 		log.info("Connection to MongoDB was created");
 	}
 	
+	/**
+	 * Method for loading data from DB to cache
+	 */
 	private void loadPackagesFromDBToCache() {
 		log.info("loading data from xml collection into cache");
 		DBCursor cursorForXmlCollection = collectionForXml.find();
