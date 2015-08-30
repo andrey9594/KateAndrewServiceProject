@@ -97,7 +97,7 @@ public class ServiceNoSQL {
     /**
      * connect to DB
      */
-	public void connectDB() {
+	private void connectDB() {
 		log.info("Creating connection to MongoDB...");
 		
 		try {
