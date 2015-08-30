@@ -113,11 +113,13 @@ public class ServiceNoSQL {
 		
 		if (!db.collectionExists(COLLECTION_NAME_FOR_JSON)) {
 			db.createCollection(COLLECTION_NAME_FOR_JSON, null);
+			db.getCollection(COLLECTION_NAME_FOR_JSON).createIndex(new BasicDBObject("id", 1), null, true);
 		}
 		collectionForJson = db.getCollection(COLLECTION_NAME_FOR_JSON);
 		
 		if (!db.collectionExists(COLLECTION_NAME_FOR_XML)) {
 			db.createCollection(COLLECTION_NAME_FOR_XML, null);
+			db.getCollection(COLLECTION_NAME_FOR_XML).createIndex(new BasicDBObject("id", 1), null, true);
 		}
 		collectionForXml = db.getCollection(COLLECTION_NAME_FOR_XML);
 		
