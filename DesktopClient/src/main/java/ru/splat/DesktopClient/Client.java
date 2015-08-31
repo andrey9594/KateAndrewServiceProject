@@ -1,5 +1,8 @@
 package ru.splat.DesktopClient;
 
+
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 import com.google.gson.Gson;
 import com.rabbitmq.client.*;
 import org.eclipse.swt.SWT;
@@ -15,13 +18,15 @@ import ru.splat.DesktopClient.listeners.XmlProviderListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 
+import static com.google.common.collect.Maps.newHashMap;
+
+
 /**
- * <p/>
+ * <p>
  *
  * @author Ekaterina
  *         Desktop client
@@ -29,30 +34,38 @@ import java.util.concurrent.TimeoutException;
  *         in which output "id" and "value" in two forms(table and graph)
  */
 
-public class Client {
+public class Client
+{
 
     private static final Logger log = LoggerFactory.getLogger(Client.class);
 
     private static String IP_BROKER;
+
     private static String EXCHANGE_NAME;
+
     private static String TYPE_OF_EXCHANGE;
 
     private boolean isRunning;
 
     private static volatile Client instance;
 
-    private Map<Integer, Integer> hashmapxml = new HashMap<Integer, Integer>();
-    private Map<Integer, Integer> hashmapjson = new HashMap<Integer, Integer>();
+    Multiset<Integer> values = HashMultiset.create();
+
+    Map<Integer, Multiset<Integer>> myMap = newHashMap();
 
     private int providerId = 0; // 0 - xml; 1 - json
 
-    Client() {
+
+    Client()
+    {
     }
+
 
     /**
      * take parameters from config.ini file
      */
-    public void config() throws IOException {
+    public void config() throws IOException
+    {
         log.info("Take parameters from config.ini file");
         Properties props = new Properties();
 
@@ -63,12 +76,16 @@ public class Client {
         TYPE_OF_EXCHANGE = props.getProperty("TYPE_OF_EXCHANGE");
     }
 
+
     /**
      * Singleton Client
      */
-    public static Client getInstance() {
-        if (instance == null) {
-            synchronized (Client.class) {
+    public static Client getInstance()
+    {
+        if (instance == null)
+        {
+            synchronized (Client.class)
+            {
                 if (instance == null)
                     instance = new Client();
             }
@@ -76,10 +93,12 @@ public class Client {
         return instance;
     }
 
+
     /**
      * Start point
      */
-    public void start() throws IOException, TimeoutException {
+    public void start() throws IOException, TimeoutException
+    {
         if (isRunning)
             return;
         config();
@@ -88,10 +107,12 @@ public class Client {
         isRunning = true;
     }
 
+
     /**
      * method create and start consumer
      */
-    private void createAndStartConsumer() throws IOException, TimeoutException {
+    private void createAndStartConsumer() throws IOException, TimeoutException
+    {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         connectionFactory.setHost(IP_BROKER);
         Connection connection = connectionFactory.newConnection();
@@ -99,13 +120,14 @@ public class Client {
         channel.exchangeDeclare(EXCHANGE_NAME, TYPE_OF_EXCHANGE);
         String queueName = channel.queueDeclare().getQueue();
         channel.queueBind(queueName, EXCHANGE_NAME, "");
-        Consumer consumer = new DefaultConsumer(channel) {
+        Consumer consumer = new DefaultConsumer(channel)
+        {
             private Gson gson = new Gson();
 
-            @Override
-            public void handleDelivery(String consumerTag, Envelope envelope,
-                                       AMQP.BasicProperties properties, byte[] body)
-                    throws IOException {
+
+            @Override public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+                    byte[] body) throws IOException
+            {
                 String jsonString = new String(body, "UTF-8");
                 ProviderPackage providerPackage = gson.fromJson(jsonString, ProviderPackage.class);
                 processPackage(providerPackage);
@@ -121,10 +143,12 @@ public class Client {
      *
      * @param providerPackage
      */
-    private void processPackage(ProviderPackage providerPackage) {
+    private void processPackage(ProviderPackage providerPackage)
+    {
         updateData(providerPackage.getId(), providerPackage.getValue(), providerPackage.getProviderName());
         log.debug("Data from new packege have been updated");
     }
+
 
     /**
      * Update data in hashmap
@@ -133,20 +157,17 @@ public class Client {
      * @param value_new    value
      * @param provider_new provider name ("providerxml" or "providerjson")
      */
-    private void updateData(int id_new, int value_new, String provider_new) {
-        if (provider_new.equals("providerxml")) {
-            hashmapxml.put(id_new, value_new);
-            log.debug("'hashmapxml' have been updated");
-        } else {
-            hashmapjson.put(id_new, value_new);
-            log.debug("'hashmapjson' have been updated");
-        }
+    private void updateData(int id_new, int value_new, String provider_new)
+    {
+        //Todo: update myMap and values;
     }
+
 
     /**
      * create and start GUI(draw new window with menu)
      */
-    private void createAndStartGUI() {
+    private void createAndStartGUI()
+    {
 
         Display display = new Display();
         log.info("Display was created");
@@ -193,29 +214,13 @@ public class Client {
         shlDesktopClient.open();
         log.info("Start window have been drawn");
 
-        while (!shlDesktopClient.isDisposed()) {
-            if (!display.readAndDispatch()) display.sleep();
+        while (!shlDesktopClient.isDisposed())
+        {
+            if (!display.readAndDispatch())
+                display.sleep();
         }
         display.dispose();
         log.info("Display was disposed");
-    }
-
-    /**
-     * Getter of class "Client" which return 'hashmapxml'
-     *
-     * @return hashmapxml
-     */
-    public Map<Integer, Integer> getHashmapxml() {
-        return hashmapxml;
-    }
-
-    /**
-     * Getter of class "Client" which return 'hashmapjson'
-     *
-     * @return hashmapjson
-     */
-    public Map<Integer, Integer> getHashmapjson() {
-        return hashmapjson;
     }
 
 }
