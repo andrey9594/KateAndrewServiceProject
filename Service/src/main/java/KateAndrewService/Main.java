@@ -4,7 +4,6 @@ package KateAndrewService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 
 /**
  * <p>
@@ -12,10 +11,13 @@ import java.io.IOException;
  *
  * @author Ekaterina
  */
-public class Main {
+public class Main
+{
     private static final Logger log = LoggerFactory.getLogger(ServiceSQL.class);
 
-    public static void main(String[] args) {
+
+    public static void main(String[] args)
+    {
         ServiceNoSQL service = new ServiceNoSQL();
         service.start();
     }

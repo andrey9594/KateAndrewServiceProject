@@ -1,5 +1,6 @@
 package KateAndrewService;
 
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -13,19 +14,25 @@ import com.rabbitmq.client.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * @author Andrew&Ekaterina
  *         Class producer for RabbitMQ
  */
-public class Producer {
+public class Producer
+{
     private static final Logger log = LoggerFactory.getLogger(Producer.class);
 
     private static String IP_BROKER;
+
     private static String EXCHANGE_NAME;
+
     private static String TYPE_OF_EXCHANGE;
 
     private final ConnectionFactory connectionFactory;
+
     private final Connection connection;
+
     private final Channel channel;
 
     private final Gson gson = new Gson();
@@ -34,16 +41,18 @@ public class Producer {
     /**
      * take parameters from configProducer.ini file
      */
-    public void configProducer() throws IOException {
+    public void configProducer() throws IOException
+    {
         log.info("Take parameters from configProduser.ini file");
         Properties props = new Properties();
 
-        props.load(new FileInputStream(new File("configProducer.ini")));
+        props.load(new FileInputStream(new File("F:\\Java\\Splat projects\\Splat3108\\Service\\configProducer.ini")));
 
         IP_BROKER = props.getProperty("IP_BROKER");
         EXCHANGE_NAME = props.getProperty("EXCHANGE_NAME");
         TYPE_OF_EXCHANGE = props.getProperty("TYPE_OF_EXCHANGE");
     }
+
 
     /**
      * Connect to the server RabbitMQ and get the connection object to work with him
@@ -51,7 +60,8 @@ public class Producer {
      * @throws IOException
      * @throws TimeoutException
      */
-    Producer() throws IOException, TimeoutException {
+    Producer() throws IOException, TimeoutException
+    {
         log.info("connect to the server RabbitMQ");
         configProducer();
         connectionFactory = new ConnectionFactory();
@@ -62,13 +72,15 @@ public class Producer {
         log.info("Connection is successfully installed");
     }
 
+
     /**
      * Published object ProviderPackage in Json format in all queues
      *
      * @param providerPackage
      * @throws IOException
      */
-    public void publish(ProviderPackage providerPackage) throws IOException {
+    public void publish(ProviderPackage providerPackage) throws IOException
+    {
         log.info("Publish a new object 'ProviderPackage'");
         String jsonString = gson.toJson(providerPackage);
         channel.basicPublish(EXCHANGE_NAME, "", null, jsonString.getBytes());
