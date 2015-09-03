@@ -1,6 +1,5 @@
 package ru.splat.DesktopClient;
 
-
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
@@ -9,31 +8,19 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * <p>
+ * <p/>
  *
  * @author Ekaterina
  *         Main class for launching a Desktop Client
  */
-public class ClientLauncher extends Client
-{
+public class ClientLauncher{
     private static final Logger log = LoggerFactory.getLogger(ClientLauncher.class);
 
-
-    private ClientLauncher()
-    {
-        super();
-    }
-
-
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         Client client = Client.getInstance();
-        try
-        {
+        try {
             client.start();
-        }
-        catch (IOException | TimeoutException e)
-        {
+        } catch (IOException | TimeoutException e) {
             log.error("Can't create an Client!", e);
             e.printStackTrace();
         }
