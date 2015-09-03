@@ -13,12 +13,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.splat.DesktopClient.Client;
 
+import java.sql.Timestamp;
+
 
 /**
- * <p>
+ * <p/>
  *
  * @author Ekaterina
- *         Draw table Value|id by SWT lib
+ *         Listener of menu item "Table"
+ *         Draw table time|Value by SWT lib
  */
 public class TableListener implements SelectionListener
 {
@@ -26,66 +29,90 @@ public class TableListener implements SelectionListener
 
     private Shell shell;
 
-    Client client;
+    private Client client;
 
     private int providerId;
 
 
-    public TableListener(Shell shlDesktopClient, int provider)
+    /**
+     * Constructor of TableListener
+     *
+     * @param shlDesktopClient shell of DC
+     * @param provider         value of provider (0 - XmlProvider; 1 - JsonProvider)
+     * @param client           object Client
+     */
+    public TableListener(Shell shlDesktopClient, int provider, Client client)
     {
         this.shell = shlDesktopClient;
         this.providerId = provider;
+        this.client = client;
     }
 
 
-    @Override public void widgetSelected(SelectionEvent selectionEvent)
+    /**
+     * Draws a specific table values for a given object identifier
+     *
+     * @param selectionEvent Pressing the menu item "Table"
+     */
+    @Override
+    public void widgetSelected(SelectionEvent selectionEvent)
     {
-        Table table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
-        table.setLinesVisible(true);
-        table.setHeaderVisible(true);
+        client.table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+        client.table.setLinesVisible(true);
+        client.table.setHeaderVisible(true);
         GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
         data.heightHint = 300;
-        data.widthHint = 300;
-        table.setLayoutData(data);
-        String[] titles = { "id", "value" };
+        data.widthHint = 400;
+        client.table.setLayoutData(data);
+        String[] titles = { "time", "value" };
         for (int i = 0; i < titles.length; i++)
         {
-            TableColumn column = new TableColumn(table, SWT.NONE);
+            TableColumn column = new TableColumn(client.table, SWT.NONE);
             column.setText(titles[i]);
             System.out.print(i);
         }
 
         //the output values
-        int count = 100;
-        if (providerId == 0)
+
+        if ((client.providerId == 0) && (client.weightedGraphXml.containsRow(client.id)))
         {
-            for (int i = 0; i < count; i++)
+            for (Timestamp time : client.weightedGraphXml.row(client.id).keySet())
             {
-                TableItem item = new TableItem(table, SWT.NONE);
-                item.setText(0, "" + i); // output id
-                item.setText(1, "" /* + get value*/); //output value
+                TableItem item = new TableItem(client.table, SWT.NONE);
+                item.setText(0, "" + time);
+                item.setText(1, "" + client.weightedGraphXml.row(client.id).get(time));
             }
             log.info("Table with info from Xml Provider have been drawn");
         }
-        else if (providerId == 1)
+        else if ((client.providerId == 1) && (client.weightedGraphJson.containsRow(client.id)))
         {
-            for (int i = 0; i < count; i++)
+            for (Timestamp time : client.weightedGraphJson.row(client.id).keySet())
             {
-                TableItem item = new TableItem(table, SWT.NONE);
-                item.setText(0, "" + i); // output id
-                item.setText(1, "" /* + get value*/); //output value
+                TableItem item = new TableItem(client.table, SWT.NONE);
+                item.setText(0, "" + time);
+                item.setText(1, "" + client.weightedGraphJson.row(client.id).get(time));
             }
             log.info("Table with info from Json Provider have been drawn");
         }
+        else
+        {
+            TableItem item = new TableItem(client.table, SWT.NONE);
+            item.setText(0, "" + new java.sql.Timestamp(new java.util.Date().getTime()));
+            item.setText(1, "" + "History of Object with id = " + client.id + " is Empty");
+            log.info("History of Object with id = {} is Empty", client.id);
+        }
+
         for (int i = 0; i < titles.length; i++)
         {
-            table.getColumn(i).pack();
+            client.table.getColumn(i).pack();
         }
+
         shell.pack();
     }
 
 
-    @Override public void widgetDefaultSelected(SelectionEvent selectionEvent)
+    @Override
+    public void widgetDefaultSelected(SelectionEvent selectionEvent)
     {
 
     }
