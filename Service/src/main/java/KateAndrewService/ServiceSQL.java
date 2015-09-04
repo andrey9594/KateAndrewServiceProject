@@ -118,7 +118,7 @@ public class ServiceSQL
     {
         try
         {
-            log.info("Connect was created");
+            log.info("Creating connection to MySql...");
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager
                     .getConnection("jdbc:mysql://" + IP + ":" + PORT_BD + "/service", Login, Password);
@@ -143,14 +143,15 @@ public class ServiceSQL
             log.error("Error in connect with BD");
             e.printStackTrace();
         }
+        log.info("Connect was created");
     }
 
 
     /**
      * update Value in table "providerxml"
      *
-     * @param id
-     * @param value
+     * @param id    identifier of Object, which value we update
+     * @param value positive or negative value, which we update
      */
     private void updateValueXml(int id, int value) throws SQLException
     {
@@ -167,8 +168,8 @@ public class ServiceSQL
     /**
      * update Value in table "providerjson"
      *
-     * @param id
-     * @param value
+     * @param id    identifier of Object, which value we update
+     * @param value positive or negative value, which we update
      */
     private void updateValueJson(int id, int value) throws SQLException
     {
@@ -184,8 +185,8 @@ public class ServiceSQL
     /**
      * insert Value in table "providerxml"
      *
-     * @param id
-     * @param value
+     * @param id    identifier of Object, which value we insert
+     * @param value positive or negative value, which we insert
      */
     private void insertValueXml(int id, int value) throws SQLException
     {
@@ -200,8 +201,8 @@ public class ServiceSQL
     /**
      * insert Value in table "providerjson"
      *
-     * @param id
-     * @param value
+     * @param id    identifier of Object, which value we insert
+     * @param value positive or negative value, which we insert
      */
     private void insertValueJson(int id, int value) throws SQLException
     {
@@ -216,8 +217,8 @@ public class ServiceSQL
     /**
      * cache info from provider, which send info in Xml format
      *
-     * @param id
-     * @param value
+     * @param id    identifier of Object, which value we cache
+     * @param value positive or negative value, which we cache
      */
 
     public void cacheXml(int id, int value) throws SQLException
@@ -240,8 +241,8 @@ public class ServiceSQL
     /**
      * cache info from provider, which send info in Json format
      *
-     * @param id
-     * @param value
+     * @param id    identifier of Object, which value we cache
+     * @param value positive or negative value, which we cache
      */
     public void cacheJson(int id, int value) throws SQLException
     {

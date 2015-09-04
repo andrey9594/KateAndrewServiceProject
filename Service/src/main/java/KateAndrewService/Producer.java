@@ -46,7 +46,7 @@ public class Producer
         log.info("Take parameters from configProduser.ini file");
         Properties props = new Properties();
 
-        props.load(new FileInputStream(new File("F:\\Java\\Splat projects\\Splat3108\\Service\\configProducer.ini")));
+        props.load(new FileInputStream(new File("configProducer.ini")));
 
         IP_BROKER = props.getProperty("IP_BROKER");
         EXCHANGE_NAME = props.getProperty("EXCHANGE_NAME");

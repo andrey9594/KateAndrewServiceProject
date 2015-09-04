@@ -16,9 +16,14 @@ public class Main
     private static final Logger log = LoggerFactory.getLogger(ServiceSQL.class);
 
 
+    /**
+     * Main method, whith start Service
+     * @param args
+     */
     public static void main(String[] args)
     {
         ServiceNoSQL service = new ServiceNoSQL();
         service.start();
+        log.info("Service is started");
     }
 }

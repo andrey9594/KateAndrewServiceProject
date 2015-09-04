@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.StringBufferInputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -36,7 +35,7 @@ import com.mongodb.WriteConcern;
  * <p>
  *
  * @author Andrew&Ekaterina
- *         Connect with provider and give info in xml and json format,
+ *         Connect with providers and give info in xml and json format,
  *         cache and save info in NoSQL DB MongoDB
  */
 public class ServiceNoSQL
@@ -230,8 +229,8 @@ public class ServiceNoSQL
     /**
      * update/insert value in xml MongoDB collection
      *
-     * @param id
-     * @param value
+     * @param id    identifier of Object, which value we update/insert
+     * @param value positive or negative value, which we update/insert
      */
     private void upsertValueXml(int id, int value)
     {
@@ -249,8 +248,8 @@ public class ServiceNoSQL
     /**
      * update/insert value in json MongoDB collection
      *
-     * @param id
-     * @param value
+     * @param id    identifier of Object, which value we update/insert
+     * @param value positive or negative value, which we update/insert
      */
     private void upsertValueJson(int id, int value)
     {
@@ -268,8 +267,8 @@ public class ServiceNoSQL
     /**
      * cache info from provider, which send info in Xml format
      *
-     * @param id
-     * @param value
+     * @param id    identifier of Object, which value we cache
+     * @param value positive or negative value, which we cache
      */
 
     private void cacheXml(int id, int value)
@@ -296,8 +295,8 @@ public class ServiceNoSQL
     /**
      * cache info from provider, which send info in Json format
      *
-     * @param id
-     * @param value
+     * @param id    identifier of Object, which value we cache
+     * @param value positive or negative value, which we cache
      */
     private void cacheJson(int id, int value)
     {
@@ -324,6 +323,7 @@ public class ServiceNoSQL
      * <p>
      *
      * @author Ekaterina
+     *         inner class
      *         Thread For Xml Provider
      */
     private class ThreadForXmlProvider implements Runnable
@@ -390,6 +390,7 @@ public class ServiceNoSQL
      * <p>
      *
      * @author Ekaterina
+     *         inner class
      *         Thread For Json Provider
      */
     private class ThreadForJsonProvider implements Runnable
