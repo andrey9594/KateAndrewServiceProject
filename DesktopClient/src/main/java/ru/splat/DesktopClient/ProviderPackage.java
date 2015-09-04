@@ -1,10 +1,8 @@
 package ru.splat.DesktopClient;
 
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
 
 /**
  * <p>
@@ -12,8 +10,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author andrey
  *         Class for transmitting information from providers
  */
-@XmlRootElement public class ProviderPackage
-{
+@XmlRootElement
+public class ProviderPackage {
 
     private int id;
 
@@ -21,14 +19,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
     private String providerName;
 
-
     /**
      * no-arg default constructor
      */
-    public ProviderPackage()
-    {
+    public ProviderPackage() {
     }
-
 
     /**
      * Initial constructor
@@ -37,81 +32,70 @@ import javax.xml.bind.annotation.XmlRootElement;
      * @param value
      * @param providerName
      */
-    public ProviderPackage(int id, int value, String providerName)
-    {
+    public ProviderPackage(int id, int value, String providerName) {
         this.id = id;
         this.value = value;
         this.providerName = providerName;
     }
 
-
     /**
      * @return id
      */
-    @XmlAttribute public int getId()
-    {
+    @XmlAttribute
+    public int getId() {
         return id;
     }
-
 
     /**
      * @return value
      */
-    @XmlElement public int getValue()
-    {
+    @XmlElement
+    public int getValue() {
         return value;
     }
-
 
     /**
      * @return providerName
      */
-    @XmlElement public String getProviderName()
-    {
+    @XmlElement
+    public String getProviderName() {
         return providerName;
     }
-
 
     /**
      * setProviderName
      *
      * @param providerName
      */
-    public void setProviderName(String providerName)
-    {
+    public void setProviderName(String providerName) {
         this.providerName = providerName;
     }
-
 
     /**
      * setId
      *
      * @param id new id value
      */
-    public void setId(int id)
-    {
+    public void setId(int id) {
         this.id = id;
     }
-
 
     /**
      * setValue
      *
      * @param value new value
      */
-    public void setValue(int value)
-    {
+    public void setValue(int value) {
         this.value = value;
     }
-
 
     /**
      * Override method for gson library (Object -> json, json -> Object)
      *
      * @return String of the form 'DataObject [id = %num, value = %value]'
      */
-    @Override public String toString()
-    {
+    @Override
+    public String toString() {
         return "DataObject [id=" + id + ", value=" + value + ", providerName=" + providerName + "]";
     }
 }

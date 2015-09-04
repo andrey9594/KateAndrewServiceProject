@@ -13,10 +13,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.widgets.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.splat.DesktopClient.listeners.GraphListener;
-import ru.splat.DesktopClient.listeners.JsonProviderListener;
-import ru.splat.DesktopClient.listeners.TableListener;
-import ru.splat.DesktopClient.listeners.XmlProviderListener;
+import ru.splat.DesktopClient.listeners.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,6 +55,8 @@ public class Client
     public int providerId = 0; // 0 - xml; 1 - json
 
     public Table table;
+
+    public int id;
 
     private static Text text;
 
@@ -162,7 +161,7 @@ public class Client
      * Update data in Table(Guava structure)
      *
      * @param idNew       id  identifier of Object, which we received
-     * @param valueNew    value positive or negative value, which must be added to Object history
+     * @param valueNew    positive or negative value, which must be added to Object history
      * @param providerNew provider name ("providerxml" if data received from XMl provider or
      *                    "providerjson" if data received from Json provider)
      */
@@ -218,6 +217,20 @@ public class Client
         shlDesktopClient.setBackgroundImage(bgImg);
         shlDesktopClient.setBackgroundMode(SWT.INHERIT_FORCE);
 
+        gl_shlDesktopClient.numColumns = 3;
+        Label lblEnterIdWhich = new Label(shlDesktopClient, SWT.NONE);
+        lblEnterIdWhich.setText("Enter ID of Object, which history you want to see:");
+
+        text = new Text(shlDesktopClient, SWT.BORDER);
+        text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+
+        Button btnOk = new Button(shlDesktopClient, SWT.NONE);
+        btnOk.setText("OK");
+        Color bgColor = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
+        btnOk.setBackground(bgColor);
+        Image buttonOK = new Image(display, "resources/buttonOK.png");
+        btnOk.setImage(buttonOK);
+
         Label lblprovider = new Label(shlDesktopClient, SWT.NONE);
         lblprovider.setText("");
 
@@ -252,6 +265,7 @@ public class Client
         mTable.addSelectionListener(new TableListener(shlDesktopClient, providerId, this));
         mXmlProvider.addSelectionListener(new XmlProviderListener(shlDesktopClient, lblprovider, this));
         mJsonProvider.addSelectionListener(new JsonProviderListener(shlDesktopClient, lblprovider, this));
+        btnOk.addSelectionListener(new ButtonOKListener(this, text));
 
         shlDesktopClient.open();
         log.info("Start window have been drawn");

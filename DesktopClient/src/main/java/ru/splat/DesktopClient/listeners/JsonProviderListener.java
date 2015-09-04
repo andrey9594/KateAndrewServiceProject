@@ -7,12 +7,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.splat.DesktopClient.Client;
 
 
 /**
- * <p>
+ * <p/>
  *
  * @author Ekaterina
+ *         Listener of menu item "JsonProvider"
  *         Makes a request for data coming from JsonProvider.
  */
 public class JsonProviderListener implements SelectionListener
@@ -23,27 +25,43 @@ public class JsonProviderListener implements SelectionListener
 
     private Label lblJsonprovider;
 
-    private int providerId;
+    Client client;
 
 
-    public JsonProviderListener(Shell shlDesktopClient, Label lblJsonprovider, int provider)
+    /**
+     * Constructor of JsonProviderListener
+     *
+     * @param shlDesktopClient shell of DC
+     * @param lblJsonprovider  label of DC, on which displays the name of the provider,
+     *                         the data from which are displayed on the graph / table
+     * @param client           object Client
+     */
+    public JsonProviderListener(Shell shlDesktopClient, Label lblJsonprovider, Client client)
     {
         this.shell = shlDesktopClient;
         this.lblJsonprovider = lblJsonprovider;
-        this.providerId = provider;
+        this.client = client;
     }
 
 
-    @Override public void widgetSelected(SelectionEvent selectionEvent)
+    /**
+     * Method sets the value of "providerId" = 1 and displays the inscription "Data from Json Provider"
+     *
+     * @param selectionEvent Pressing the menu item "JsonProvider"
+     */
+
+    @Override
+    public void widgetSelected(SelectionEvent selectionEvent)
     {
         log.info("Item 'JsonProvider' pressed!");
-        providerId = 1;
+        client.providerId = 1;
         log.info("Filed a request for information from Json Provider!");
         lblJsonprovider.setText("                                         Data from Json Provider");
     }
 
 
-    @Override public void widgetDefaultSelected(SelectionEvent selectionEvent)
+    @Override
+    public void widgetDefaultSelected(SelectionEvent selectionEvent)
     {
 
     }
