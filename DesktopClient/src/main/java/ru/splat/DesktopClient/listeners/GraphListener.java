@@ -11,8 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.splat.DesktopClient.Client;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Properties;
 
 
 /**
@@ -33,6 +37,14 @@ public class GraphListener implements SelectionListener
     private GC gc;
 
     private Client client;
+
+    private static Long MINUTE;
+
+    private static Long DELTA;
+
+    private static int LEBELX;
+
+    private static int LEBELY;
 
 
     /**
@@ -64,6 +76,16 @@ public class GraphListener implements SelectionListener
 
                                    @Override public void paintControl(PaintEvent paintEvent)
                                    {
+                                       try
+                                       {
+                                           GetConfigGraph();
+                                           log.info("value has been converted");
+                                       }
+                                       catch (IOException e)
+                                       {
+                                           log.error("Error in reading file 'configGraph.ini'");
+                                           e.printStackTrace();
+                                       }
                                        paintEvent.gc.drawLine(20, 35, 20, 425);//Y(Value)
                                        paintEvent.gc.drawLine(20, 35, 25, 50);
                                        paintEvent.gc.drawLine(20, 35, 15, 50);
@@ -124,24 +146,26 @@ public class GraphListener implements SelectionListener
                                            for (Timestamp time : client.weightedGraphXml.row(client.id).keySet())
                                            {
                                                c = 20;
-                                               for (Long i = 0L; i < 60000L; i += 2000L)
+                                               for (Long i = 0L; i < MINUTE; i += DELTA)
                                                {
                                                    Timestamp ts = new Timestamp(
-                                                           new java.util.Date().getTime() - 60000L + i);
+                                                           new java.util.Date().getTime() - MINUTE + i);
                                                    Timestamp ts1 = new Timestamp(
-                                                           new java.util.Date().getTime() - 58000L + i);
+                                                           new java.util.Date().getTime() - (MINUTE - DELTA) + i);
                                                    if (ts.compareTo(time) == 0)
                                                    {
                                                        coordinatesArrayTimeXml.add(c);
-                                                       coordinatesArrayValueXml.add(client.weightedGraphXml
-                                                               .row(client.id).get(time) / (-13750000) + 255);
+                                                       coordinatesArrayValueXml
+                                                               .add(convertValueToCoordinates(client.weightedGraphXml
+                                                                       .row(client.id).get(time)));
 
                                                    }
                                                    else if ((ts.compareTo(time) == -1) && (ts1.compareTo(time) == 1))
                                                    {
                                                        coordinatesArrayTimeXml.add(c + 7);
-                                                       coordinatesArrayValueXml.add(client.weightedGraphXml
-                                                               .row(client.id).get(time) / (-13750000) + 255);
+                                                       coordinatesArrayValueXml
+                                                               .add(convertValueToCoordinates(client.weightedGraphXml
+                                                                       .row(client.id).get(time)));
                                                    }
                                                    c += 14;
                                                }
@@ -155,23 +179,25 @@ public class GraphListener implements SelectionListener
                                            for (Timestamp time : client.weightedGraphJson.row(client.id).keySet())
                                            {
                                                c = 20;
-                                               for (Long i = 0L; i < 60000L; i += 2000L)
+                                               for (Long i = 0L; i < MINUTE; i += DELTA)
                                                {
                                                    Timestamp ts = new Timestamp(
-                                                           new java.util.Date().getTime() - 60000L + i);
+                                                           new java.util.Date().getTime() - MINUTE + i);
                                                    Timestamp ts1 = new Timestamp(
-                                                           new java.util.Date().getTime() - 58000L + i);
+                                                           new java.util.Date().getTime() - (MINUTE - DELTA) + i);
                                                    if (ts.compareTo(time) == 0)
                                                    {
                                                        coordinatesArrayTimeJson.add(c);
-                                                       coordinatesArrayValueJson.add(client.weightedGraphJson
-                                                               .row(client.id).get(time) / (-13750000) + 255);
+                                                       coordinatesArrayValueJson
+                                                               .add(convertValueToCoordinates(client.weightedGraphJson
+                                                                       .row(client.id).get(time)));
                                                    }
                                                    else if ((ts.compareTo(time) == -1) && (ts1.compareTo(time) == 1))
                                                    {
                                                        coordinatesArrayTimeJson.add(c + 7);
-                                                       coordinatesArrayValueJson.add(client.weightedGraphJson
-                                                               .row(client.id).get(time) / (-13750000) + 255);
+                                                       coordinatesArrayValueJson
+                                                               .add(convertValueToCoordinates(client.weightedGraphJson
+                                                                       .row(client.id).get(time)));
                                                    }
                                                    c += 14;
                                                }
@@ -193,7 +219,7 @@ public class GraphListener implements SelectionListener
                                            }
                                            paintEvent.gc
                                                    .drawString("Data from Xml Provider",
-                                                           200, 400);
+                                                           LEBELX, LEBELY);
                                            log.info("Graph with info from Xml Provider have been drawn");
                                        }
                                        else if ((client.providerId == 0) && (coordinatesArrayTimeXml.size() == 1))
@@ -202,7 +228,7 @@ public class GraphListener implements SelectionListener
                                                    coordinatesArrayValueXml.get(0));
                                            paintEvent.gc
                                                    .drawString("Data from Xml Provider",
-                                                           200, 400);
+                                                           LEBELX, LEBELY);
                                            log.info("Graph with info from Xml Provider have been drawn");
                                        }
                                        else if ((client.providerId == 1) && (coordinatesArrayTimeJson.size() >= 2))
@@ -216,7 +242,7 @@ public class GraphListener implements SelectionListener
                                            }
                                            paintEvent.gc
                                                    .drawString("Data from Json Provider",
-                                                           200, 400);
+                                                           LEBELX, LEBELY);
                                            log.info("Graph with info from Json Provider have been drawn");
                                        }
                                        else if ((client.providerId == 1) && (coordinatesArrayTimeJson.size() == 1))
@@ -225,7 +251,7 @@ public class GraphListener implements SelectionListener
                                                    coordinatesArrayValueJson.get(0));
                                            paintEvent.gc
                                                    .drawString("Data from Json Provider",
-                                                           200, 400);
+                                                           LEBELX, LEBELY);
                                            log.info("Graph with info from Json Provider have been drawn");
                                        }
                                        else
@@ -234,13 +260,13 @@ public class GraphListener implements SelectionListener
                                            {
                                                paintEvent.gc
                                                        .drawString("Data from Xml Provider",
-                                                               200, 400);
+                                                               LEBELX, LEBELY);
                                            }
                                            if (client.providerId == 1)
                                            {
                                                paintEvent.gc
                                                        .drawString("Data from Json Provider",
-                                                               200, 400);
+                                                               LEBELX, LEBELY);
                                            }
                                            paintEvent.gc
                                                    .drawString("History of Object with id = " + client.id + " is Empty",
@@ -260,6 +286,33 @@ public class GraphListener implements SelectionListener
     @Override
     public void widgetDefaultSelected(SelectionEvent selectionEvent)
     {
+    }
+
+
+    public void GetConfigGraph() throws IOException
+    {
+        log.info("Take parameters from configGraph.ini file");
+        Properties props = new Properties();
+
+        props.load(new FileInputStream(new File("configGraph.ini")));
+
+        MINUTE = Long.valueOf(props.getProperty("MINUTE"));
+        DELTA = Long.valueOf(props.getProperty("DELTA"));
+        LEBELX = Integer.valueOf(props.getProperty("LEBELX"));
+        LEBELY = Integer.valueOf(props.getProperty("LEBELY"));
+    }
+
+
+    /**
+     * Convert Value to coordinates
+     *
+     * @param value positive or negative value, which must convert to coordinates
+     * @return Value in Coordinates
+     */
+    private int convertValueToCoordinates(int value)
+    {
+        log.info("value is converting");
+        return (value / (-13750000) + 255);
     }
 
 }
