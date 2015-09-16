@@ -48,9 +48,7 @@ public class Client
 
     private static volatile Client instance;
 
-    public com.google.common.collect.Table<Integer, Timestamp, Integer> weightedGraphXml = TreeBasedTable.create();
-
-    public com.google.common.collect.Table<Integer, Timestamp, Integer> weightedGraphJson = TreeBasedTable.create();
+    public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> packageStore = TreeBasedTable.create();
 
     public int providerId = 0; // 0 - xml; 1 - json
 
@@ -130,10 +128,8 @@ public class Client
             private Gson gson = new Gson();
 
 
-            @Override
-            public void handleDelivery(String consumerTag, Envelope envelope,
-                    AMQP.BasicProperties properties, byte[] body)
-                    throws IOException
+            @Override public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+                    byte[] body) throws IOException
             {
                 String jsonString = new String(body, "UTF-8");
                 ProviderPackage providerPackage = gson.fromJson(jsonString, ProviderPackage.class);
@@ -146,55 +142,25 @@ public class Client
 
 
     /**
-     * Updates data, when new packege come
+     * Recordes data, when new packege come
      *
      * @param providerPackage latest packege, which we receved.
      */
+
     private void processPackage(ProviderPackage providerPackage)
     {
-        updateData(providerPackage.getId(), providerPackage.getValue(), providerPackage.getProviderName());
-        log.debug("Data from new packege have been updated");
-    }
-
-
-    /**
-     * Update data in Table(Guava structure)
-     *
-     * @param idNew       id  identifier of Object, which we received
-     * @param valueNew    positive or negative value, which must be added to Object history
-     * @param providerNew provider name ("providerxml" if data received from XMl provider or
-     *                    "providerjson" if data received from Json provider)
-     */
-    private void updateData(int idNew, int valueNew, String providerNew)
-    {
-        if (providerNew.equals("providerxml"))
+        if (providerPackage.getProviderName().equals("providerxml"))
         {
-            if (weightedGraphXml.containsRow(idNew))
-            {
-                weightedGraphXml.rowMap();
-                weightedGraphXml.row(idNew).put(new java.sql.Timestamp(new java.util.Date().getTime()), valueNew);
-                log.debug("Table 'weightedGraphXml' with id = {} is updated", idNew);
-            }
-            else
-            {
-                weightedGraphXml.put(idNew, new java.sql.Timestamp(new java.util.Date().getTime()), valueNew);
-                log.debug("New record  with id = {} is created in Table 'weightedGraphXml'", idNew);
-            }
+            packageStore.rowMap();
+            packageStore.row(0).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
         }
-        else if (providerNew.equals("providerjson"))
+        else if (providerPackage.getProviderName().equals("providerjson"))
         {
-            if (weightedGraphJson.containsRow(idNew))
-            {
-                weightedGraphJson.rowMap();
-                weightedGraphJson.row(idNew).put(new java.sql.Timestamp(new java.util.Date().getTime()), valueNew);
-                log.debug("Table 'weightedGraphJson' with id = {} is updated", idNew);
-            }
-            else
-            {
-                weightedGraphJson.put(idNew, new java.sql.Timestamp(new java.util.Date().getTime()), valueNew);
-                log.debug("New record  with id = {} is created in Table 'weightedGraphJson'", idNew);
-            }
+            packageStore.rowMap();
+            packageStore.row(1).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
         }
+
+        log.debug("Data from new packege have been record");
     }
 
 

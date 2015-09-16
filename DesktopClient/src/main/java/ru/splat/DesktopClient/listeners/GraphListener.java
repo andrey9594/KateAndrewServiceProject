@@ -68,8 +68,7 @@ public class GraphListener implements SelectionListener
      *
      * @param selectionEvent Pressing the menu item "Graph"
      */
-    @Override
-    public void widgetSelected(SelectionEvent selectionEvent)
+    @Override public void widgetSelected(SelectionEvent selectionEvent)
     {
         shell.addPaintListener(new PaintListener()
                                {
@@ -134,145 +133,130 @@ public class GraphListener implements SelectionListener
                                            paintEvent.gc.drawString(i + "0", 12 + i * 70, 235);
                                        }
 
+                                       //Todo Make OO draw a Graph
                                        // converting 'time' and 'values' to the coordinate axes
-                                       ArrayList<Integer> coordinatesArrayTimeXml = new ArrayList<Integer>();
-                                       ArrayList<Integer> coordinatesArrayValueXml = new ArrayList<Integer>();
-                                       ArrayList<Integer> coordinatesArrayTimeJson = new ArrayList<Integer>();
-                                       ArrayList<Integer> coordinatesArrayValueJson = new ArrayList<Integer>();
+                                       //                                       ArrayList<Integer> coordinatesArrayTimeXml = new ArrayList<Integer>();
+                                       //                                       ArrayList<Integer> coordinatesArrayValueXml = new ArrayList<Integer>();
+                                       //                                       ArrayList<Integer> coordinatesArrayTimeJson = new ArrayList<Integer>();
+                                       //                                       ArrayList<Integer> coordinatesArrayValueJson = new ArrayList<Integer>();
 
-                                       int c;
-                                       if ((client.providerId == 0) && (client.weightedGraphXml.containsRow(client.id)))
-                                       {
-                                           for (Timestamp time : client.weightedGraphXml.row(client.id).keySet())
-                                           {
-                                               c = 20;
-                                               for (Long i = 0L; i < MINUTE; i += DELTA)
-                                               {
-                                                   Timestamp ts = new Timestamp(
-                                                           new java.util.Date().getTime() - MINUTE + i);
-                                                   Timestamp ts1 = new Timestamp(
-                                                           new java.util.Date().getTime() - (MINUTE - DELTA) + i);
-                                                   if (ts.compareTo(time) == 0)
-                                                   {
-                                                       coordinatesArrayTimeXml.add(c);
-                                                       coordinatesArrayValueXml
-                                                               .add(convertValueToCoordinates(client.weightedGraphXml
-                                                                       .row(client.id).get(time)));
-
-                                                   }
-                                                   else if ((ts.compareTo(time) == -1) && (ts1.compareTo(time) == 1))
-                                                   {
-                                                       coordinatesArrayTimeXml.add(c + 7);
-                                                       coordinatesArrayValueXml
-                                                               .add(convertValueToCoordinates(client.weightedGraphXml
-                                                                       .row(client.id).get(time)));
-                                                   }
-                                                   c += 14;
-                                               }
-                                           }
-                                           log.info(
-                                                   "'time' and 'values' from Xml Provider has been converted to the coordinate axes");
-                                       }
-                                       else if ((client.providerId == 1) && (client.weightedGraphJson
-                                               .containsRow(client.id)))
-                                       {
-                                           for (Timestamp time : client.weightedGraphJson.row(client.id).keySet())
-                                           {
-                                               c = 20;
-                                               for (Long i = 0L; i < MINUTE; i += DELTA)
-                                               {
-                                                   Timestamp ts = new Timestamp(
-                                                           new java.util.Date().getTime() - MINUTE + i);
-                                                   Timestamp ts1 = new Timestamp(
-                                                           new java.util.Date().getTime() - (MINUTE - DELTA) + i);
-                                                   if (ts.compareTo(time) == 0)
-                                                   {
-                                                       coordinatesArrayTimeJson.add(c);
-                                                       coordinatesArrayValueJson
-                                                               .add(convertValueToCoordinates(client.weightedGraphJson
-                                                                       .row(client.id).get(time)));
-                                                   }
-                                                   else if ((ts.compareTo(time) == -1) && (ts1.compareTo(time) == 1))
-                                                   {
-                                                       coordinatesArrayTimeJson.add(c + 7);
-                                                       coordinatesArrayValueJson
-                                                               .add(convertValueToCoordinates(client.weightedGraphJson
-                                                                       .row(client.id).get(time)));
-                                                   }
-                                                   c += 14;
-                                               }
-                                           }
-                                           log.info(
-                                                   "'time' and 'values' from Json Provider has been converted to the coordinate axes");
-                                       }
+                                       //                                       int c;
+                                       //                                       if ((client.providerId == 0) && (client.weightedGraphXml.containsRow(client.id)))
+                                       //                                       {
+                                       //                                           for (Timestamp time : client.weightedGraphXml.row(client.id).keySet())
+                                       //                                           {
+                                       //                                               c = 20;
+                                       //                                               for (Long i = 0L; i < MINUTE; i += DELTA)
+                                       //                                               {
+                                       //                                                   Timestamp ts = new Timestamp(
+                                       //                                                           new java.util.Date().getTime() - MINUTE + i);
+                                       //                                                   Timestamp ts1 = new Timestamp(
+                                       //                                                           new java.util.Date().getTime() - (MINUTE - DELTA) + i);
+                                       //                                                   if (ts.compareTo(time) == 0)
+                                       //                                                   {
+                                       //                                                       coordinatesArrayTimeXml.add(c);
+                                       //                                                       coordinatesArrayValueXml.add(convertValueToCoordinates(
+                                       //                                                               client.weightedGraphXml.row(client.id).get(time)));
+                                       //
+                                       //                                                   }
+                                       //                                                   else if ((ts.compareTo(time) == -1) && (ts1.compareTo(time) == 1))
+                                       //                                                   {
+                                       //                                                       coordinatesArrayTimeXml.add(c + 7);
+                                       //                                                       coordinatesArrayValueXml.add(convertValueToCoordinates(
+                                       //                                                               client.weightedGraphXml.row(client.id).get(time)));
+                                       //                                                   }
+                                       //                                                   c += 14;
+                                       //                                               }
+                                       //                                           }
+                                       //                                           log.info(
+                                       //                                                   "'time' and 'values' from Xml Provider has been converted to the coordinate axes");
+                                       //                                       }
+                                       //                                       else if ((client.providerId == 1) && (client.weightedGraphJson
+                                       //                                               .containsRow(client.id)))
+                                       //                                       {
+                                       //                                           for (Timestamp time : client.weightedGraphJson.row(client.id).keySet())
+                                       //                                           {
+                                       //                                               c = 20;
+                                       //                                               for (Long i = 0L; i < MINUTE; i += DELTA)
+                                       //                                               {
+                                       //                                                   Timestamp ts = new Timestamp(
+                                       //                                                           new java.util.Date().getTime() - MINUTE + i);
+                                       //                                                   Timestamp ts1 = new Timestamp(
+                                       //                                                           new java.util.Date().getTime() - (MINUTE - DELTA) + i);
+                                       //                                                   if (ts.compareTo(time) == 0)
+                                       //                                                   {
+                                       //                                                       coordinatesArrayTimeJson.add(c);
+                                       //                                                       coordinatesArrayValueJson.add(convertValueToCoordinates(
+                                       //                                                               client.weightedGraphJson.row(client.id).get(time)));
+                                       //                                                   }
+                                       //                                                   else if ((ts.compareTo(time) == -1) && (ts1.compareTo(time) == 1))
+                                       //                                                   {
+                                       //                                                       coordinatesArrayTimeJson.add(c + 7);
+                                       //                                                       coordinatesArrayValueJson.add(convertValueToCoordinates(
+                                       //                                                               client.weightedGraphJson.row(client.id).get(time)));
+                                       //                                                   }
+                                       //                                                   c += 14;
+                                       //                                               }
+                                       //                                           }
+                                       //                                           log.info(
+                                       //                                                   "'time' and 'values' from Json Provider has been converted to the coordinate axes");
+                                       //                                       }
 
                                        //Draw a graph
-                                       paintEvent.gc.setLineWidth(5);
-                                       if ((client.providerId == 0) && (coordinatesArrayTimeXml.size() >= 2))
-                                       {
-                                           for (int i = 0; i < coordinatesArrayTimeXml.size() - 1; i++)
-                                           {
-                                               paintEvent.gc.drawLine(coordinatesArrayTimeXml.get(i),
-                                                       coordinatesArrayValueXml.get(i),
-                                                       coordinatesArrayTimeXml.get(i + 1),
-                                                       coordinatesArrayValueXml.get(i + 1));
-                                           }
-                                           paintEvent.gc
-                                                   .drawString("Data from Xml Provider",
-                                                           LEBELX, LEBELY);
-                                           log.info("Graph with info from Xml Provider have been drawn");
-                                       }
-                                       else if ((client.providerId == 0) && (coordinatesArrayTimeXml.size() == 1))
-                                       {
-                                           paintEvent.gc.drawPoint(coordinatesArrayTimeXml.get(0),
-                                                   coordinatesArrayValueXml.get(0));
-                                           paintEvent.gc
-                                                   .drawString("Data from Xml Provider",
-                                                           LEBELX, LEBELY);
-                                           log.info("Graph with info from Xml Provider have been drawn");
-                                       }
-                                       else if ((client.providerId == 1) && (coordinatesArrayTimeJson.size() >= 2))
-                                       {
-                                           for (int i = 0; i < coordinatesArrayTimeJson.size() - 1; i++)
-                                           {
-                                               paintEvent.gc.drawLine(coordinatesArrayTimeJson.get(i),
-                                                       coordinatesArrayValueJson.get(i),
-                                                       coordinatesArrayTimeJson.get(i + 1),
-                                                       coordinatesArrayValueJson.get(i + 1));
-                                           }
-                                           paintEvent.gc
-                                                   .drawString("Data from Json Provider",
-                                                           LEBELX, LEBELY);
-                                           log.info("Graph with info from Json Provider have been drawn");
-                                       }
-                                       else if ((client.providerId == 1) && (coordinatesArrayTimeJson.size() == 1))
-                                       {
-                                           paintEvent.gc.drawPoint(coordinatesArrayTimeJson.get(0),
-                                                   coordinatesArrayValueJson.get(0));
-                                           paintEvent.gc
-                                                   .drawString("Data from Json Provider",
-                                                           LEBELX, LEBELY);
-                                           log.info("Graph with info from Json Provider have been drawn");
-                                       }
-                                       else
-                                       {
-                                           if (client.providerId == 0)
-                                           {
-                                               paintEvent.gc
-                                                       .drawString("Data from Xml Provider",
-                                                               LEBELX, LEBELY);
-                                           }
-                                           if (client.providerId == 1)
-                                           {
-                                               paintEvent.gc
-                                                       .drawString("Data from Json Provider",
-                                                               LEBELX, LEBELY);
-                                           }
-                                           paintEvent.gc
-                                                   .drawString("History of Object with id = " + client.id + " is Empty",
-                                                           160, 100);
-                                           log.info("History of Object with id = {} is Empty", client.id);
-                                       }
+                                       //                                       paintEvent.gc.setLineWidth(5);
+                                       //                                       if ((client.providerId == 0) && (coordinatesArrayTimeXml.size() >= 2))
+                                       //                                       {
+                                       //                                           for (int i = 0; i < coordinatesArrayTimeXml.size() - 1; i++)
+                                       //                                           {
+                                       //                                               paintEvent.gc.drawLine(coordinatesArrayTimeXml.get(i),
+                                       //                                                       coordinatesArrayValueXml.get(i),
+                                       //                                                       coordinatesArrayTimeXml.get(i + 1),
+                                       //                                                       coordinatesArrayValueXml.get(i + 1));
+                                       //                                           }
+                                       //                                           paintEvent.gc.drawString("Data from Xml Provider", LEBELX, LEBELY);
+                                       //                                           log.info("Graph with info from Xml Provider have been drawn");
+                                       //                                       }
+                                       //                                       else if ((client.providerId == 0) && (coordinatesArrayTimeXml.size() == 1))
+                                       //                                       {
+                                       //                                           paintEvent.gc.drawPoint(coordinatesArrayTimeXml.get(0),
+                                       //                                                   coordinatesArrayValueXml.get(0));
+                                       //                                           paintEvent.gc.drawString("Data from Xml Provider", LEBELX, LEBELY);
+                                       //                                           log.info("Graph with info from Xml Provider have been drawn");
+                                       //                                       }
+                                       //                                       else if ((client.providerId == 1) && (coordinatesArrayTimeJson.size() >= 2))
+                                       //                                       {
+                                       //                                           for (int i = 0; i < coordinatesArrayTimeJson.size() - 1; i++)
+                                       //                                           {
+                                       //                                               paintEvent.gc.drawLine(coordinatesArrayTimeJson.get(i),
+                                       //                                                       coordinatesArrayValueJson.get(i),
+                                       //                                                       coordinatesArrayTimeJson.get(i + 1),
+                                       //                                                       coordinatesArrayValueJson.get(i + 1));
+                                       //                                           }
+                                       //                                           paintEvent.gc.drawString("Data from Json Provider", LEBELX, LEBELY);
+                                       //                                           log.info("Graph with info from Json Provider have been drawn");
+                                       //                                       }
+                                       //                                       else if ((client.providerId == 1) && (coordinatesArrayTimeJson.size() == 1))
+                                       //                                       {
+                                       //                                           paintEvent.gc.drawPoint(coordinatesArrayTimeJson.get(0),
+                                       //                                                   coordinatesArrayValueJson.get(0));
+                                       //                                           paintEvent.gc.drawString("Data from Json Provider", LEBELX, LEBELY);
+                                       //                                           log.info("Graph with info from Json Provider have been drawn");
+                                       //                                       }
+                                       //                                       else
+                                       //                                       {
+                                       //                                           if (client.providerId == 0)
+                                       //                                           {
+                                       //                                               paintEvent.gc.drawString("Data from Xml Provider", LEBELX, LEBELY);
+                                       //                                           }
+                                       //                                           if (client.providerId == 1)
+                                       //                                           {
+                                       //                                               paintEvent.gc.drawString("Data from Json Provider", LEBELX, LEBELY);
+                                       //                                           }
+                                       //                                           paintEvent.gc
+                                       //                                                   .drawString("History of Object with id = " + client.id + " is Empty",
+                                       //                                                           160, 100);
+                                       //                                           log.info("History of Object with id = {} is Empty", client.id);
+                                       //                                       }
 
                                    }
 
@@ -283,8 +267,7 @@ public class GraphListener implements SelectionListener
     }
 
 
-    @Override
-    public void widgetDefaultSelected(SelectionEvent selectionEvent)
+    @Override public void widgetDefaultSelected(SelectionEvent selectionEvent)
     {
     }
 

@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.splat.DesktopClient.Client;
+import ru.splat.DesktopClient.ProviderPackage;
 
 import java.sql.Timestamp;
 
@@ -32,6 +33,8 @@ public class TableListener implements SelectionListener
     private Client client;
 
     private int providerId;
+
+    ProviderPackage pp;
 
 
     /**
@@ -54,8 +57,7 @@ public class TableListener implements SelectionListener
      *
      * @param selectionEvent Pressing the menu item "Table"
      */
-    @Override
-    public void widgetSelected(SelectionEvent selectionEvent)
+    @Override public void widgetSelected(SelectionEvent selectionEvent)
     {
         client.table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
         client.table.setLinesVisible(true);
@@ -74,25 +76,15 @@ public class TableListener implements SelectionListener
 
         //the output values
 
-        if ((client.providerId == 0) && (client.weightedGraphXml.containsRow(client.id)))
+        if (client.packageStore.row(providerId).containsValue(pp.getId()))
         {
-            for (Timestamp time : client.weightedGraphXml.row(client.id).keySet())
+            for (Timestamp time : client.packageStore.row(providerId).keySet())
             {
                 TableItem item = new TableItem(client.table, SWT.NONE);
                 item.setText(0, "" + time);
-                item.setText(1, "" + client.weightedGraphXml.row(client.id).get(time));
+                item.setText(1, "" + client.packageStore.row(providerId).get(time).getValue());
             }
-            log.info("Table with info from Xml Provider have been drawn");
-        }
-        else if ((client.providerId == 1) && (client.weightedGraphJson.containsRow(client.id)))
-        {
-            for (Timestamp time : client.weightedGraphJson.row(client.id).keySet())
-            {
-                TableItem item = new TableItem(client.table, SWT.NONE);
-                item.setText(0, "" + time);
-                item.setText(1, "" + client.weightedGraphJson.row(client.id).get(time));
-            }
-            log.info("Table with info from Json Provider have been drawn");
+            log.info("Table with info from {} have been drawn", converProviderID(client.providerId));
         }
         else
         {
@@ -111,9 +103,19 @@ public class TableListener implements SelectionListener
     }
 
 
-    @Override
-    public void widgetDefaultSelected(SelectionEvent selectionEvent)
+    @Override public void widgetDefaultSelected(SelectionEvent selectionEvent)
     {
 
+    }
+
+
+    public String converProviderID(int providerId)
+    {
+        if (providerId == 0)
+            return "XML Provider";
+        else if (providerId == 1)
+            return "Json ProVider";
+        else
+            return "Null";
     }
 }
