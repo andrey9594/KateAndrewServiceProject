@@ -1,0 +1,35 @@
+2015-09-12 04:00:00,403 +0000 [Thread-36] [RunningBallScoutSocketClient] DEBUG Received xml:
+<event_list status="event" timestamp="1442030400391"><event matchid="581688" event_number="34" event_code_id="2078" event_code="Throw in Away" timestamp="1442030400376" minute="3" tickerstate="1st half" tickerstateid="2" score_home="0" score_away="0" statistics="1054=2 2078=1" currentPlaytime="133670" clockRunning="true"/></event_list>
+
+2015-09-12 04:00:00,405 +0000 [Thread-36] [RunningBallScoutSocketClient] DEBUG Finished unmarshaling object: time = 2 ms
+2015-09-12 04:00:00,405 +0000 [Thread-36] [RunningBallScoutSocketClient] DEBUG Finished processing data: time = 2 ms
+2015-09-12 04:00:00,405 +0000 [Betradar-EventList-queue] [RunningBallActionEntityCache] DEBUG Starting adding event action to cache: actionId = 34, type = 2078
+2015-09-12 04:00:00,405 +0000 [Betradar-EventList-queue] [RunningBallActionEntityCache] DEBUG Define panbet event relation: runningball_event_id = 34, panbet_event_id = 3111656
+2015-09-12 04:00:00,408 +0000 [Betradar-EventList-queue] [RunningBallActionEntityCache] DEBUG Finish adding event action to cache: actionId = 34, actions size = 35
+2015-09-12 04:00:00,425 +0000 [pool-4-thread-1] [RunningBallAliveJob] DEBUG send alive message
+2015-09-12 04:00:00,425 +0000 [pool-4-thread-1] [RunningBallScoutSocketClient] DEBUG send message # 11 :
+<client_keep_alive timestamp="1442030400425" />
+2015-09-12 04:00:01,850 +0000 [Thread-36] [RunningBallScoutSocketClient] DEBUG Received xml:
+<keep_alive timestamp="1442030401838"/>
+
+2015-09-12 04:00:01,850 +0000 [Thread-36] [RunningBallScoutSocketClient] DEBUG Finished unmarshaling object: time = 0 ms
+2015-09-12 04:00:01,850 +0000 [Thread-36] [RunningBallScoutSocketClient] DEBUG Finished processing data: time = 0 ms
+2015-09-12 04:00:02,080 +0000 [Thread-36] [RunningBallScoutSocketClient] DEBUG Received xml:
+<event_list status="event" timestamp="1442030402068"><event matchid="581688" event_number="35" event_code_id="148" event_code="Restart" timestamp="1442030401965" minute="3" tickerstate="1st half" tickerstateid="2" score_home="0" score_away="0" currentPlaytime="135258" clockRunning="true"/></event_list>
+
+2015-09-12 04:00:02,081 +0000 [Thread-36] [RunningBallScoutSocketClient] DEBUG Finished unmarshaling object: time = 1 ms
+2015-09-12 04:00:02,081 +0000 [Thread-36] [RunningBallScoutSocketClient] DEBUG Finished processing data: time = 1 ms
+2015-09-12 04:00:02,081 +0000 [Betradar-EventList-queue] [RunningBallActionEntityCache] DEBUG Starting adding event action to cache: actionId = 35, type = 148
+2015-09-12 04:00:02,081 +0000 [Betradar-EventList-queue] [RunningBallActionEntityCache] DEBUG Define panbet event relation: runningball_event_id = 35, panbet_event_id = 3111656
+2015-09-12 04:00:02,082 +0000 [Betradar-EventList-queue] [RunningBallActionEntityCache] DEBUG Finish adding event action to cache: actionId = 35, actions size = 36
+2015-09-12 04:00:03,314 +0000 [Thread-36] [RunningBallScoutSocketClient] DEBUG Received xml:
+<event_list status="event" timestamp="1442030403301"><event matchid="579971" event_number="377" event_code_id="1408" event_code="Service Home" timestamp="1442030403286" minute="49" tickerstate="2nd set" tickerstateid="2102" score_home="1" score_away="0" currentPlaytime="2962538" clockRunning="true" score="2445=13 1421=12"/></event_list>
+
+2015-09-12 04:00:03,315 +0000 [Thread-36] [RunningBallScoutSocketClient] DEBUG Finished unmarshaling object: time = 1 ms
+2015-09-12 04:00:03,315 +0000 [Thread-36] [RunningBallScoutSocketClient] DEBUG Finished processing data: time = 1 ms
+2015-09-12 04:00:03,315 +0000 [Betradar-EventList-queue] [RunningBallActionEntityCache] DEBUG Starting adding event action to cache: actionId = 377, type = 1408
+2015-09-12 04:00:03,315 +0000 [Betradar-EventList-queue] [RunningBallActionEntityCache] DEBUG Define panbet event relation: runningball_event_id = 377, panbet_event_id = 3099718
+2015-09-12 04:00:03,317 +0000 [Betradar-EventList-queue] [RunningBallActionEntityCache] DEBUG Finish adding event action to cache: actionId = 377, actions size = 378
+2015-09-12 04:00:03,702 +0000 [Thread-36] [RunningBallScoutSocketClient] DEBUG Received xml:
+<event_list status="event" timestamp="1442030403690"><event matchid="578384" event_number="427" event_code_id="1429" event_code="Rally Started Home" timestamp="1442030403676" minute="54" tickerstate="2nd set" tickerstateid="2102" score_home="1" score_away="0" currentPlaytime="3245465" clockRunning="true" score="2445=9 1421=23"/></event_list>
+
