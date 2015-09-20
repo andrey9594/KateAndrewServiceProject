@@ -1,5 +1,6 @@
 package log.reader.LogReader;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -23,7 +24,7 @@ public class Main {
 	
 	public static void main(String[] args) {
         Properties properties = new Properties();
-        log.info("Loading configuration from {}", pathToProperties);
+        log.info("Loading configuration from {}...", pathToProperties);
 		try {
 			properties.load(new FileInputStream(new File(pathToProperties)));
 		} catch (FileNotFoundException e) {
@@ -39,22 +40,42 @@ public class Main {
         
 		//список файлов
 		File logsDirectory = new File(pathToLogs);
-		File[] logList = logsDirectory.listFiles(new FileFilter() {
+		File[] logFilesList = logsDirectory.listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File pathname) {
 				return pathname.toString().endsWith("." + logFormat);
 			}
 		});
-		if (logList == null) {
+		if (logFilesList == null) {
 			log.error("Directory with log files {1} was't found!", pathToLogs);
 			throw new NullPointerException();
 		}		
-		if (logList.length == 0) {
+		if (logFilesList.length == 0) {
 			log.error("Log files was't found in {1}!", pathToLogs);
 			throw new NullPointerException();
 		}
-		for (int i = 0; i < logList.length; i++) {
-			System.out.println(logList[i]);
+		for (int i = 0; i < logFilesList.length; i++) {
+			try {
+				log.info("Proccessing {} started", logFilesList[i]);
+				LogFormatter formatter = new LogFormatter(logFilesList[i]);
+				
+				while (true) {
+					try {
+						String xml = formatter.nextXML();
+						log.debug("Received xml from log file {}:\n {}", logFilesList[i], xml);
+						// ???
+					} catch (EOFException e) {
+						log.info("Proccessing {} completed", logFilesList[i]);
+						break;
+					} catch (IOException e) {
+						log.error("Can't read log file {}!", logFilesList[i], e);
+						e.printStackTrace();
+					}
+				}
+			} catch (FileNotFoundException e) {
+				log.error("Log file {} not excepted!", logFilesList[i], e);
+				e.printStackTrace();
+			}
 		}
 
 	}
