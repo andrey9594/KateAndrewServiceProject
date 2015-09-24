@@ -12,7 +12,6 @@ import org.eclipse.swt.widgets.TableItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.splat.DesktopClient.Client;
-import ru.splat.DesktopClient.ProviderPackage;
 
 import java.sql.Timestamp;
 
@@ -33,8 +32,6 @@ public class TableListener implements SelectionListener
     private Client client;
 
     private int providerId;
-
-    ProviderPackage pp;
 
 
     /**
@@ -76,22 +73,23 @@ public class TableListener implements SelectionListener
 
         //the output values
 
-        if (client.packageStore.row(providerId).containsValue(pp.getId()))
+        TableItem item = new TableItem(client.table, SWT.NONE);
+        for (Timestamp time : client.Model.row(providerId).keySet())
         {
-            for (Timestamp time : client.packageStore.row(providerId).keySet())
+            if (client.Model.row(providerId).get(time).getId() == client.id)
             {
-                TableItem item = new TableItem(client.table, SWT.NONE);
+
                 item.setText(0, "" + time);
-                item.setText(1, "" + client.packageStore.row(providerId).get(time).getValue());
+                item.setText(1, "" + client.Model.row(providerId).get(time).getValue());
+                log.info("Table with info from {} have been drawn", converProviderID(client.providerId));
             }
-            log.info("Table with info from {} have been drawn", converProviderID(client.providerId));
-        }
-        else
-        {
-            TableItem item = new TableItem(client.table, SWT.NONE);
-            item.setText(0, "" + new java.sql.Timestamp(new java.util.Date().getTime()));
-            item.setText(1, "" + "History of Object with id = " + client.id + " is Empty");
-            log.info("History of Object with id = {} is Empty", client.id);
+            else
+            {
+
+                item.setText(0, "" + new java.sql.Timestamp(new java.util.Date().getTime()));
+                item.setText(1, "" + "History of Object with id = " + client.id + " is Empty");
+                log.info("History of Object with id = {} is Empty", client.id);
+            }
         }
 
         for (int i = 0; i < titles.length; i++)
@@ -109,6 +107,12 @@ public class TableListener implements SelectionListener
     }
 
 
+    /**
+     * Convert number of Provider to name of Provider
+     *
+     * @param providerId number of provider
+     * @return name of provider
+     */
     public String converProviderID(int providerId)
     {
         if (providerId == 0)
