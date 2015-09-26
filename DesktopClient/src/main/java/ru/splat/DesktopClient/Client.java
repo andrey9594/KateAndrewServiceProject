@@ -52,6 +52,8 @@ public class Client
 
     Model model;
 
+    View.ViewTable viewTable;
+
 
     public Client()
     {
@@ -199,7 +201,7 @@ public class Client
         mGraph.setText("Graph");
 
         mGraph.addSelectionListener(new GraphController(shlDesktopClient, model.providerId, this));
-        mTable.addSelectionListener(new TableController(shlDesktopClient, model.providerId, this, model));
+        mTable.addSelectionListener(new TableController(viewTable, shlDesktopClient));
         mXmlProvider.addSelectionListener(new XmlProviderController(shlDesktopClient, lblprovider, model));
         mJsonProvider.addSelectionListener(new JsonProviderController(shlDesktopClient, lblprovider, model));
         btnOk.addSelectionListener(new ButtonOKController(model, text));
