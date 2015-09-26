@@ -1,4 +1,4 @@
-package ru.splat.DesktopClient.listeners;
+package ru.splat.DesktopClient.controllers;
 
 
 import org.eclipse.swt.SWT;
@@ -23,9 +23,9 @@ import java.sql.Timestamp;
  *         Listener of menu item "Table"
  *         Draw table time|Value by SWT lib
  */
-public class TableListener implements SelectionListener
+public class TableController implements SelectionListener
 {
-    private static final Logger log = LoggerFactory.getLogger(GraphListener.class);
+    private static final Logger log = LoggerFactory.getLogger(GraphController.class);
 
     private Shell shell;
 
@@ -35,13 +35,13 @@ public class TableListener implements SelectionListener
 
 
     /**
-     * Constructor of TableListener
+     * Constructor of TableController
      *
      * @param shlDesktopClient shell of DC
      * @param provider         value of provider (0 - XmlProvider; 1 - JsonProvider)
      * @param client           object Client
      */
-    public TableListener(Shell shlDesktopClient, int provider, Client client)
+    public TableController(Shell shlDesktopClient, int provider, Client client)
     {
         this.shell = shlDesktopClient;
         this.providerId = provider;

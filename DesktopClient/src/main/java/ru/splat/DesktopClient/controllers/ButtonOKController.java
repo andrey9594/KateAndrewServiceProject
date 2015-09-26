@@ -1,4 +1,4 @@
-package ru.splat.DesktopClient.listeners;
+package ru.splat.DesktopClient.controllers;
 
 
 import org.eclipse.swt.events.SelectionEvent;
@@ -16,9 +16,9 @@ import ru.splat.DesktopClient.Client;
  *         <p/>
  *         Listener of "OK" button that reads and save the entered value of the object identifier
  */
-public class ButtonOKListener implements SelectionListener
+public class ButtonOKController implements SelectionListener
 {
-    private static final Logger log = LoggerFactory.getLogger(JsonProviderListener.class);
+    private static final Logger log = LoggerFactory.getLogger(JsonProviderController.class);
 
     Client client;
 
@@ -26,12 +26,12 @@ public class ButtonOKListener implements SelectionListener
 
 
     /**
-     * Constructor of ButtonOKListener
+     * Constructor of ButtonOKController
      *
      * @param client object Client
      * @param text   text field on DC
      */
-    public ButtonOKListener(Client client, Text text)
+    public ButtonOKController(Client client, Text text)
     {
         this.client = client;
         this.text = text;

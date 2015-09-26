@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.widgets.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.splat.DesktopClient.listeners.*;
+import ru.splat.DesktopClient.controllers.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -133,34 +133,11 @@ public class Client
             {
                 String jsonString = new String(body, "UTF-8");
                 ProviderPackage providerPackage = gson.fromJson(jsonString, ProviderPackage.class);
-                processPackage(providerPackage);
+                ProcessPackageController.processPackageController(providerPackage);
             }
         };
         channel.basicConsume(queueName, true, consumer);
         log.info("Consumer have been created and started ");
-    }
-
-
-    /**
-     * Recordes data, when new packege come
-     *
-     * @param providerPackage latest packege, which we receved.
-     */
-
-    private void processPackage(ProviderPackage providerPackage)
-    {
-        if (providerPackage.getProviderName().equals("providerxml"))
-        {
-            Model.rowMap();
-            Model.row(0).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
-        }
-        else if (providerPackage.getProviderName().equals("providerjson"))
-        {
-            Model.rowMap();
-            Model.row(1).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
-        }
-
-        log.debug("Data from new packege have been record");
     }
 
 
@@ -227,11 +204,11 @@ public class Client
         MenuItem mGraph = new MenuItem(menu_View, SWT.NONE);
         mGraph.setText("Graph");
 
-        mGraph.addSelectionListener(new GraphListener(shlDesktopClient, providerId, this));
-        mTable.addSelectionListener(new TableListener(shlDesktopClient, providerId, this));
-        mXmlProvider.addSelectionListener(new XmlProviderListener(shlDesktopClient, lblprovider, this));
-        mJsonProvider.addSelectionListener(new JsonProviderListener(shlDesktopClient, lblprovider, this));
-        btnOk.addSelectionListener(new ButtonOKListener(this, text));
+        mGraph.addSelectionListener(new GraphController(shlDesktopClient, providerId, this));
+        mTable.addSelectionListener(new TableController(shlDesktopClient, providerId, this));
+        mXmlProvider.addSelectionListener(new XmlProviderController(shlDesktopClient, lblprovider, this));
+        mJsonProvider.addSelectionListener(new JsonProviderController(shlDesktopClient, lblprovider, this));
+        btnOk.addSelectionListener(new ButtonOKController(this, text));
 
         shlDesktopClient.open();
         log.info("Start window have been drawn");

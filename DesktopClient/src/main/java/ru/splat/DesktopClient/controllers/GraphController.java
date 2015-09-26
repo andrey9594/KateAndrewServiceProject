@@ -1,4 +1,4 @@
-package ru.splat.DesktopClient.listeners;
+package ru.splat.DesktopClient.controllers;
 
 
 import org.eclipse.swt.events.PaintEvent;
@@ -14,8 +14,6 @@ import ru.splat.DesktopClient.Client;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Properties;
 
 
@@ -26,9 +24,9 @@ import java.util.Properties;
  *         Listener of menu item "Graph"
  *         Draw graph Value(t) by SWT lib
  */
-public class GraphListener implements SelectionListener
+public class GraphController implements SelectionListener
 {
-    private static final Logger log = LoggerFactory.getLogger(GraphListener.class);
+    private static final Logger log = LoggerFactory.getLogger(GraphController.class);
 
     private int providerId;
 
@@ -48,13 +46,13 @@ public class GraphListener implements SelectionListener
 
 
     /**
-     * Constructor of GraphListener
+     * Constructor of GraphController
      *
      * @param shlDesktopClient shell of DC
      * @param provider         value of provider (0 - XmlProvider; 1 - JsonProvider)
      * @param client           object Client
      */
-    public GraphListener(Shell shlDesktopClient, int provider, Client client)
+    public GraphController(Shell shlDesktopClient, int provider, Client client)
     {
         this.shell = shlDesktopClient;
         this.providerId = provider;

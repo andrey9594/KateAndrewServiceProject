@@ -1,4 +1,4 @@
-package ru.splat.DesktopClient.listeners;
+package ru.splat.DesktopClient.controllers;
 
 
 import org.eclipse.swt.events.SelectionEvent;
@@ -17,9 +17,9 @@ import ru.splat.DesktopClient.Client;
  *         Listener of menu item "JsonProvider"
  *         Makes a request for data coming from JsonProvider.
  */
-public class JsonProviderListener implements SelectionListener
+public class JsonProviderController implements SelectionListener
 {
-    private static final Logger log = LoggerFactory.getLogger(JsonProviderListener.class);
+    private static final Logger log = LoggerFactory.getLogger(JsonProviderController.class);
 
     private Shell shell;
 
@@ -29,14 +29,14 @@ public class JsonProviderListener implements SelectionListener
 
 
     /**
-     * Constructor of JsonProviderListener
+     * Constructor of JsonProviderController
      *
      * @param shlDesktopClient shell of DC
      * @param lblJsonprovider  label of DC, on which displays the name of the provider,
      *                         the data from which are displayed on the graph / table
      * @param client           object Client
      */
-    public JsonProviderListener(Shell shlDesktopClient, Label lblJsonprovider, Client client)
+    public JsonProviderController(Shell shlDesktopClient, Label lblJsonprovider, Client client)
     {
         this.shell = shlDesktopClient;
         this.lblJsonprovider = lblJsonprovider;

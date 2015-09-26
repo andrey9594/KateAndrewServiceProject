@@ -1,4 +1,4 @@
-package ru.splat.DesktopClient.listeners;
+package ru.splat.DesktopClient.controllers;
 
 
 import org.eclipse.swt.events.SelectionEvent;
@@ -17,9 +17,9 @@ import ru.splat.DesktopClient.Client;
  *         Listener of menu item "XmlProvider"
  *         Makes a request for data coming from XmlProvider.
  */
-public class XmlProviderListener implements SelectionListener
+public class XmlProviderController implements SelectionListener
 {
-    private static final Logger log = LoggerFactory.getLogger(XmlProviderListener.class);
+    private static final Logger log = LoggerFactory.getLogger(XmlProviderController.class);
 
     private Shell shell;
 
@@ -29,14 +29,14 @@ public class XmlProviderListener implements SelectionListener
 
 
     /**
-     * Constructor of XmlProviderListener
+     * Constructor of XmlProviderController
      *
      * @param shlDesktopClient shell of DC
      * @param lblXmlprovider   label of DC, on which displays the name of the provider,
      *                         the data from which are displayed on the graph / table
      * @param client           object Client
      */
-    public XmlProviderListener(Shell shlDesktopClient, Label lblXmlprovider, Client client)
+    public XmlProviderController(Shell shlDesktopClient, Label lblXmlprovider, Client client)
     {
         this.shell = shlDesktopClient;
         this.lblXmlprovider = lblXmlprovider;
