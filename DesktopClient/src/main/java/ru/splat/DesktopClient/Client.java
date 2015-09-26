@@ -48,7 +48,7 @@ public class Client
 
     private static volatile Client instance;
 
-    public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> packageStore = TreeBasedTable.create();
+    public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> Model = TreeBasedTable.create();
 
     public int providerId = 0; // 0 - xml; 1 - json
 
@@ -151,13 +151,13 @@ public class Client
     {
         if (providerPackage.getProviderName().equals("providerxml"))
         {
-            packageStore.rowMap();
-            packageStore.row(0).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
+            Model.rowMap();
+            Model.row(0).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
         }
         else if (providerPackage.getProviderName().equals("providerjson"))
         {
-            packageStore.rowMap();
-            packageStore.row(1).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
+            Model.rowMap();
+            Model.row(1).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
         }
 
         log.debug("Data from new packege have been record");
