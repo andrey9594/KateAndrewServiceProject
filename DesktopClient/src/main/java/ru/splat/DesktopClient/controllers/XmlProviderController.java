@@ -7,11 +7,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.splat.DesktopClient.Client;
+import ru.splat.DesktopClient.Model;
 
 
 /**
- * <p/>
+ * <p>
  *
  * @author Ekaterina
  *         Listener of menu item "XmlProvider"
@@ -25,7 +25,7 @@ public class XmlProviderController implements SelectionListener
 
     private Label lblXmlprovider;
 
-    Client client;
+    Model model;
 
 
     /**
@@ -34,13 +34,13 @@ public class XmlProviderController implements SelectionListener
      * @param shlDesktopClient shell of DC
      * @param lblXmlprovider   label of DC, on which displays the name of the provider,
      *                         the data from which are displayed on the graph / table
-     * @param client           object Client
+     * @param model            object Model
      */
-    public XmlProviderController(Shell shlDesktopClient, Label lblXmlprovider, Client client)
+    public XmlProviderController(Shell shlDesktopClient, Label lblXmlprovider, Model model)
     {
         this.shell = shlDesktopClient;
         this.lblXmlprovider = lblXmlprovider;
-        this.client = client;
+        this.model = model;
     }
 
 
@@ -49,18 +49,16 @@ public class XmlProviderController implements SelectionListener
      *
      * @param selectionEvent Pressing the menu item "XmlProvider"
      */
-    @Override
-    public void widgetSelected(SelectionEvent selectionEvent)
+    @Override public void widgetSelected(SelectionEvent selectionEvent)
     {
         log.info("Item 'XmlProvider' pressed!");
-        client.providerId = 0;
+        model.providerId = 0;
         log.info("Filed a request for information from Xml Provider!");
         lblXmlprovider.setText("                                         Data from Xml Provider");
     }
 
 
-    @Override
-    public void widgetDefaultSelected(SelectionEvent selectionEvent)
+    @Override public void widgetDefaultSelected(SelectionEvent selectionEvent)
     {
 
     }

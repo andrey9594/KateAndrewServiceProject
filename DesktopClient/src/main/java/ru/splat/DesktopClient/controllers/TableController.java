@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.splat.DesktopClient.Client;
+import ru.splat.DesktopClient.Model;
 
 import java.sql.Timestamp;
 
@@ -29,6 +30,8 @@ public class TableController implements SelectionListener
 
     private Shell shell;
 
+    private Model model;
+
     private Client client;
 
     private int providerId;
@@ -39,13 +42,14 @@ public class TableController implements SelectionListener
      *
      * @param shlDesktopClient shell of DC
      * @param provider         value of provider (0 - XmlProvider; 1 - JsonProvider)
-     * @param client           object Client
+     * @param model           object Model
      */
-    public TableController(Shell shlDesktopClient, int provider, Client client)
+    public TableController(Shell shlDesktopClient, int provider, Client client, Model model)
     {
         this.shell = shlDesktopClient;
         this.providerId = provider;
         this.client = client;
+        this.model = model;
     }
 
 
@@ -74,21 +78,21 @@ public class TableController implements SelectionListener
         //the output values
 
         TableItem item = new TableItem(client.table, SWT.NONE);
-        for (Timestamp time : client.Model.row(providerId).keySet())
+        for (Timestamp time : model.Model.row(providerId).keySet())
         {
-            if (client.Model.row(providerId).get(time).getId() == client.id)
+            if (model.Model.row(providerId).get(time).getId() == model.id)
             {
 
                 item.setText(0, "" + time);
-                item.setText(1, "" + client.Model.row(providerId).get(time).getValue());
-                log.info("Table with info from {} have been drawn", converProviderID(client.providerId));
+                item.setText(1, "" + model.Model.row(providerId).get(time).getValue());
+                log.info("Table with info from {} have been drawn", converProviderID(model.providerId));
             }
             else
             {
 
                 item.setText(0, "" + new java.sql.Timestamp(new java.util.Date().getTime()));
-                item.setText(1, "" + "History of Object with id = " + client.id + " is Empty");
-                log.info("History of Object with id = {} is Empty", client.id);
+                item.setText(1, "" + "History of Object with id = " + model.id + " is Empty");
+                log.info("History of Object with id = {} is Empty", model.id);
             }
         }
 

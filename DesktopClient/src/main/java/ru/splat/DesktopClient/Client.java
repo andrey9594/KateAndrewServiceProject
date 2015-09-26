@@ -1,7 +1,6 @@
 package ru.splat.DesktopClient;
 
 
-import com.google.common.collect.*;
 import com.google.gson.Gson;
 import com.rabbitmq.client.*;
 import org.eclipse.swt.SWT;
@@ -18,14 +17,13 @@ import ru.splat.DesktopClient.controllers.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Timestamp;
 
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 
 
 /**
- * <p/>
+ * <p>
  *
  * @author Ekaterina
  *         Desktop client
@@ -48,15 +46,11 @@ public class Client
 
     private static volatile Client instance;
 
-    public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> Model = TreeBasedTable.create();
-
-    public int providerId = 0; // 0 - xml; 1 - json
-
     public Table table;
 
-    public int id;
-
     private static Text text;
+
+    Model model;
 
 
     public Client()
@@ -204,11 +198,11 @@ public class Client
         MenuItem mGraph = new MenuItem(menu_View, SWT.NONE);
         mGraph.setText("Graph");
 
-        mGraph.addSelectionListener(new GraphController(shlDesktopClient, providerId, this));
-        mTable.addSelectionListener(new TableController(shlDesktopClient, providerId, this));
-        mXmlProvider.addSelectionListener(new XmlProviderController(shlDesktopClient, lblprovider, this));
-        mJsonProvider.addSelectionListener(new JsonProviderController(shlDesktopClient, lblprovider, this));
-        btnOk.addSelectionListener(new ButtonOKController(this, text));
+        mGraph.addSelectionListener(new GraphController(shlDesktopClient, model.providerId, this));
+        mTable.addSelectionListener(new TableController(shlDesktopClient, model.providerId, this, model));
+        mXmlProvider.addSelectionListener(new XmlProviderController(shlDesktopClient, lblprovider, model));
+        mJsonProvider.addSelectionListener(new JsonProviderController(shlDesktopClient, lblprovider, model));
+        btnOk.addSelectionListener(new ButtonOKController(model, text));
 
         shlDesktopClient.open();
         log.info("Start window have been drawn");
