@@ -20,9 +20,9 @@ public class ButtonOKController implements SelectionListener
 {
     private static final Logger log = LoggerFactory.getLogger(JsonProviderController.class);
 
-    Model model;
+    private Model model;
 
-    Text text;
+    private Text text;
 
 
     /**

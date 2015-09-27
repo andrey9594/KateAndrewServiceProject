@@ -200,7 +200,7 @@ public class Client
         MenuItem mGraph = new MenuItem(menu_View, SWT.NONE);
         mGraph.setText("Graph");
 
-        mGraph.addSelectionListener(new GraphController(shlDesktopClient, model.providerId, this));
+        //  mGraph.addSelectionListener(new GraphController(shlDesktopClient, model.providerId, this));
         mTable.addSelectionListener(new TableController(viewTable, shlDesktopClient));
         mXmlProvider.addSelectionListener(new XmlProviderController(shlDesktopClient, lblprovider, model));
         mJsonProvider.addSelectionListener(new JsonProviderController(shlDesktopClient, lblprovider, model));

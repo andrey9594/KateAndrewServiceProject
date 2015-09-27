@@ -3,9 +3,8 @@ package ru.splat.DesktopClient.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.splat.DesktopClient.Client;
-import ru.splat.DesktopClient.Model;
-import ru.splat.DesktopClient.ProviderPackage;
+
+import ru.splat.DesktopClient.*;
 
 
 /**
@@ -18,6 +17,7 @@ import ru.splat.DesktopClient.ProviderPackage;
 public class ProcessPackageController
 {
     static Model model;
+
     private static final Logger log = LoggerFactory.getLogger(ProcessPackageController.class);
 
 
@@ -29,6 +29,11 @@ public class ProcessPackageController
 
     public static void processPackageController(ProviderPackage providerPackage)
     {
+        Subject subject = new Model();
+        Observer view = new View(subject);
+        subject.registerObserver(view);
+
+
         if (providerPackage.getProviderName().equals("providerxml"))
         {
             model.Model.rowMap();
@@ -41,5 +46,7 @@ public class ProcessPackageController
         }
 
         log.debug("Data from new packege have been record");
+
+        subject.setModel(model.Model);
     }
 }

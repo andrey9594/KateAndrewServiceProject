@@ -21,15 +21,34 @@ import java.sql.Timestamp;
  *         <p>
  *         View of MVC
  */
-public class View
+public class View implements Observer
 {
     private static final Logger log = LoggerFactory.getLogger(Model.class);
+
+    private Subject subject;
 
     public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> View = TreeBasedTable.create();
 
     Client client;
 
     Model model;
+
+
+    public View(Subject subject)
+    {
+        this.subject = subject;
+    }
+
+
+    @Override public void update()
+    {
+        com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> View = subject.getModel();
+        System.out.println("Here!!!!!!!");
+        System.out.println("Here!!!!!!!");
+        System.out.println("Here!!!!!!!");
+        System.out.println("Here!!!!!!!");
+        System.out.println("Here!!!!!!!");
+    }
 
 
     /**

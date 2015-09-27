@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * <p/>
+ * <p>
  *
  * @author Ekaterina
  *         Main class for launching a Desktop Client
@@ -26,6 +26,7 @@ public class ClientLauncher
      */
     public static void main(String[] args)
     {
+
         log.info("Client is creating...");
         Client client = Client.getInstance();
         try
@@ -38,5 +39,6 @@ public class ClientLauncher
             log.error("Can't create an Client!", e);
             e.printStackTrace();
         }
+
     }
 }
