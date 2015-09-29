@@ -25,7 +25,6 @@ public class View implements Observer
 {
     private static final Logger log = LoggerFactory.getLogger(Model.class);
 
-    private Subject subject;
 
     public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> view = TreeBasedTable.create();
 
@@ -34,9 +33,9 @@ public class View implements Observer
     Model model = new Model();
 
 
-    public View(Subject subject)
+    public View(Model model)
     {
-        this.subject = subject;
+        this.model = model;
     }
 
 
@@ -46,17 +45,17 @@ public class View implements Observer
     }
 
 
-    public View(Subject subject, Client client)
+    public View(Model model, Client client)
     {
 
         this.client = client;
-        this.subject = subject;
+        this.model = model;
     }
 
 
     @Override public void update()
     {
-        view = subject.getModel();
+        view = model.getModel();
     }
 
 
