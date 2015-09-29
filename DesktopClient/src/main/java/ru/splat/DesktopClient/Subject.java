@@ -19,8 +19,8 @@ public interface Subject
 
     public void notifyAllObserver();
 
-    public Table<Integer, Timestamp, ProviderPackage> getModel();
+    public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> getModel();
 
-    public void setModel(Table<Integer, Timestamp, ProviderPackage> model);
+    //public void setModel(Table<Integer, Timestamp, ProviderPackage> model);
 }
 

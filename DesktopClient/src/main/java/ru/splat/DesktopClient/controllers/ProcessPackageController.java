@@ -16,7 +16,7 @@ import ru.splat.DesktopClient.*;
  */
 public class ProcessPackageController
 {
-    static Model model;
+    Model model = new Model();
 
     private static final Logger log = LoggerFactory.getLogger(ProcessPackageController.class);
 
@@ -27,26 +27,22 @@ public class ProcessPackageController
      * @param providerPackage latest packege, which we receved.
      */
 
-    public static void processPackageController(ProviderPackage providerPackage)
+    public void processPackage(ProviderPackage providerPackage, Model model)
     {
-        Subject subject = new Model();
-        Observer view = new View(subject);
-        subject.registerObserver(view);
-
 
         if (providerPackage.getProviderName().equals("providerxml"))
         {
-            model.Model.rowMap();
-            model.Model.row(0).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
+            model.model.rowMap();
+            model.model.row(0).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
         }
         else if (providerPackage.getProviderName().equals("providerjson"))
         {
-            model.Model.rowMap();
-            model.Model.row(1).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
+            model.model.rowMap();
+            model.model.row(1).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
         }
 
         log.debug("Data from new packege have been record");
 
-        subject.setModel(model.Model);
+        model.notifyAllObserver();
     }
 }

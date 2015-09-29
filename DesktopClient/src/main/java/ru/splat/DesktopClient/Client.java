@@ -50,13 +50,18 @@ public class Client
 
     private static Text text;
 
-    Model model;
+    Model model = new Model();
 
-    View.ViewTable viewTable;
+    View view = new View(model, this);
+
+    View.ViewTable viewTable = view.getViewTable();
+
+    ProcessPackageController processPackageController = new ProcessPackageController();
 
 
-    public Client()
+    private Client()
     {
+        model.registerObserver(view);
     }
 
 
@@ -68,7 +73,7 @@ public class Client
         log.info("Take parameters from config.ini file");
         Properties props = new Properties();
 
-        props.load(new FileInputStream(new File("config.ini")));
+        props.load(new FileInputStream(new File("D:\\java\\Splat2409\\DesktopClient\\src\\config.ini")));
 
         IP_BROKER = props.getProperty("IP_BROKER");
         EXCHANGE_NAME = props.getProperty("EXCHANGE_NAME");
@@ -129,7 +134,7 @@ public class Client
             {
                 String jsonString = new String(body, "UTF-8");
                 ProviderPackage providerPackage = gson.fromJson(jsonString, ProviderPackage.class);
-                ProcessPackageController.processPackageController(providerPackage);
+                processPackageController.processPackage(providerPackage, model);
             }
         };
         channel.basicConsume(queueName, true, consumer);
@@ -147,11 +152,11 @@ public class Client
         log.info("Display was created");
 
         Shell shlDesktopClient = new Shell(display);
-        Image bgImg = new Image(display, "resources/BackgroundImage.jpg");
+        Image bgImg = new Image(display, "D:\\java\\Splat2409\\DesktopClient\\src\\resources\\BackgroundImage.jpg");
         shlDesktopClient.setText("Desktop Client on SWT");
         GridLayout gl_shlDesktopClient = new GridLayout();
         shlDesktopClient.setLayout(gl_shlDesktopClient);
-        Image icon = new Image(display, "resources/icon.jpg");
+        Image icon = new Image(display, "D:\\java\\Splat2409\\DesktopClient\\src\\resources\\icon.jpg");
         shlDesktopClient.setImage(icon);
         shlDesktopClient.setBackgroundImage(bgImg);
         shlDesktopClient.setBackgroundMode(SWT.INHERIT_FORCE);
@@ -167,7 +172,7 @@ public class Client
         btnOk.setText("OK");
         Color bgColor = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
         btnOk.setBackground(bgColor);
-        Image buttonOK = new Image(display, "resources/buttonOK.png");
+        Image buttonOK = new Image(display, "D:\\java\\Splat2409\\DesktopClient\\src\\resources\\buttonOK.png");
         btnOk.setImage(buttonOK);
 
         Label lblprovider = new Label(shlDesktopClient, SWT.NONE);

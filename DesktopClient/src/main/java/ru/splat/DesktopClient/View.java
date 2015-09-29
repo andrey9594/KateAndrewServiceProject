@@ -27,11 +27,11 @@ public class View implements Observer
 
     private Subject subject;
 
-    public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> View = TreeBasedTable.create();
+    public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> view = TreeBasedTable.create();
 
     Client client;
 
-    Model model;
+    Model model = new Model();
 
 
     public View(Subject subject)
@@ -40,14 +40,23 @@ public class View implements Observer
     }
 
 
+    public ViewTable getViewTable()
+    {
+        return new ViewTable();
+    }
+
+
+    public View(Subject subject, Client client)
+    {
+
+        this.client = client;
+        this.subject = subject;
+    }
+
+
     @Override public void update()
     {
-        com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> View = subject.getModel();
-        System.out.println("Here!!!!!!!");
-        System.out.println("Here!!!!!!!");
-        System.out.println("Here!!!!!!!");
-        System.out.println("Here!!!!!!!");
-        System.out.println("Here!!!!!!!");
+        view = subject.getModel();
     }
 
 
@@ -81,13 +90,13 @@ public class View implements Observer
             //the output values
 
             TableItem item = new TableItem(client.table, SWT.NONE);
-            for (Timestamp time : View.row(model.providerId).keySet())
+            for (Timestamp time : view.row(model.providerId).keySet())
             {
-                if (View.row(model.providerId).get(time).getId() == model.id)
+                if (view.row(model.providerId).get(time).getId() == model.id)
                 {
 
                     item.setText(0, "" + time);
-                    item.setText(1, "" + View.row(model.providerId).get(time).getValue());
+                    item.setText(1, "" + view.row(model.providerId).get(time).getValue());
                     log.info("Table with info from {} have been drawn", converProviderID(model.providerId));
                 }
                 else
