@@ -73,7 +73,7 @@ public class Client
         log.info("Take parameters from config.ini file");
         Properties props = new Properties();
 
-        props.load(new FileInputStream(new File("D:\\java\\Splat2409\\DesktopClient\\src\\config.ini")));
+        props.load(new FileInputStream(new File("config.ini")));
 
         IP_BROKER = props.getProperty("IP_BROKER");
         EXCHANGE_NAME = props.getProperty("EXCHANGE_NAME");
@@ -152,11 +152,11 @@ public class Client
         log.info("Display was created");
 
         Shell shlDesktopClient = new Shell(display);
-        Image bgImg = new Image(display, "D:\\java\\Splat2409\\DesktopClient\\src\\resources\\BackgroundImage.jpg");
+        Image bgImg = new Image(display, "resources/BackgroundImage.jpg");
         shlDesktopClient.setText("Desktop Client on SWT");
         GridLayout gl_shlDesktopClient = new GridLayout();
         shlDesktopClient.setLayout(gl_shlDesktopClient);
-        Image icon = new Image(display, "D:\\java\\Splat2409\\DesktopClient\\src\\resources\\icon.jpg");
+        Image icon = new Image(display, "resources/icon.jpg");
         shlDesktopClient.setImage(icon);
         shlDesktopClient.setBackgroundImage(bgImg);
         shlDesktopClient.setBackgroundMode(SWT.INHERIT_FORCE);
@@ -172,7 +172,7 @@ public class Client
         btnOk.setText("OK");
         Color bgColor = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
         btnOk.setBackground(bgColor);
-        Image buttonOK = new Image(display, "D:\\java\\Splat2409\\DesktopClient\\src\\resources\\buttonOK.png");
+        Image buttonOK = new Image(display, "resources/buttonOK.png");
         btnOk.setImage(buttonOK);
 
         Label lblprovider = new Label(shlDesktopClient, SWT.NONE);
