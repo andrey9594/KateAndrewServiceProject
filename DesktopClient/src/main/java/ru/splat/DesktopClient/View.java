@@ -91,21 +91,21 @@ public class View implements Observer
             //the output values
 
             TableItem item = new TableItem(table, SWT.NONE);
-            for (Timestamp time : view.row(model.providerId).keySet())
+            for (Timestamp time : view.row(model.getProviderId()).keySet())
             {
-                if (view.row(model.providerId).get(time).getId() == model.id)
+                if (view.row(model.getProviderId()).get(time).getId() == model.getId())
                 {
 
                     item.setText(0, "" + time);
-                    item.setText(1, "" + view.row(model.providerId).get(time).getValue());
-                    log.info("Table with info from {} have been drawn", converProviderID(model.providerId));
+                    item.setText(1, "" + view.row(model.getProviderId()).get(time).getValue());
+                    log.info("Table with info from {} have been drawn", converProviderID(model.getProviderId()));
                 }
                 else
                 {
 
                     item.setText(0, "" + new java.sql.Timestamp(new java.util.Date().getTime()));
-                    item.setText(1, "" + "History of Object with id = " + model.id + " is Empty");
-                    log.info("History of Object with id = {} is Empty", model.id);
+                    item.setText(1, "" + "History of Object with id = " + model.getId() + " is Empty");
+                    log.info("History of Object with id = {} is Empty", model.getId());
                 }
             }
 
