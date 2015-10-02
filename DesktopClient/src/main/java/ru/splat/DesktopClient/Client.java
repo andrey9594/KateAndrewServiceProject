@@ -1,6 +1,5 @@
 package ru.splat.DesktopClient;
 
-
 import com.google.gson.Gson;
 import com.rabbitmq.client.*;
 import org.eclipse.swt.SWT;
@@ -20,15 +19,15 @@ import java.io.IOException;
 
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
-
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * <p>
  *
- * @author Ekaterina
+ * @author Andrey & Ekaterina
  *         Desktop client
  *         Take data from Service(by RabbitMQ) and make desktop window in which displays
- *         the history of changes in the state of object in two forms(table and graph)
+ *         the history of changes in the state of object in various forms(table, graph, etc)
  */
 
 public class Client
@@ -42,26 +41,38 @@ public class Client
 
     private static String TYPE_OF_EXCHANGE;
 
-    private boolean isRunning;
+    private AtomicBoolean isRunning = new AtomicBoolean(false);
 
     private static volatile Client instance;
 
-    public Table table;
+    private Table table;
 
     private static Text text;
 
-    Model model = new Model();
+    private final Model model;
 
-    View view = new View(model, this);
+    private final View view;
 
-    View.ViewTable viewTable = view.getViewTable();
+    private final View.ViewTable viewTable;
 
-    ProcessPackageController processPackageController = new ProcessPackageController();
+    private final ProcessPackageController processPackageController;
 
 
     private Client()
     {
+    	log.debug("Creating model...");
+    	model = new Model();
+    	log.debug("Model was created");
+    	log.debug("Creating view");
+    	view = new View(model, this);
+    	log.debug("VIew was created");
+    	
         model.registerObserver(view);
+        viewTable = view.getViewTable();
+        
+        log.debug("Creating an object of ProcessPackageController...");
+        processPackageController = new ProcessPackageController();
+        log.debug("The object of ProcessPackageController was created");
     }
 
 
@@ -103,14 +114,23 @@ public class Client
      */
     public void start() throws IOException, TimeoutException
     {
-        if (isRunning)
-            return;
-        config();
-        createAndStartConsumer();
-        createAndStartGUI();
-        isRunning = true;
+        if (!isRunning.get()) 
+        {
+			synchronized (this) 
+			{
+				if (!isRunning.get()) {
+					config();
+					createAndStartConsumer();
+					createAndStartGUI();
+					isRunning.set(true);
+				}
+			}
+        }
     }
 
+    public void setTable(Table table) {
+    	this.table = table;
+    }
 
     /**
      * method create and start consumer
