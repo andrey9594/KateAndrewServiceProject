@@ -71,24 +71,26 @@ public class View implements Observer
          */
         public void drawTable(Shell shell)
         {
-            client.table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
-            client.table.setLinesVisible(true);
-            client.table.setHeaderVisible(true);
+        	
+        	
+            Table table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+            table.setLinesVisible(true);
+            table.setHeaderVisible(true);
             GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
             data.heightHint = 300;
             data.widthHint = 400;
-            client.table.setLayoutData(data);
+            table.setLayoutData(data);
             String[] titles = { "time", "value" };
             for (int i = 0; i < titles.length; i++)
             {
-                TableColumn column = new TableColumn(client.table, SWT.NONE);
+                TableColumn column = new TableColumn(table, SWT.NONE);
                 column.setText(titles[i]);
                 System.out.print(i);
             }
 
             //the output values
 
-            TableItem item = new TableItem(client.table, SWT.NONE);
+            TableItem item = new TableItem(table, SWT.NONE);
             for (Timestamp time : view.row(model.providerId).keySet())
             {
                 if (view.row(model.providerId).get(time).getId() == model.id)
@@ -109,9 +111,10 @@ public class View implements Observer
 
             for (int i = 0; i < titles.length; i++)
             {
-                client.table.getColumn(i).pack();
+                table.getColumn(i).pack();
             }
 
+            client.setTable(table);
             shell.pack();
         }
 
