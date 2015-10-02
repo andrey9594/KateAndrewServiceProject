@@ -25,8 +25,7 @@ public class JsonProviderController implements SelectionListener
 
     private Label lblJsonprovider;
 
-    Model model;
-
+    private Model model;
 
     /**
      * Constructor of JsonProviderController
@@ -43,7 +42,6 @@ public class JsonProviderController implements SelectionListener
         this.model = model;
     }
 
-
     /**
      * Method sets the value of "providerId" = 1 and displays the inscription "Data from Json Provider"
      *
@@ -53,7 +51,7 @@ public class JsonProviderController implements SelectionListener
     @Override public void widgetSelected(SelectionEvent selectionEvent)
     {
         log.info("Item 'JsonProvider' pressed!");
-        model.providerId = 1;
+        model.setProviderId(1);
         log.info("Filed a request for information from Json Provider!");
         lblJsonprovider.setText("                                         Data from Json Provider");
     }

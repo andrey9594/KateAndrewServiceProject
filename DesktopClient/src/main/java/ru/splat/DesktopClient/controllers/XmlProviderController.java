@@ -25,7 +25,7 @@ public class XmlProviderController implements SelectionListener
 
     private Label lblXmlprovider;
 
-    Model model;
+    private Model model;
 
 
     /**
@@ -52,7 +52,7 @@ public class XmlProviderController implements SelectionListener
     @Override public void widgetSelected(SelectionEvent selectionEvent)
     {
         log.info("Item 'XmlProvider' pressed!");
-        model.providerId = 0;
+        model.setProviderId(0);
         log.info("Filed a request for information from Xml Provider!");
         lblXmlprovider.setText("                                         Data from Xml Provider");
     }
