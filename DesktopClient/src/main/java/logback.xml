@@ -38,6 +38,10 @@
         <appender-ref ref="sout"/>
     </logger>
     <!-- Логгер нашего класса  -->
+    <logger name="ru.splat.DesktopClient.controllers.ProcessPackageController" level="info">
+        <appender-ref ref="sout"/>
+    </logger>
+    <!-- Логгер нашего класса  -->
     <logger name="ru.splat.DesktopClient.controllers.JsonProviderController" level="info">
         <appender-ref ref="sout"/>
     </logger>
