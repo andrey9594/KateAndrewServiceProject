@@ -34,6 +34,13 @@
         <appender-ref ref="sout"/>
     </logger>
     <!-- Логгер нашего класса  -->
+    <logger name="ru.splat.DesktopClient.Model" level="info">
+        <appender-ref ref="sout"/>
+    </logger>
+    <logger name="ru.splat.DesktopClient.View" level="info">
+        <appender-ref ref="sout"/>
+    </logger>
+    <!-- Логгер нашего класса  -->
     <logger name="ru.splat.DesktopClient.controllers.XmlProviderController" level="info">
         <appender-ref ref="sout"/>
     </logger>
@@ -51,6 +58,11 @@
     </logger>
     <!-- Логгер нашего класса  -->
     <logger name="ru.splat.DesktopClient.controllers.GraphController" level="info">
+        <appender-ref ref="sout"/>
+    </logger>
+       </logger>
+    <!-- Логгер нашего класса  -->
+    <logger name="ru.splat.DesktopClient.controllers.ButtonOKController" level="info">
         <appender-ref ref="sout"/>
     </logger>
     <consolePlugin/>
