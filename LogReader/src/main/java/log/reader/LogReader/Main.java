@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringBufferInputStream;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.xml.bind.JAXBContext;
@@ -28,6 +29,9 @@ public class Main {
 	
 	static private String pathToLogs;
 	static private String logFormat;
+	static private String pathToMatchidFile;
+	
+	static private Map <Integer, SportName> matchidToSportName;
 
 	/**
 	 * Main method for getting events from log files
@@ -49,9 +53,19 @@ public class Main {
 			e.printStackTrace();
 		}
 		pathToLogs = properties.getProperty("path_to_logs"); // where log files are
-		logFormat = properties.getProperty("log_format"); // .log or another
+		logFormat = properties.getProperty("log_format"); // log, txt or another
+		pathToMatchidFile = properties.getProperty("path_to_matchid_list"); // path to files with matchid,nameofsport
 		log.info("Configuration from {} has been successfully loaded", pathToProperties);
         
+		MatchidAndNameOfSportReader reader = null;
+		try {
+			reader = new MatchidAndNameOfSportReader(pathToMatchidFile);
+		} catch (FileNotFoundException e) {
+			log.error("File witch map matchid->nameofsport not found in {}!", pathToMatchidFile, e);
+			e.printStackTrace();
+		}
+		matchidToSportName = reader.getSportNameForMatchidMap();
+		
 		/**
 		 * Scanning directory and finding all log files
 		 * with extension: *.logFormat

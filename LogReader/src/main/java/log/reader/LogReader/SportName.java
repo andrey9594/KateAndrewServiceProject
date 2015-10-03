@@ -1,11 +1,11 @@
 package log.reader.LogReader;
 
 public enum SportName {
-	Soccer,
-	Basketball,
-	Snooker,
-	Icehockey,
-	Volleyball,
-	Beachvolleyball,
-	Handball
+	SOCCER,
+	BASKETBALL,
+	SNOOKER,
+	ICEHOCKEY,
+	VOLLEYBALL,
+	BEACHVOLLEAYBALL,
+	HANDBALL
 }
