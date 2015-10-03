@@ -81,15 +81,15 @@ public class View implements Observer
 
             //the output values
             
-            com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> modelTable = model.modelTable;
+            com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> modelTable = model.getModelTable();
 
-            TableItem item = new TableItem(table, SWT.NONE);
             boolean found = false;
             for (Timestamp time : modelTable.row(model.getProviderType().ordinal()).keySet())
             {
                 if (modelTable.row(model.getProviderType().ordinal()).get(time).getId() == model.getId())
                 {
                 	found = true;
+                	TableItem item = new TableItem(table, SWT.NONE);
                     item.setText(0, "" + time);
                     item.setText(1, "" + modelTable.row(model.getProviderType().ordinal()).get(time).getValue());
                     log.info("Table with info from {} have been drawn", converProviderID(model.getProviderType().ordinal()));
@@ -98,6 +98,7 @@ public class View implements Observer
             
             if (!found)
             {
+            	TableItem item = new TableItem(table, SWT.NONE);
                 item.setText(0, "" + new java.sql.Timestamp(new java.util.Date().getTime()));
                 item.setText(1, "" + "History of Object with id = " + model.getId() + " is empty");
                 log.info("History of Object with id = {} is Empty", model.getId());

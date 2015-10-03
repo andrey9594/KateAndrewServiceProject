@@ -32,12 +32,12 @@ public class ProcessPackageController
         if (providerPackage.getProviderName().equals(providerXMLName))
         {
             //model.modelTable.rowMap();
-            model.modelTable.row(0).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
+            model.getModelTable().row(0).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
         }
         else if (providerPackage.getProviderName().equals(providerJSONName))
         {
             //model.modelTable.rowMap();
-            model.modelTable.row(1).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
+            model.getModelTable().row(1).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
         }
 
         log.info("Data from new package have been written");
