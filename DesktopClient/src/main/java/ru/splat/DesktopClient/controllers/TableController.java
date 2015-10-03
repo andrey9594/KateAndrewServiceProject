@@ -21,7 +21,7 @@ import ru.splat.DesktopClient.View;
  */
 public class TableController implements SelectionListener
 {
-    private static final Logger log = LoggerFactory.getLogger(GraphController.class);
+    private static final Logger log = LoggerFactory.getLogger(TableController.class);
 
     View.ViewTable viewTable;
 

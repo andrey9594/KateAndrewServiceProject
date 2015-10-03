@@ -26,7 +26,6 @@ public class Model implements Subject
     /*private*/ public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> modelTable = TreeBasedTable.create();
 
     private ProviderType providerType = ProviderType.PROVIDER_XML;
-    //private int providerId = 0; // 0 - xml; 1 - json
 
     private int id = 0;
 

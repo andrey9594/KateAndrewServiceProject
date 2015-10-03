@@ -16,34 +16,31 @@ import ru.splat.DesktopClient.*;
  */
 public class ProcessPackageController
 {
-    private Model model;
-
     private static final Logger log = LoggerFactory.getLogger(ProcessPackageController.class);
 
     private final String providerXMLName = "providerxml";
     private final String providerJSONName = "providerjson";
 
     /**
-     * Recordes data, when new packege come
+     * Write data, when new package come
      *
-     * @param providerPackage latest packege, which we receved.
+     * @param providerPackage latest package, which we received.
      */
-
     public void processPackage(ProviderPackage providerPackage, Model model)
     {
-
+    	log.info("Got new package: {}" + providerPackage);
         if (providerPackage.getProviderName().equals(providerXMLName))
         {
-            model.modelTable.rowMap();
+            //model.modelTable.rowMap();
             model.modelTable.row(0).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
         }
         else if (providerPackage.getProviderName().equals(providerJSONName))
         {
-            model.modelTable.rowMap();
+            //model.modelTable.rowMap();
             model.modelTable.row(1).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
         }
 
-        log.debug("Data from new packege have been record");
+        log.info("Data from new package have been written");
 
         model.notifyAllObserver();
     }

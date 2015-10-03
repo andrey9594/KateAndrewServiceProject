@@ -18,7 +18,7 @@ import ru.splat.DesktopClient.Model;
  */
 public class ButtonOKController implements SelectionListener
 {
-    private static final Logger log = LoggerFactory.getLogger(JsonProviderController.class);
+    private static final Logger log = LoggerFactory.getLogger(ButtonOKController.class);
 
     private Model model;
 
