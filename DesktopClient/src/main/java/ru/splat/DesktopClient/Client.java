@@ -147,8 +147,7 @@ public class Client
         Consumer consumer = new DefaultConsumer(channel)
         {
             private Gson gson = new Gson();
-
-
+            
             @Override public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
                     byte[] body) throws IOException
             {
@@ -167,7 +166,7 @@ public class Client
      */
     private void createAndStartGUI()
     {
-
+    	log.info("Creating display...");
         Display display = new Display();
         log.info("Display was created");
 

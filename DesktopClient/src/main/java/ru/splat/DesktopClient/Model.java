@@ -23,22 +23,23 @@ public class Model implements Subject
 
     private ArrayList<Observer> observers = new ArrayList<Observer>();
 
-    private com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> model = TreeBasedTable.create();
+    /*private*/ public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> modelTable = TreeBasedTable.create();
 
-    private int providerId = 0; // 0 - xml; 1 - json
+    private ProviderType providerType = ProviderType.PROVIDER_XML;
+    //private int providerId = 0; // 0 - xml; 1 - json
 
     private int id = 0;
 
-    public void setProviderId(int providerId) {
-    	this.providerId = providerId;
+    public void setProviderType(ProviderType providerType) {
+    	this.providerType = providerType;
     }
     
     public void setId(int id) {
     	this.id = id;
     }
     
-    public int getProviderId() {
-    	return providerId;
+    public ProviderType getProviderType() {
+    	return providerType;
     }
     
     public int getId() {
@@ -68,9 +69,7 @@ public class Model implements Subject
 
     @Override public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> getModel()
     {
-
-        return model;
-
+        return modelTable;
     }
 
 }

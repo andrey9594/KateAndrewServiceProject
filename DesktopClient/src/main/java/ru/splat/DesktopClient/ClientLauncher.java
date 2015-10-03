@@ -18,7 +18,6 @@ public class ClientLauncher
 {
     private static final Logger log = LoggerFactory.getLogger(ClientLauncher.class);
 
-
     /**
      * Main method, witch create ant start DesktopClient
      *

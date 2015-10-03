@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.splat.DesktopClient.Model;
+import ru.splat.DesktopClient.ProviderType;
 
 
 /**
@@ -51,7 +52,7 @@ public class JsonProviderController implements SelectionListener
     @Override public void widgetSelected(SelectionEvent selectionEvent)
     {
         log.info("Item 'JsonProvider' pressed!");
-        model.setProviderId(1);
+        model.setProviderType(ProviderType.PROVIDER_JSON);
         log.info("Filed a request for information from Json Provider!");
         lblJsonprovider.setText("                                         Data from Json Provider");
     }

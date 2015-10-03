@@ -25,19 +25,9 @@ public class View implements Observer
 {
     private static final Logger log = LoggerFactory.getLogger(Model.class);
 
+    private Client client;
 
-    public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> view = TreeBasedTable.create();
-
-    Client client;
-
-    Model model = new Model();
-
-
-    public View(Model model)
-    {
-        this.model = model;
-    }
-
+    private Model model;
 
     public ViewTable getViewTable()
     {
@@ -47,15 +37,16 @@ public class View implements Observer
 
     public View(Model model, Client client)
     {
-
-        this.client = client;
         this.model = model;
+        this.client = client;
     }
 
 
     @Override public void update()
     {
-        view = model.getModel();
+    	//????
+       // view = model.getModel();
+    	// repaint all?
     }
 
 
@@ -89,16 +80,18 @@ public class View implements Observer
             }
 
             //the output values
+            
+            com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> modelTable = model.modelTable;
 
             TableItem item = new TableItem(table, SWT.NONE);
-            for (Timestamp time : view.row(model.getProviderId()).keySet())
+            for (Timestamp time : modelTable.row(model.getProviderType().ordinal()).keySet())
             {
-                if (view.row(model.getProviderId()).get(time).getId() == model.getId())
+                if (modelTable.row(model.getProviderType().ordinal()).get(time).getId() == model.getId())
                 {
 
                     item.setText(0, "" + time);
-                    item.setText(1, "" + view.row(model.getProviderId()).get(time).getValue());
-                    log.info("Table with info from {} have been drawn", converProviderID(model.getProviderId()));
+                    item.setText(1, "" + modelTable.row(model.getProviderType().ordinal()).get(time).getValue());
+                    log.info("Table with info from {} have been drawn", converProviderID(model.getProviderType().ordinal()));
                 }
                 else
                 {

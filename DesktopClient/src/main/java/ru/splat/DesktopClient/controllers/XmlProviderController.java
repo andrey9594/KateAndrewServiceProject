@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.splat.DesktopClient.Model;
+import ru.splat.DesktopClient.ProviderType;
 
 
 /**
@@ -52,7 +53,7 @@ public class XmlProviderController implements SelectionListener
     @Override public void widgetSelected(SelectionEvent selectionEvent)
     {
         log.info("Item 'XmlProvider' pressed!");
-        model.setProviderId(0);
+        model.setProviderType(ProviderType.PROVIDER_XML);
         log.info("Filed a request for information from Xml Provider!");
         lblXmlprovider.setText("                                         Data from Xml Provider");
     }

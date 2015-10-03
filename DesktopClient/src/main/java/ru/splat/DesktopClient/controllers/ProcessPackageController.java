@@ -16,10 +16,12 @@ import ru.splat.DesktopClient.*;
  */
 public class ProcessPackageController
 {
-    Model model = new Model();
+    private Model model;
 
     private static final Logger log = LoggerFactory.getLogger(ProcessPackageController.class);
 
+    private final String providerXMLName = "providerxml";
+    private final String providerJSONName = "providerjson";
 
     /**
      * Recordes data, when new packege come
@@ -30,15 +32,15 @@ public class ProcessPackageController
     public void processPackage(ProviderPackage providerPackage, Model model)
     {
 
-        if (providerPackage.getProviderName().equals("providerxml"))
+        if (providerPackage.getProviderName().equals(providerXMLName))
         {
-            model.model.rowMap();
-            model.model.row(0).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
+            model.modelTable.rowMap();
+            model.modelTable.row(0).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
         }
-        else if (providerPackage.getProviderName().equals("providerjson"))
+        else if (providerPackage.getProviderName().equals(providerJSONName))
         {
-            model.model.rowMap();
-            model.model.row(1).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
+            model.modelTable.rowMap();
+            model.modelTable.row(1).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
         }
 
         log.debug("Data from new packege have been record");
