@@ -1,10 +1,12 @@
 package ru.splat.DesktopClient.controllers;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ru.splat.DesktopClient.Model;
 import ru.splat.DesktopClient.ProviderPackage;
+
 
 /**
  * <p>
@@ -18,10 +20,13 @@ public class ProcessPackageController
     private static final Logger log = LoggerFactory.getLogger(ProcessPackageController.class);
 
     private final int providerXMLID = 0;
+
     private final int prociderJSONID = 1;
-    
+
     private final String providerXMLName = "providerxml";
+
     private final String providerJSONName = "providerjson";
+
 
     /**
      * Write data, when new package come
@@ -30,14 +35,16 @@ public class ProcessPackageController
      */
     public void processPackage(ProviderPackage providerPackage, Model model)
     {
-    	log.info("Got new package: {}" + providerPackage);
+        log.info("Got new package: {}" + providerPackage);
         if (providerPackage.getProviderName().equals(providerXMLName))
         {
-            model.getModelTable().row(providerXMLID).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
+            model.getModelTable().row(providerXMLID).put(new java.sql.Timestamp(new java.util.Date().getTime()),
+                    providerPackage);
         }
         else if (providerPackage.getProviderName().equals(providerJSONName))
         {
-            model.getModelTable().row(prociderJSONID).put(new java.sql.Timestamp(new java.util.Date().getTime()), providerPackage);
+            model.getModelTable().row(prociderJSONID).put(new java.sql.Timestamp(new java.util.Date().getTime()),
+                    providerPackage);
         }
 
         model.notifyAllObserver();

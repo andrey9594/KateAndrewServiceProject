@@ -14,9 +14,7 @@ import ru.splat.DesktopClient.ProviderType;
 /**
  * <p>
  *
- * @author Ekaterina
- *         Listener of menu item "JsonProvider"
- *         Makes a request for data coming from JsonProvider.
+ * @author Ekaterina Listener of menu item "JsonProvider" Makes a request for data coming from JsonProvider.
  */
 public class JsonProviderController implements SelectionListener
 {
@@ -26,12 +24,13 @@ public class JsonProviderController implements SelectionListener
 
     private Model model;
 
+
     /**
      * Constructor of JsonProviderController
      *
-     * @param lblJsonprovider  label of DC, on which displays the name of the provider,
-     *                         the data from which are displayed on the graph / table
-     * @param model            object Model
+     * @param lblJsonprovider label of DC, on which displays the name of the provider, the data from which are displayed
+     *            on the graph / table
+     * @param model object Model
      */
     public JsonProviderController(Label lblJsonprovider, Model model)
     {
@@ -39,13 +38,15 @@ public class JsonProviderController implements SelectionListener
         this.model = model;
     }
 
+
     /**
      * Method sets the value of "providerId" = 1 and displays the inscription "Data from Json Provider"
      *
      * @param selectionEvent Pressing the menu item "JsonProvider"
      */
 
-    @Override public void widgetSelected(SelectionEvent selectionEvent)
+    @Override
+    public void widgetSelected(SelectionEvent selectionEvent)
     {
         log.info("Item 'JsonProvider' pressed!");
         model.setProviderType(ProviderType.PROVIDER_JSON);
@@ -54,7 +55,8 @@ public class JsonProviderController implements SelectionListener
     }
 
 
-    @Override public void widgetDefaultSelected(SelectionEvent selectionEvent)
+    @Override
+    public void widgetDefaultSelected(SelectionEvent selectionEvent)
     {
 
     }

@@ -29,39 +29,53 @@ public class Model implements Subject
 
     private int id = 0;
 
-    public void setProviderType(ProviderType providerType) {
-    	this.providerType = providerType;
-    }
-    
-    public void setId(int id) {
-    	this.id = id;
-    }
-    
-    public ProviderType getProviderType() {
-    	return providerType;
-    }
-    
-    public int getId() {
-    	return id;
-    }
-    
-    public com.google.common.collect.Table getModelTable() {
-    	return modelTable;
+
+    public void setProviderType(ProviderType providerType)
+    {
+        this.providerType = providerType;
     }
 
-    @Override public void registerObserver(Observer o)
+
+    public void setId(int id)
+    {
+        this.id = id;
+    }
+
+
+    public ProviderType getProviderType()
+    {
+        return providerType;
+    }
+
+
+    public int getId()
+    {
+        return id;
+    }
+
+
+    public com.google.common.collect.Table getModelTable()
+    {
+        return modelTable;
+    }
+
+
+    @Override
+    public void registerObserver(Observer o)
     {
         observers.add(o);
     }
 
 
-    @Override public void removeObserver(Observer o)
+    @Override
+    public void removeObserver(Observer o)
     {
         observers.remove(o);
     }
 
 
-    @Override public void notifyAllObserver()
+    @Override
+    public void notifyAllObserver()
     {
         for (Observer o : observers)
         {
@@ -70,7 +84,8 @@ public class Model implements Subject
     }
 
 
-    @Override public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> getModel()
+    @Override
+    public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> getModel()
     {
         return modelTable;
     }

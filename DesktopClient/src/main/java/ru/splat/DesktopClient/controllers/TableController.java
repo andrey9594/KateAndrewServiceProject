@@ -15,9 +15,7 @@ import ru.splat.DesktopClient.View;
 /**
  * <p>
  *
- * @author Ekaterina
- *         Listener of menu item "Table"
- *         Draw table time|Value by SWT lib
+ * @author Ekaterina Listener of menu item "Table" Draw table time|Value by SWT lib
  */
 public class TableController implements SelectionListener
 {
@@ -45,13 +43,15 @@ public class TableController implements SelectionListener
      *
      * @param selectionEvent Pressing the menu item "Table"
      */
-    @Override public void widgetSelected(SelectionEvent selectionEvent)
+    @Override
+    public void widgetSelected(SelectionEvent selectionEvent)
     {
         viewTable.drawTable();
     }
 
 
-    @Override public void widgetDefaultSelected(SelectionEvent selectionEvent)
+    @Override
+    public void widgetDefaultSelected(SelectionEvent selectionEvent)
     {
 
     }

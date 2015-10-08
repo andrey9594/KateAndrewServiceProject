@@ -27,11 +27,12 @@ public class ButtonOKController implements SelectionListener
 
     private View.ViewTable viewTable;
 
+
     /**
      * Constructor of ButtonOKController
      *
      * @param model object Model
-     * @param text  text field on DC
+     * @param text text field on DC
      */
     public ButtonOKController(Model model, Text text, View.ViewTable viewTable)
     {
@@ -46,7 +47,8 @@ public class ButtonOKController implements SelectionListener
      *
      * @param selectionEvent Pressing the button "OK"
      */
-    @Override public void widgetSelected(SelectionEvent selectionEvent)
+    @Override
+    public void widgetSelected(SelectionEvent selectionEvent)
     {
         if (!text.getText().isEmpty())
             model.setId(Integer.parseInt(text.getText()));
@@ -55,7 +57,8 @@ public class ButtonOKController implements SelectionListener
     }
 
 
-    @Override public void widgetDefaultSelected(SelectionEvent selectionEvent)
+    @Override
+    public void widgetDefaultSelected(SelectionEvent selectionEvent)
     {
 
     }

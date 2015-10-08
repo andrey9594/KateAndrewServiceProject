@@ -11,12 +11,12 @@ import org.slf4j.LoggerFactory;
 /**
  * <p>
  *
- * @author Ekaterina
- *         Main class for launching a Desktop Client
+ * @author Ekaterina Main class for launching a Desktop Client
  */
 public class ClientLauncher
 {
     private static final Logger log = LoggerFactory.getLogger(ClientLauncher.class);
+
 
     /**
      * Main method, witch create ant start DesktopClient

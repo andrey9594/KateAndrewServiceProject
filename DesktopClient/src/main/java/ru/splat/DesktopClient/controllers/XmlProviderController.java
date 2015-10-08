@@ -14,9 +14,7 @@ import ru.splat.DesktopClient.ProviderType;
 /**
  * <p>
  *
- * @author Ekaterina
- *         Listener of menu item "XmlProvider"
- *         Makes a request for data coming from XmlProvider.
+ * @author Ekaterina Listener of menu item "XmlProvider" Makes a request for data coming from XmlProvider.
  */
 public class XmlProviderController implements SelectionListener
 {
@@ -30,9 +28,9 @@ public class XmlProviderController implements SelectionListener
     /**
      * Constructor of XmlProviderController
      *
-     * @param lblXmlprovider   label of DC, on which displays the name of the provider,
-     *                         the data from which are displayed on the graph / table
-     * @param model            object Model
+     * @param lblXmlprovider label of DC, on which displays the name of the provider, the data from which are displayed
+     *            on the graph / table
+     * @param model object Model
      */
     public XmlProviderController(Label lblXmlprovider, Model model)
     {
@@ -46,7 +44,8 @@ public class XmlProviderController implements SelectionListener
      *
      * @param selectionEvent Pressing the menu item "XmlProvider"
      */
-    @Override public void widgetSelected(SelectionEvent selectionEvent)
+    @Override
+    public void widgetSelected(SelectionEvent selectionEvent)
     {
         log.info("Item 'XmlProvider' pressed!");
         model.setProviderType(ProviderType.PROVIDER_XML);
@@ -55,7 +54,8 @@ public class XmlProviderController implements SelectionListener
     }
 
 
-    @Override public void widgetDefaultSelected(SelectionEvent selectionEvent)
+    @Override
+    public void widgetDefaultSelected(SelectionEvent selectionEvent)
     {
 
     }

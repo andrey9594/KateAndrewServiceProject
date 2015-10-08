@@ -24,13 +24,12 @@ public class View implements Observer
 {
     private static final Logger log = LoggerFactory.getLogger(View.class);
 
-    private Client client;
-    
     private Shell shell;
 
     private Model model;
-    
+
     private Table table;
+
 
     public ViewTable getViewTable()
     {
@@ -38,19 +37,19 @@ public class View implements Observer
     }
 
 
-    public View(Model model, Client client, Shell shell)
+    public View(Model model, Shell shell)
     {
         this.model = model;
-        this.client = client;
         this.shell = shell;
     }
 
 
-    @Override public void update()
+    @Override
+    public void update()
     {
-    	//????
-       // view = model.getModel();
-    	// repaint all?
+        // ????
+        // view = model.getModel();
+        // repaint all?
     }
 
 
@@ -66,8 +65,8 @@ public class View implements Observer
          */
         public void drawTable()
         {
-        	if (table == null)
-        		table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+            if (table == null)
+                table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
             table.setLinesVisible(true);
             table.setHeaderVisible(true);
             table.clearAll();
@@ -80,11 +79,10 @@ public class View implements Observer
             {
                 TableColumn column = new TableColumn(table, SWT.NONE);
                 column.setText(titles[i]);
-             //   System.out.print(i);
             }
 
-            //the output values
-            
+            // the output values
+
             com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> modelTable = model.getModelTable();
 
             boolean found = false;
@@ -92,17 +90,18 @@ public class View implements Observer
             {
                 if (modelTable.row(model.getProviderType().ordinal()).get(time).getId() == model.getId())
                 {
-                	found = true;
-                	TableItem item = new TableItem(table, SWT.NONE);
+                    found = true;
+                    TableItem item = new TableItem(table, SWT.NONE);
                     item.setText(0, "" + time);
                     item.setText(1, "" + modelTable.row(model.getProviderType().ordinal()).get(time).getValue());
-                    log.info("Table with info from {} have been drawn", converProviderID(model.getProviderType().ordinal()));
+                    log.info("Table with info from {} have been drawn",
+                            converProviderID(model.getProviderType().ordinal()));
                 }
             }
-            
+
             if (!found)
             {
-            	TableItem item = new TableItem(table, SWT.NONE);
+                TableItem item = new TableItem(table, SWT.NONE);
                 item.setText(0, "" + new java.sql.Timestamp(new java.util.Date().getTime()));
                 item.setText(1, "" + "History of Object with id = " + model.getId() + " is empty");
                 log.info("History of Object with id = {} is Empty", model.getId());
@@ -113,7 +112,6 @@ public class View implements Observer
                 table.getColumn(i).pack();
             }
 
-          //  client.setTable(table);
             shell.pack();
         }
 

@@ -1,5 +1,6 @@
 package ru.splat.DesktopClient;
 
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -37,13 +38,12 @@ import ru.splat.DesktopClient.controllers.ProcessPackageController;
 import ru.splat.DesktopClient.controllers.TableController;
 import ru.splat.DesktopClient.controllers.XmlProviderController;
 
+
 /**
  * <p>
  *
- * @author Andrey & Ekaterina
- *         Desktop client
- *         Take data from Service(by RabbitMQ) and make desktop window in which displays
- *         the history of changes in the state of object in various forms(table, graph, etc)
+ * @author Andrey & Ekaterina Desktop client Take data from Service(by RabbitMQ) and make desktop window in which
+ *         displays the history of changes in the state of object in various forms(table, graph, etc)
  */
 
 public class Client
@@ -70,29 +70,31 @@ public class Client
     private final View.ViewTable viewTable;
 
     private final ProcessPackageController processPackageController;
-    
-    private Shell shlDesktopClient; 
-    
+
+    private Shell shlDesktopClient;
+
     private Display display;
+
 
     private Client()
     {
-    	log.debug("Creating model...");
-    	model = new Model();
-    	log.debug("Model was created");
-    	
-    	log.info("Creating display...");
+        log.debug("Creating model...");
+        model = new Model();
+        log.debug("Model was created");
+
+        log.info("Creating display...");
         display = new Display();
         log.info("Display was created");
         shlDesktopClient = new Shell(display);
-        
-    	log.debug("Creating view");
-    	view = new View(model, this, shlDesktopClient);;
-    	log.debug("VIew was created");
-    	
+
+        log.debug("Creating view");
+        view = new View(model, shlDesktopClient);
+        ;
+        log.debug("VIew was created");
+
         model.registerObserver(view);
         viewTable = view.getViewTable();
-        
+
         log.debug("Creating an object of ProcessPackageController...");
         processPackageController = new ProcessPackageController();
         log.debug("The object of ProcessPackageController was created");
@@ -137,19 +139,21 @@ public class Client
      */
     public void start() throws IOException, TimeoutException
     {
-        if (!isRunning.get()) 
+        if (!isRunning.get())
         {
-			synchronized (this) 
-			{
-				if (!isRunning.get()) {
-					config();
-					createAndStartConsumer();
-					createAndStartGUI();
-					isRunning.set(true);
-				}
-			}
+            synchronized (this)
+            {
+                if (!isRunning.get())
+                {
+                    config();
+                    createAndStartConsumer();
+                    createAndStartGUI();
+                    isRunning.set(true);
+                }
+            }
         }
     }
+
 
     /**
      * method create and start consumer
@@ -166,8 +170,10 @@ public class Client
         Consumer consumer = new DefaultConsumer(channel)
         {
             private Gson gson = new Gson();
-            
-            @Override public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+
+
+            @Override
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
                     byte[] body) throws IOException
             {
                 String jsonString = new String(body, "UTF-8");
@@ -238,7 +244,7 @@ public class Client
         MenuItem mGraph = new MenuItem(menu_View, SWT.NONE);
         mGraph.setText("Graph");
 
-        //  mGraph.addSelectionListener(new GraphController(shlDesktopClient, model.providerId, this));
+        // mGraph.addSelectionListener(new GraphController(shlDesktopClient, model.providerId, this));
         mTable.addSelectionListener(new TableController(viewTable, shlDesktopClient));
         mXmlProvider.addSelectionListener(new XmlProviderController(lblprovider, model));
         mJsonProvider.addSelectionListener(new JsonProviderController(lblprovider, model));
@@ -257,4 +263,3 @@ public class Client
     }
 
 }
-
