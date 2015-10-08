@@ -22,8 +22,6 @@ public class XmlProviderController implements SelectionListener
 {
     private static final Logger log = LoggerFactory.getLogger(XmlProviderController.class);
 
-    private Shell shell;
-
     private Label lblXmlprovider;
 
     private Model model;
@@ -32,14 +30,12 @@ public class XmlProviderController implements SelectionListener
     /**
      * Constructor of XmlProviderController
      *
-     * @param shlDesktopClient shell of DC
      * @param lblXmlprovider   label of DC, on which displays the name of the provider,
      *                         the data from which are displayed on the graph / table
      * @param model            object Model
      */
-    public XmlProviderController(Shell shlDesktopClient, Label lblXmlprovider, Model model)
+    public XmlProviderController(Label lblXmlprovider, Model model)
     {
-        this.shell = shlDesktopClient;
         this.lblXmlprovider = lblXmlprovider;
         this.model = model;
     }

@@ -25,7 +25,7 @@ public class TableController implements SelectionListener
 
     private View.ViewTable viewTable;
 
-    Shell shell;
+    private Shell shell;
 
 
     /**

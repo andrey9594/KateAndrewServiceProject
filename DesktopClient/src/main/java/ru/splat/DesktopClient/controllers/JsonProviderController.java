@@ -22,8 +22,6 @@ public class JsonProviderController implements SelectionListener
 {
     private static final Logger log = LoggerFactory.getLogger(JsonProviderController.class);
 
-    private Shell shell;
-
     private Label lblJsonprovider;
 
     private Model model;
@@ -31,14 +29,12 @@ public class JsonProviderController implements SelectionListener
     /**
      * Constructor of JsonProviderController
      *
-     * @param shlDesktopClient shell of DC
      * @param lblJsonprovider  label of DC, on which displays the name of the provider,
      *                         the data from which are displayed on the graph / table
      * @param model            object Model
      */
-    public JsonProviderController(Shell shlDesktopClient, Label lblJsonprovider, Model model)
+    public JsonProviderController(Label lblJsonprovider, Model model)
     {
-        this.shell = shlDesktopClient;
         this.lblJsonprovider = lblJsonprovider;
         this.model = model;
     }

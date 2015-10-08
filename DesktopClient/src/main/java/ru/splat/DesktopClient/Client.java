@@ -240,8 +240,8 @@ public class Client
 
         //  mGraph.addSelectionListener(new GraphController(shlDesktopClient, model.providerId, this));
         mTable.addSelectionListener(new TableController(viewTable, shlDesktopClient));
-        mXmlProvider.addSelectionListener(new XmlProviderController(shlDesktopClient, lblprovider, model));
-        mJsonProvider.addSelectionListener(new JsonProviderController(shlDesktopClient, lblprovider, model));
+        mXmlProvider.addSelectionListener(new XmlProviderController(lblprovider, model));
+        mJsonProvider.addSelectionListener(new JsonProviderController(lblprovider, model));
         btnOk.addSelectionListener(new ButtonOKController(model, text, viewTable));
 
         shlDesktopClient.open();
