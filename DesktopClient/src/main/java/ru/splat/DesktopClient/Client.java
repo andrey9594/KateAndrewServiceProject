@@ -1,25 +1,41 @@
 package ru.splat.DesktopClient;
 
-import com.google.gson.Gson;
-import com.rabbitmq.client.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
-import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.splat.DesktopClient.controllers.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import com.google.gson.Gson;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.Consumer;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
 
-import java.util.Properties;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
+import ru.splat.DesktopClient.controllers.ButtonOKController;
+import ru.splat.DesktopClient.controllers.JsonProviderController;
+import ru.splat.DesktopClient.controllers.ProcessPackageController;
+import ru.splat.DesktopClient.controllers.TableController;
+import ru.splat.DesktopClient.controllers.XmlProviderController;
 
 /**
  * <p>
@@ -45,8 +61,6 @@ public class Client
 
     private static volatile Client instance;
 
-    private Table table;
-
     private static Text text;
 
     private final Model model;
@@ -56,15 +70,24 @@ public class Client
     private final View.ViewTable viewTable;
 
     private final ProcessPackageController processPackageController;
-
+    
+    private Shell shlDesktopClient; 
+    
+    private Display display;
 
     private Client()
     {
     	log.debug("Creating model...");
     	model = new Model();
     	log.debug("Model was created");
+    	
+    	log.info("Creating display...");
+        display = new Display();
+        log.info("Display was created");
+        shlDesktopClient = new Shell(display);
+        
     	log.debug("Creating view");
-    	view = new View(model, this);
+    	view = new View(model, this, shlDesktopClient);;
     	log.debug("VIew was created");
     	
         model.registerObserver(view);
@@ -128,10 +151,6 @@ public class Client
         }
     }
 
-    public void setTable(Table table) {
-    	this.table = table;
-    }
-
     /**
      * method create and start consumer
      */
@@ -166,11 +185,6 @@ public class Client
      */
     private void createAndStartGUI()
     {
-    	log.info("Creating display...");
-        Display display = new Display();
-        log.info("Display was created");
-
-        Shell shlDesktopClient = new Shell(display);
         Image bgImg = new Image(display, "resources/BackgroundImage.jpg");
         shlDesktopClient.setText("Desktop Client on SWT");
         GridLayout gl_shlDesktopClient = new GridLayout();
@@ -228,7 +242,7 @@ public class Client
         mTable.addSelectionListener(new TableController(viewTable, shlDesktopClient));
         mXmlProvider.addSelectionListener(new XmlProviderController(shlDesktopClient, lblprovider, model));
         mJsonProvider.addSelectionListener(new JsonProviderController(shlDesktopClient, lblprovider, model));
-        btnOk.addSelectionListener(new ButtonOKController(model, text));
+        btnOk.addSelectionListener(new ButtonOKController(model, text, viewTable));
 
         shlDesktopClient.open();
         log.info("Start window have been drawn");

@@ -23,7 +23,7 @@ public class TableController implements SelectionListener
 {
     private static final Logger log = LoggerFactory.getLogger(TableController.class);
 
-    View.ViewTable viewTable;
+    private View.ViewTable viewTable;
 
     Shell shell;
 
@@ -47,7 +47,7 @@ public class TableController implements SelectionListener
      */
     @Override public void widgetSelected(SelectionEvent selectionEvent)
     {
-        viewTable.drawTable(shell);
+        viewTable.drawTable();
     }
 
 

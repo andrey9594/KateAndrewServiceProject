@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.splat.DesktopClient.Model;
+import ru.splat.DesktopClient.View;
 
 
 /**
@@ -24,6 +25,7 @@ public class ButtonOKController implements SelectionListener
 
     private Text text;
 
+    private View.ViewTable viewTable;
 
     /**
      * Constructor of ButtonOKController
@@ -31,10 +33,11 @@ public class ButtonOKController implements SelectionListener
      * @param model object Model
      * @param text  text field on DC
      */
-    public ButtonOKController(Model model, Text text)
+    public ButtonOKController(Model model, Text text, View.ViewTable viewTable)
     {
         this.model = model;
         this.text = text;
+        this.viewTable = viewTable;
     }
 
 
@@ -47,6 +50,7 @@ public class ButtonOKController implements SelectionListener
     {
         if (!text.getText().isEmpty())
             model.setId(Integer.parseInt(text.getText()));
+        viewTable.drawTable();
         log.info("The entered value of the object identifier has been read and saved");
     }
 

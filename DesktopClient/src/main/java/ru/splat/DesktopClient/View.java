@@ -1,7 +1,8 @@
 package ru.splat.DesktopClient;
 
 
-import com.google.common.collect.TreeBasedTable;
+import java.sql.Timestamp;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Shell;
@@ -10,8 +11,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.Timestamp;
 
 
 /**
@@ -26,8 +25,12 @@ public class View implements Observer
     private static final Logger log = LoggerFactory.getLogger(View.class);
 
     private Client client;
+    
+    private Shell shell;
 
     private Model model;
+    
+    private Table table;
 
     public ViewTable getViewTable()
     {
@@ -35,10 +38,11 @@ public class View implements Observer
     }
 
 
-    public View(Model model, Client client)
+    public View(Model model, Client client, Shell shell)
     {
         this.model = model;
         this.client = client;
+        this.shell = shell;
     }
 
 
@@ -60,13 +64,13 @@ public class View implements Observer
          *
          * @param shell shell of DC
          */
-        public void drawTable(Shell shell)
+        public void drawTable()
         {
-        	
-        	
-            Table table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+        	if (table == null)
+        		table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
             table.setLinesVisible(true);
             table.setHeaderVisible(true);
+            table.clearAll();
             GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
             data.heightHint = 300;
             data.widthHint = 400;
@@ -76,7 +80,7 @@ public class View implements Observer
             {
                 TableColumn column = new TableColumn(table, SWT.NONE);
                 column.setText(titles[i]);
-                System.out.print(i);
+             //   System.out.print(i);
             }
 
             //the output values
@@ -109,7 +113,7 @@ public class View implements Observer
                 table.getColumn(i).pack();
             }
 
-            client.setTable(table);
+          //  client.setTable(table);
             shell.pack();
         }
 
