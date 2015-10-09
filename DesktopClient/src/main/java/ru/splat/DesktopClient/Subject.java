@@ -17,7 +17,7 @@ public interface Subject
     public void removeObserver(Observer o);
 
 
-    public void notifyAllObserver();
+    public void notifyAllObserver(int providerId, int packageId);
 
 
     public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> getModel();

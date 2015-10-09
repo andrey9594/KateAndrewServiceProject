@@ -21,7 +21,7 @@ public class ProcessPackageController
 
     private final int providerXMLID = 0;
 
-    private final int prociderJSONID = 1;
+    private final int providerJSONID = 1;
 
     private final String providerXMLName = "providerxml";
 
@@ -40,13 +40,15 @@ public class ProcessPackageController
         {
             model.getModelTable().row(providerXMLID).put(new java.sql.Timestamp(new java.util.Date().getTime()),
                     providerPackage);
+            model.notifyAllObserver(providerXMLID, providerPackage.getId());
         }
         else if (providerPackage.getProviderName().equals(providerJSONName))
         {
-            model.getModelTable().row(prociderJSONID).put(new java.sql.Timestamp(new java.util.Date().getTime()),
+            model.getModelTable().row(providerJSONID).put(new java.sql.Timestamp(new java.util.Date().getTime()),
                     providerPackage);
+            model.notifyAllObserver(providerJSONID, providerPackage.getId());
         }
 
-        model.notifyAllObserver();
+
     }
 }

@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -24,20 +25,24 @@ public class View implements Observer
 {
     private static final Logger log = LoggerFactory.getLogger(View.class);
 
+    private Display display;
+    
     private Shell shell;
 
     private Model model;
 
     private Table table;
+    
+    private ViewTable viewTable;
 
 
     public ViewTable getViewTable()
     {
-        return new ViewTable();
+        return viewTable = new ViewTable();
     }
 
 
-    public View(Model model, Shell shell)
+    public View(Model model, Display display, Shell shell)
     {
         this.model = model;
         this.shell = shell;
@@ -45,11 +50,23 @@ public class View implements Observer
 
 
     @Override
-    public void update()
+    public void update(int providerId, int packageId)
     {
-        // ????
-        // view = model.getModel();
-        // repaint all?
+        if (providerId == model.getProviderType().ordinal()) 
+        {
+            if (model.getId() == packageId)
+        	if (this.viewTable != null) 
+        	{
+        	    Display.getDefault().asyncExec(new Runnable() 
+        	    {		      
+		        @Override
+		        public void run() 
+		        {
+		            viewTable.drawTable();		    	
+		        }
+		    });    
+        	}
+        }
     }
 
 
@@ -65,11 +82,11 @@ public class View implements Observer
          */
         public void drawTable()
         {
-            if (table == null)
-                table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
-            table.setLinesVisible(true);
-            table.setHeaderVisible(true);
-            table.clearAll();
+            if (table == null) {
+        	table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+            	table.setLinesVisible(true);
+            	table.setHeaderVisible(true);
+            }
             GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
             data.heightHint = 300;
             data.widthHint = 400;
