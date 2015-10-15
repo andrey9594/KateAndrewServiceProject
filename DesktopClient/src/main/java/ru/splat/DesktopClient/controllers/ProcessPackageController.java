@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ru.splat.DesktopClient.Model;
+import ru.splat.DesktopClient.OperationType;
 import ru.splat.DesktopClient.ProviderPackage;
 
 
@@ -41,12 +42,12 @@ public class ProcessPackageController
         if (providerPackage.getProviderName().equals(providerXMLName))
         {
             model.addPackage(providerXMLID, new Timestamp(new java.util.Date().getTime()), providerPackage);
-            model.notifyAllObserver(providerXMLID, providerPackage.getId());
+            model.notifyAllObserver(OperationType.ADDED, providerXMLID, providerPackage.getId());
         }
         else if (providerPackage.getProviderName().equals(providerJSONName))
         {
             model.addPackage(providerJSONID, new Timestamp(new java.util.Date().getTime()), providerPackage);
-            model.notifyAllObserver(providerJSONID, providerPackage.getId());
+            model.notifyAllObserver(OperationType.ADDED, providerJSONID, providerPackage.getId());
         }
 
 

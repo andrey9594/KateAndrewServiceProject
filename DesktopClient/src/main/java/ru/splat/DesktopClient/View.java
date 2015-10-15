@@ -48,7 +48,7 @@ public class View implements Observer
 
 
     @Override
-    public void update(int providerId, int packageId)
+    public void update(OperationType operation, int providerId, int packageId)
     {
         if (providerId == model.getProviderType().ordinal()) 
         {

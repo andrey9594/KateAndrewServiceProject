@@ -8,5 +8,5 @@ package ru.splat.DesktopClient;
  */
 public interface Observer
 {
-    public void update(int providerId, int packageId);
+    public void update(OperationType operation, int providerId, int packageId);
 }

@@ -90,11 +90,11 @@ public class Model implements Subject
 
 
     @Override
-    public void notifyAllObserver(int providerId, int packageId)
+    public void notifyAllObserver(OperationType operation, int providerId, int packageId)
     {
         for (Observer o : observers)
         {
-            o.update(providerId, packageId);
+            o.update(operation, providerId, packageId);
         }
     }
 
