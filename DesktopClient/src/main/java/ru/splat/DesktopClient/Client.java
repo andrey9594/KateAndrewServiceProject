@@ -88,8 +88,8 @@ public class Client
         shlDesktopClient = new Shell(display);
 
         log.debug("Creating view");
-        view = new View(model, display, shlDesktopClient);
-        ;
+        view = new View(model, shlDesktopClient);
+  
         log.debug("VIew was created");
 
         model.registerObserver(view);

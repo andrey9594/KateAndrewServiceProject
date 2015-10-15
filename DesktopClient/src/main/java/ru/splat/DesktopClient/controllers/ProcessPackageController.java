@@ -1,6 +1,8 @@
 package ru.splat.DesktopClient.controllers;
 
 
+import java.sql.Timestamp;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,14 +40,12 @@ public class ProcessPackageController
         log.info("Got new package: {}" + providerPackage);
         if (providerPackage.getProviderName().equals(providerXMLName))
         {
-            model.getModelTable().row(providerXMLID).put(new java.sql.Timestamp(new java.util.Date().getTime()),
-                    providerPackage);
+            model.addPackage(providerXMLID, new Timestamp(new java.util.Date().getTime()), providerPackage);
             model.notifyAllObserver(providerXMLID, providerPackage.getId());
         }
         else if (providerPackage.getProviderName().equals(providerJSONName))
         {
-            model.getModelTable().row(providerJSONID).put(new java.sql.Timestamp(new java.util.Date().getTime()),
-                    providerPackage);
+            model.addPackage(providerJSONID, new Timestamp(new java.util.Date().getTime()), providerPackage);
             model.notifyAllObserver(providerJSONID, providerPackage.getId());
         }
 

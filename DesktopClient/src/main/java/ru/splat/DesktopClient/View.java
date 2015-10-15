@@ -17,15 +17,13 @@ import org.slf4j.LoggerFactory;
 /**
  * <p>
  *
- * @author Ekaterina
+ * @author Andrey & Ekaterina
  *         <p>
  *         View of MVC
  */
 public class View implements Observer
 {
     private static final Logger log = LoggerFactory.getLogger(View.class);
-
-    private Display display;
     
     private Shell shell;
 
@@ -42,7 +40,7 @@ public class View implements Observer
     }
 
 
-    public View(Model model, Display display, Shell shell)
+    public View(Model model, Shell shell)
     {
         this.model = model;
         this.shell = shell;
@@ -100,17 +98,18 @@ public class View implements Observer
 
             // the output values
 
-            com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> modelTable = model.getModelTable();
+            //com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> modelTable = model.getModelTable();
 
             boolean found = false;
-            for (Timestamp time : modelTable.row(model.getProviderType().ordinal()).keySet())
+            for (Timestamp time : model.getKeySetForRow(model.getProviderType().ordinal()))
             {
-                if (modelTable.row(model.getProviderType().ordinal()).get(time).getId() == model.getId())
+        	ProviderPackage providerPackage = model.getPackageForRowAndTime(model.getProviderType().ordinal(), time);
+                if (providerPackage.getId() == model.getId())
                 {
                     found = true;
                     TableItem item = new TableItem(table, SWT.NONE);
                     item.setText(0, "" + time);
-                    item.setText(1, "" + modelTable.row(model.getProviderType().ordinal()).get(time).getValue());
+                    item.setText(1, "" + providerPackage.getValue());
                     log.info("Table with info from {} have been drawn",
                             converProviderID(model.getProviderType().ordinal()));
                 }

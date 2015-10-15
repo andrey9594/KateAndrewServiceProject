@@ -1,19 +1,20 @@
 package ru.splat.DesktopClient;
 
 
-import com.google.common.collect.Table;
-import com.google.common.collect.TreeBasedTable;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
+import com.google.common.collect.TreeBasedTable;
 
 
 /**
  * <p>
  *
- * @author Ekaterina
+ * @author Andrey & Ekaterina
  *         <p>
  *         Model of MVC
  */
@@ -53,11 +54,25 @@ public class Model implements Subject
         return id;
     }
 
-
-    public com.google.common.collect.Table getModelTable()
+    public Set<Timestamp> getKeySetForRow(int row) 
     {
-        return modelTable;
+	return modelTable.row(row).keySet();
     }
+    
+    public ProviderPackage getPackageForRowAndTime(int row, Timestamp time) 
+    {
+	return modelTable.row(row).get(time);
+    }
+    
+    public void addPackage(int providerId, Timestamp time, ProviderPackage providerPackage) 
+    {
+	modelTable.row(providerId).put(time, providerPackage);
+    }
+    
+//    public com.google.common.collect.Table getModelTable()
+//    {
+//        return modelTable;
+//    }
 
 
     @Override
@@ -84,10 +99,10 @@ public class Model implements Subject
     }
 
 
-    @Override
-    public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> getModel()
-    {
-        return modelTable;
-    }
+//    @Override
+//    public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> getModel()
+//    {
+//        return modelTable;
+//    }
 
 }

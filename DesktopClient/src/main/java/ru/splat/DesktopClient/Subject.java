@@ -1,9 +1,5 @@
 package ru.splat.DesktopClient;
 
-
-import java.sql.Timestamp;
-
-
 /**
  * <p>
  *
@@ -18,7 +14,4 @@ public interface Subject
 
 
     public void notifyAllObserver(int providerId, int packageId);
-
-
-    public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> getModel();
 }
