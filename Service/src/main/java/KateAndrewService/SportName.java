@@ -1,0 +1,11 @@
+package KateAndrewService;
+
+public enum SportName {
+	SOCCER,
+	BASKETBALL,
+	SNOOKER,
+	ICEHOCKEY,
+	VOLLEYBALL,
+	BEACHVOLLEAYBALL,
+	HANDBALL
+}
