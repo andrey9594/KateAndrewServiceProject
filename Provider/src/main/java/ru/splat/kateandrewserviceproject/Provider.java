@@ -5,26 +5,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Properties;
 import java.util.Random;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.gson.Gson;
 
 
 /**
  * <p>
- * Class provider for transmitting data packages to the server through socket Possible only one connection at once
+ * Class provider for transmitting data packages to the Service 
+ * through a socket 
+ * Possible only one connection at once
  */
 public class Provider
 {
@@ -38,13 +32,13 @@ public class Provider
 
     private static final int FORMAT_JSON = 2;
 
-    private final String providerName;
-
     private final int PORT_NUM;
 
-    private final int periodWaitTime;
-
-    private final int idList[];
+    private final int PERIOD_WAIT_TIME;
+    
+    private final String PATH_TO_LOGS;
+    
+    private final String LOG_FORMAT;
 
 
     /**
@@ -55,8 +49,12 @@ public class Provider
     public Provider(String propertiesPath)
     {
         /**
-         * properties: protocol = string: xml or json port = int periodWaitTime = int: Send time will be random int in
-         * (0, periodWaitTime] idList = 1,5,7 or 6-23: IDs which the Provider will send
+         * properties: 
+         * FORMAT = string: xml or json 
+         * PORT_NUM = int 
+         * PERIOD_TIME = int: send data every time interval. The time interval is random period: (0 ms, periodWaitTime ms] 
+         * PATH_TO_LOGS = string: where logs are
+         * LOG_FORMAT: logs extension
          */
         Properties properties = new Properties();
         log.info("Loading configuration from {}", propertiesPath);
@@ -74,93 +72,75 @@ public class Provider
             log.error("Can't read config file {}", propertiesPath);
             e.printStackTrace();
         }
-        String formatString = properties.getProperty("format");
+        String formatString = properties.getProperty("FORMAT");
         format = formatString.equals("xml") ? FORMAT_XML : formatString.equals("json") ? FORMAT_JSON : FORMAT_UNKNOWN;
         if (format == FORMAT_UNKNOWN)
         {
             log.error("Unknown format! Required xml or json");
             throw new IllegalArgumentException();
         }
-        if (format == FORMAT_JSON)
-            providerName = "providerjson";
-        else
-            providerName = "providerxml";
-        PORT_NUM = Integer.parseInt(properties.getProperty("port"));
+        PORT_NUM = Integer.parseInt(properties.getProperty("PORT_NUM"));
         if (PORT_NUM < 1 || PORT_NUM > 65_535)
         {
             log.error("Illegal port id! Required number between 1 and 65535");
             throw new IllegalArgumentException();
         }
-        periodWaitTime = Integer.parseInt(properties.getProperty("period_time"));
-        if (periodWaitTime <= 0)
+        PERIOD_WAIT_TIME = Integer.parseInt(properties.getProperty("PERIOD_TIME"));
+        if (PERIOD_WAIT_TIME <= 0)
         {
             log.error("period_time must be positive number in milliseconds!");
             throw new IllegalArgumentException();
         }
-        if (properties.getProperty("idList").split(",").length != 1)
-        {
-            String[] idListString = properties.getProperty("idList").split(",");
-            idList = new int[idListString.length];
-            for (int i = 0; i < idList.length; i++)
-                idList[i] = Integer.valueOf(idListString[i]);
-        }
-        else
-        {
-            String[] idListString = properties.getProperty("idList").split("-");
-            int from = Integer.valueOf(idListString[0]);
-            int to = Integer.valueOf(idListString[1]);
-            idList = new int[to - from + 1];
-            for (int i = from; i <= to; i++)
-                idList[i - from] = i;
-        }
+        PATH_TO_LOGS = properties.getProperty("PATH_TO_LOGS");
+        LOG_FORMAT = properties.getProperty("LOG_FORMAT");
         log.info("Configuration from {} has been successfully loaded", propertiesPath);
     }
 
 
-    private void sendXmlObject(ProviderPackage providerPackage, Socket socket)
+    private void sendXmlObject(String xmlString, Socket socket)
     {
-        log.debug("Start sending package with id {} on the protocol xml", providerPackage.getId());
-        try
-        {
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            JAXBContext jaxbContext = JAXBContext.newInstance(ProviderPackage.class);
-            Marshaller marshaller = jaxbContext.createMarshaller();
-            StringWriter writer = new StringWriter();
-            marshaller.marshal(providerPackage, writer);
-            out.println(writer.toString());
-            out.flush();
-        }
-        catch (JAXBException | IOException e)
-        {
-            log.error("Error sending package with id {} on the protocol xml", providerPackage.getId(), e);
-            e.printStackTrace();
-        }
-        log.debug("The package with id {} was successfully sent on the protocol xml", providerPackage.getId());
+//        log.debug("Start sending package with id {} on the protocol xml", providerPackage.getId());
+//        try
+//        {
+//            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+//            JAXBContext jaxbContext = JAXBContext.newInstance(ProviderPackage.class);
+//            Marshaller marshaller = jaxbContext.createMarshaller();
+//            StringWriter writer = new StringWriter();
+//            marshaller.marshal(providerPackage, writer);
+//            out.println(writer.toString());
+//            out.flush();
+//        }
+//        catch (JAXBException | IOException e)
+//        {
+//            log.error("Error sending package with id {} on the protocol xml", providerPackage.getId(), e);
+//            e.printStackTrace();
+//        }
+//        log.debug("The package with id {} was successfully sent on the protocol xml", providerPackage.getId());
     }
 
 
-    private void sendJsonObject(ProviderPackage providerPackage, Socket socket)
+    private void sendJsonObject(String jsonString, Socket socket)
     {
-        log.debug("Start sending package with id {} on the protocol json", providerPackage.getId());
-        Gson gson = new Gson();
-        String json = gson.toJson(providerPackage);
-        try
-        {
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(json);
-            out.flush();
-        }
-        catch (IOException e)
-        {
-            log.error("Error sending package with id {} on the protocol json", providerPackage.getId(), e);
-            e.printStackTrace();
-        }
-        log.debug("The package with id {} was successfully sent on the protocol json", providerPackage.getId());
+//        log.debug("Start sending package with id {} on the protocol json", providerPackage.getId());
+//        Gson gson = new Gson();
+//        String json = gson.toJson(providerPackage);
+//        try
+//        {
+//            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+//            out.println(json);
+//            out.flush();
+//        }
+//        catch (IOException e)
+//        {
+//            log.error("Error sending package with id {} on the protocol json", providerPackage.getId(), e);
+//            e.printStackTrace();
+//        }
+//        log.debug("The package with id {} was successfully sent on the protocol json", providerPackage.getId());
     }
 
 
     /**
-     * Main method to start a Provider
+     * Main method to start an object of Provider
      */
     public void start()
     {
@@ -179,10 +159,11 @@ public class Provider
                     try
                     {
                         Random random = new Random();
-                        int currentPosInIdList = 0;
+//                        int currentPosInIdList = 0;
                         while (!Thread.currentThread().isInterrupted())
                         {
-                            int T = random.nextInt(periodWaitTime) + 1;
+                        	
+                            int T = random.nextInt(PERIOD_WAIT_TIME) + 1;
                             try
                             {
                                 Thread.sleep(T);
@@ -192,13 +173,13 @@ public class Provider
                                 log.warn("Provider was interrupted when it was sleeping");
                                 return;
                             }
-                            ProviderPackage providerPackage = new ProviderPackage(idList[currentPosInIdList],
-                                    random.nextInt(), providerName);
-                            currentPosInIdList = (currentPosInIdList + 1) % idList.length;
+//                            ProviderPackage providerPackage = new ProviderPackage(idList[currentPosInIdList],
+//                                    random.nextInt(), providerName);
+//                            currentPosInIdList = (currentPosInIdList + 1) % idList.length;
                             if (format == FORMAT_XML)
-                                sendXmlObject(providerPackage, socket);
+                                sendXmlObject(null, socket);
                             else
-                                sendJsonObject(providerPackage, socket);
+                                sendJsonObject(null, socket);
                         }
                     }
                     finally
