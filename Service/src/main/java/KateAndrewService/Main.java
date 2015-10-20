@@ -1,29 +1,20 @@
 package KateAndrewService;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-
 /**
  * <p>
  * Main method
  *
- * @author Ekaterina
+ * @author Andrey & Ekaterina
  */
 public class Main
 {
-    private static final Logger log = LoggerFactory.getLogger(ServiceSQL.class);
-
-
     /**
-     * Main method, whith start Service
+     * Main method, which start a Service
      * @param args
      */
     public static void main(String[] args)
     {
         ServiceNoSQL service = new ServiceNoSQL();
         service.start();
-        log.info("Service is started");
     }
 }

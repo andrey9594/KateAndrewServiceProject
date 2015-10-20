@@ -25,10 +25,7 @@
     <root level="info">
         <appender-ref ref="file"/>
     </root>
-    <!-- Логгер нашего класса  -->
-    <logger name="KateAndrewService.Main" level="info">
-        <appender-ref ref="sout"/>
-    </logger>
+   
     <!-- Логгер нашего класса  -->
     <logger name="KateAndrewService.Service" level="info">
         <appender-ref ref="sout"/>
