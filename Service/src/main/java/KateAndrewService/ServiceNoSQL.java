@@ -3,12 +3,14 @@ package KateAndrewService;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringBufferInputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
@@ -30,11 +32,15 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.WriteConcern;
 
+import matchstatistic.MatchType;
+import ru.splat.kateandrewserviceprojectgenerated.EventEntryTCP;
+import ru.splat.kateandrewserviceprojectgenerated.EventList;
+
 
 /**
  * <p>
  *
- * @author Andrew&Ekaterina
+ * @author Andrew & Ekaterina
  *         Connect with providers and give info in xml and json format,
  *         cache and save info in NoSQL DB MongoDB
  */
@@ -42,21 +48,27 @@ public class ServiceNoSQL
 {
     private static final Logger log = LoggerFactory.getLogger(ServiceNoSQL.class);
 
-    private String IP_PROVIDER;
+    private final String configFilePath = "resources/config.ini";
+    
+    private final String IP_PROVIDER;
 
-    private int PORT_XML;
+    private final int PORT_XML;
 
-    private int PORT_JSON;
+    private final int PORT_JSON;
 
-    private int PORT_DB;
+    private final int PORT_DB;
 
-    private String IP_DB;
+    private final String IP_DB;
 
-    private String DATABASE_NAME;
+    private final String DATABASE_NAME;
 
-    private String COLLECTION_NAME_FOR_JSON;
+    private final String COLLECTION_NAME_FOR_JSON;
 
-    private String COLLECTION_NAME_FOR_XML;
+    private final String COLLECTION_NAME_FOR_XML;
+    
+    private final String PATH_TO_MATCHID_FILE;
+    
+    private final Map<Integer, MatchType> matchidToSportName;
 
     private MongoClient mongo;
 
@@ -66,34 +78,22 @@ public class ServiceNoSQL
 
     private DBCollection collectionForXml;
 
-    private Map<Integer, Integer> cache = new HashMap<>();
+    private Map<Integer, Integer> cache = new HashMap<>(); // TODO: cache <Integer(matchid), Prototype>
 
     private Map<Integer, ReentrantReadWriteLock> locks = new HashMap<>();
+    
 
+    public ServiceNoSQL() {
+    	log.info("Take parameters from config file");
 
-    /**
-     * Method for starting Service work
-     */
-    public void start()
-    {
-        config();
-        connectDB();
-        loadPackagesFromDBToCache();
-        connectToProviders();
-    }
-
-
-    /**
-     * take parameters from config file
-     */
-    private void config()
-    {
-        log.info("Take parameters from config file");
-
+    	/**
+    	 * 
+    	 * path_to_matchid_list: .csv file with map: matchid in logs -> match sport name
+    	 */
         Properties properties = new Properties();
         try
         {
-            properties.load(new FileInputStream(new File("config.ini")));
+            properties.load(new FileInputStream(new File(configFilePath)));
         }
         catch (IOException e)
         {
@@ -101,6 +101,8 @@ public class ServiceNoSQL
             e.printStackTrace();
         }
 
+        //Match m = new Match(null, 1);
+        
         IP_PROVIDER = properties.getProperty("IP_PROVIDER");
         PORT_XML = Integer.valueOf(properties.getProperty("PORT_XML"));
         PORT_JSON = Integer.valueOf(properties.getProperty("PORT_JSON"));
@@ -109,10 +111,31 @@ public class ServiceNoSQL
         DATABASE_NAME = properties.getProperty("DATABASE_NAME");
         COLLECTION_NAME_FOR_JSON = properties.getProperty("COLLECTION_NAME_FOR_JSON");
         COLLECTION_NAME_FOR_XML = properties.getProperty("COLLECTION_NAME_FOR_XML");
+        PATH_TO_MATCHID_FILE = properties.getProperty("PATH_TO_MATCHID_LIST");
+        
+        MatchidAndNameOfSportReader reader = null;
+		try {
+			reader = new MatchidAndNameOfSportReader(PATH_TO_MATCHID_FILE);
+		} catch (FileNotFoundException e) {
+			log.error("File with map matchid->nameofsport not found in {}!",
+					PATH_TO_MATCHID_FILE, e);
+			e.printStackTrace();
+		}
+		matchidToSportName = reader.getSportNameForMatchidMap();
 
         log.info("Parameters were successfully loaded");
     }
 
+    /**
+     * Method for starting Service work
+     */
+    public void start()
+    {
+//        connectDB();
+//        loadPackagesFromDBToCache();
+        connectToProviders();
+        log.info("Service was started");
+    }
 
     /**
      * connect to DB
@@ -210,19 +233,19 @@ public class ServiceNoSQL
         }
         log.info("Thread for working with xml provider was created");
 
-        log.info("Creating thread for working with json provider...");
-        try
-        {
-            Socket socket = new Socket(IP_PROVIDER, PORT_JSON);
-            Thread threadjson = new Thread(new ThreadForJsonProvider(socket, new Producer()));
-            threadjson.start();
-        }
-        catch (IOException | TimeoutException e)
-        {
-            log.error("Error connecting with json provider", e);
-            e.printStackTrace();
-        }
-        log.info("Thread for working with json provider was created");
+//        log.info("Creating thread for working with json provider...");
+//        try
+//        {
+//            Socket socket = new Socket(IP_PROVIDER, PORT_JSON);
+//            Thread threadjson = new Thread(new ThreadForJsonProvider(socket, new Producer()));
+//            threadjson.start();
+//        }
+//        catch (IOException | TimeoutException e)
+//        {
+//            log.error("Error connecting with json provider", e);
+//            e.printStackTrace();
+//        }
+//        log.info("Thread for working with json provider was created");
     }
 
 
@@ -322,9 +345,9 @@ public class ServiceNoSQL
     /**
      * <p>
      *
-     * @author Ekaterina
+     * @author Andrew&Ekaterina
      *         inner class
-     *         Thread For Xml Provider
+     *         Thread For xml Provider
      */
     private class ThreadForXmlProvider implements Runnable
     {
@@ -346,26 +369,51 @@ public class ServiceNoSQL
          */
         @Override public void run()
         {
-            try
+            try (Scanner scanner = new Scanner(socket.getInputStream()))
             {
-                Scanner scanner = new Scanner(socket.getInputStream());
-
                 while (true)
                 {
-                    String xmlString = scanner.nextLine();
+                	String xml = scanner.nextLine();
+                    /**
+                     * Parsing of xml here
+                     */
+                    EventList eventList = null;
+					try {
+						JAXBContext jaxbContext = JAXBContext.newInstance(EventList.class);
+						Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+						eventList = (EventList) unmarshaller.unmarshal(new StringBufferInputStream(xml));
+					} catch (JAXBException e) {
+						log.error("Error parsing xml: {1}", xml, e);
+                    	e.printStackTrace();
+                    }
 
-                    JAXBContext jaxbContext = JAXBContext.newInstance(ProviderPackage.class);
-                    Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-                    ProviderPackage providerPackage = (ProviderPackage) unmarshaller
-                            .unmarshal(new StringBufferInputStream(xmlString));
+					for (int j = 0; j < eventList.getEvent().size(); j++) {
+						EventEntryTCP event = eventList.getEvent().get(j);
+						int curSportId = event.getMatchid();
+						log.debug("Sport name of match with {} id is {}", curSportId,
+								matchidToSportName.get(curSportId).name());
+ 
+						// update Matches
+						for (String statisticString : event.getStatistics()) {
+							log.info("\n\nStatistic: " + statisticString + "\n\n");
+							MatchStatisticsDelta statisticDelta = new MatchStatisticsDelta(
+									event.getMatchid(),
+									matchidToSportName.get(event.getMatchid()),
+									null, -1);//////////////////////////
 
-                    cacheXml(providerPackage.getId(), providerPackage.getValue());
-                    producer.publish(providerPackage);
+							// cacheXml(providerPackage.getId(), /////////////////////// TODO
+							// providerPackage.getValue());
+							producer.publish(statisticDelta);
 
-                    log.info("Data from xml provider with Value = {} is received", providerPackage.getValue());
+							log.info(
+									"Statistic from xml for match with matchid = {} is received",
+									statisticDelta.getMatchid());
+	
+						}
+					}
                 }
             }
-            catch (JAXBException | IOException e)
+            catch (IOException e)
             {
                 e.printStackTrace();
                 log.error("Error in receiving data from XmlProvider", e);
@@ -420,13 +468,14 @@ public class ServiceNoSQL
 
                 while (true)
                 {
-                    String json = scanner.next();
-                    ProviderPackage providerPackage = gson.fromJson(json, ProviderPackage.class);
-
-                    cacheJson(providerPackage.getId(), providerPackage.getValue());
-                    producer.publish(providerPackage);
-
-                    log.info("Data from json provider with Value = {} is received", providerPackage.getValue());
+//                    String json = scanner.next();
+//                    ProviderPackage providerPackage = gson.fromJson(json, ProviderPackage.class);
+//
+//                    cacheJson(providerPackage.getId(), providerPackage.getValue());
+//                    producer.publish(providerPackage);
+//
+//                    log.info("Data from json provider with Value = {} is received", providerPackage.getValue());
+                	break;////////////////////////////////////////////////////////
                 }
             }
             catch (IOException e)
