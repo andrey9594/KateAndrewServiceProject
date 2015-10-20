@@ -142,6 +142,7 @@ public class Provider
         {
             PrintWriter pw = new PrintWriter(socket.getOutputStream());
             pw.println(xml);
+            pw.flush();
         }
         catch (IOException e)
         {
