@@ -10,7 +10,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
@@ -369,11 +368,13 @@ public class ServiceNoSQL
          */
         @Override public void run()
         {
-            try (Scanner scanner = new Scanner(socket.getInputStream()))
+            try 
             {
+                Scanner scanner = new Scanner(socket.getInputStream());
                 while (true)
                 {
                 	String xml = scanner.nextLine();
+                	
                     /**
                      * Parsing of xml here
                      */
@@ -383,14 +384,14 @@ public class ServiceNoSQL
 						Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 						eventList = (EventList) unmarshaller.unmarshal(new StringBufferInputStream(xml));
 					} catch (JAXBException e) {
-						log.error("Error parsing xml: {1}", xml, e);
+						log.error("Error parsing xml: {}", xml, e);
                     	e.printStackTrace();
                     }
 
 					for (int j = 0; j < eventList.getEvent().size(); j++) {
 						EventEntryTCP event = eventList.getEvent().get(j);
 						int curSportId = event.getMatchid();
-						log.debug("Sport name of match with {} id is {}", curSportId,
+						log.info("Sport name of match with {} id is {}", curSportId,
 								matchidToSportName.get(curSportId).name());
  
 						// update Matches
@@ -422,7 +423,8 @@ public class ServiceNoSQL
             {
                 try
                 {
-                    socket.close();
+                    if (socket != null)
+                        socket.close();
                 }
                 catch (IOException e)
                 {
