@@ -35,15 +35,15 @@ public class ProviderLauncher
         }.start();
         log.info("Xml provider has been started");
 
-        log.info("Starting json provider...");
-        new Thread()
-        {
-            public void run()
-            {
-                Provider jsonProvider = new Provider("resources/config_json.properties");
-                jsonProvider.start();
-            }
-        }.start();
-        log.info("Json provider has been started");
+        // log.info("Starting json provider...");
+        // new Thread()
+        // {
+        // public void run()
+        // {
+        // Provider jsonProvider = new Provider("resources/config_json.properties");
+        // jsonProvider.start();
+        // }
+        // }.start();
+        // log.info("Json provider has been started");
     }
 }

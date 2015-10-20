@@ -2,11 +2,14 @@ package ru.splat.kateandrewserviceproject;
 
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.FormatFlagsConversionMismatchException;
 import java.util.Properties;
 import java.util.Random;
 
@@ -16,9 +19,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>
- * Class provider for transmitting data packages to the Service 
- * through a socket 
- * Possible only one connection at once
+ * Class provider for transmitting data packages to the Service through a socket Possible only one connection at once
  */
 public class Provider
 {
@@ -35,10 +36,14 @@ public class Provider
     private final int PORT_NUM;
 
     private final int PERIOD_WAIT_TIME;
-    
+
     private final String PATH_TO_LOGS;
-    
+
     private final String LOG_FORMAT;
+
+    private final File[] logFileList;
+
+    private int currentFileInLogFileList = 0;
 
 
     /**
@@ -49,12 +54,9 @@ public class Provider
     public Provider(String propertiesPath)
     {
         /**
-         * properties: 
-         * FORMAT = string: xml or json 
-         * PORT_NUM = int 
-         * PERIOD_TIME = int: send data every time interval. The time interval is random period: (0 ms, periodWaitTime ms] 
-         * PATH_TO_LOGS = string: where logs are
-         * LOG_FORMAT: logs extension
+         * properties: FORMAT = string: xml or json PORT_NUM = int PERIOD_TIME = int: send data every time interval. The
+         * time interval is random period: (0 ms, periodWaitTime ms] PATH_TO_LOGS = string: where logs are LOG_FORMAT:
+         * logs extension
          */
         Properties properties = new Properties();
         log.info("Loading configuration from {}", propertiesPath);
@@ -94,48 +96,78 @@ public class Provider
         PATH_TO_LOGS = properties.getProperty("PATH_TO_LOGS");
         LOG_FORMAT = properties.getProperty("LOG_FORMAT");
         log.info("Configuration from {} has been successfully loaded", propertiesPath);
+
+        logFileList = (new File(PATH_TO_LOGS)).listFiles(new FileFilter()
+        {
+            @Override
+            public boolean accept(File pathname)
+            {
+                return pathname.toString().endsWith("." + LOG_FORMAT);
+            }
+        });
+        if (logFileList == null)
+        {
+            log.error("Directory with log files {1} was't found!", PATH_TO_LOGS);
+            throw new NullPointerException();
+        }
+        if (logFileList.length == 0)
+        {
+            log.error("Log files was't found in {1}!", PATH_TO_LOGS);
+            throw new NullPointerException();
+        }
+
     }
 
 
-    private void sendXmlObject(String xmlString, Socket socket)
+    private void sendXmlObject(String xml, Socket socket)
     {
-//        log.debug("Start sending package with id {} on the protocol xml", providerPackage.getId());
-//        try
-//        {
-//            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-//            JAXBContext jaxbContext = JAXBContext.newInstance(ProviderPackage.class);
-//            Marshaller marshaller = jaxbContext.createMarshaller();
-//            StringWriter writer = new StringWriter();
-//            marshaller.marshal(providerPackage, writer);
-//            out.println(writer.toString());
-//            out.flush();
-//        }
-//        catch (JAXBException | IOException e)
-//        {
-//            log.error("Error sending package with id {} on the protocol xml", providerPackage.getId(), e);
-//            e.printStackTrace();
-//        }
-//        log.debug("The package with id {} was successfully sent on the protocol xml", providerPackage.getId());
+        log.debug("Got a xml {1} for sedning", xml);
+        /**
+         * xml starting with <tag attributes> or <tag>
+         */
+        StringBuilder s = new StringBuilder("");
+        for (int j = 0; j < xml.length() && xml.charAt(j) != ' ' && xml.charAt(j) != '>'; j++)
+            s.append(xml.charAt(j));
+        /**
+         * we only interested in event_list tag
+         */
+        if (!s.toString().equals("<event_list") && !s.toString().equals("<event_list>"))
+            return;
+
+        /**
+         * sending here
+         */
+        log.info("xml file {1} has been sent", xml);
+        try
+        {
+            PrintWriter pw = new PrintWriter(socket.getOutputStream());
+            pw.println(xml);
+        }
+        catch (IOException e)
+        {
+            log.error("Can't send xml {} on the xml protocol", xml, e);
+            e.printStackTrace();
+        }
     }
 
 
     private void sendJsonObject(String jsonString, Socket socket)
     {
-//        log.debug("Start sending package with id {} on the protocol json", providerPackage.getId());
-//        Gson gson = new Gson();
-//        String json = gson.toJson(providerPackage);
-//        try
-//        {
-//            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-//            out.println(json);
-//            out.flush();
-//        }
-//        catch (IOException e)
-//        {
-//            log.error("Error sending package with id {} on the protocol json", providerPackage.getId(), e);
-//            e.printStackTrace();
-//        }
-//        log.debug("The package with id {} was successfully sent on the protocol json", providerPackage.getId());
+        // log.debug("Start sending package with id {} on the protocol json", providerPackage.getId());
+        // Gson gson = new Gson();
+        // String json = gson.toJson(providerPackage);
+        // try
+        // {
+        // PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        // out.println(json);
+        // out.flush();
+        // }
+        // catch (IOException e)
+        // {
+        // log.error("Error sending package with id {} on the protocol json", providerPackage.getId(), e);
+        // e.printStackTrace();
+        // }
+        // log.debug("The package with id {} was successfully sent on the protocol json", providerPackage.getId());
     }
 
 
@@ -149,6 +181,17 @@ public class Provider
             log.info("ServerSocket is creating...");
             ServerSocket serverSocket = new ServerSocket(PORT_NUM);
             log.info("ServerSocket was successfully created");
+
+            LogFormatter formatter = null;
+            if (format == FORMAT_XML)
+            {
+                formatter = new LogFormatter(logFileList[currentFileInLogFileList++]); // not null ever
+            }
+            else if (format == FORMAT_JSON)
+            {
+                // formater =
+                // polymorphism
+            }
             try
             {
                 while (true)
@@ -159,10 +202,10 @@ public class Provider
                     try
                     {
                         Random random = new Random();
-//                        int currentPosInIdList = 0;
+                        // int currentPosInIdList = 0;
                         while (!Thread.currentThread().isInterrupted())
                         {
-                        	
+
                             int T = random.nextInt(PERIOD_WAIT_TIME) + 1;
                             try
                             {
@@ -173,13 +216,29 @@ public class Provider
                                 log.warn("Provider was interrupted when it was sleeping");
                                 return;
                             }
-//                            ProviderPackage providerPackage = new ProviderPackage(idList[currentPosInIdList],
-//                                    random.nextInt(), providerName);
-//                            currentPosInIdList = (currentPosInIdList + 1) % idList.length;
+                            // ProviderPackage providerPackage = new ProviderPackage(idList[currentPosInIdList],
+                            // random.nextInt(), providerName);
+                            // currentPosInIdList = (currentPosInIdList + 1) % idList.length;
                             if (format == FORMAT_XML)
-                                sendXmlObject(null, socket);
+                            {
+                                String xml = formatter.nextXML();
+                                while (xml == null)
+                                {
+                                    if (currentFileInLogFileList >= logFileList.length)
+                                    {
+                                        log.info("All log files was procesed");
+                                        return;
+                                    }
+                                    formatter = new LogFormatter(logFileList[currentFileInLogFileList++]); // not null
+                                                                                                           // ever
+                                    xml = formatter.nextXML();
+                                }
+                                sendXmlObject(xml, socket);
+                            }
                             else
-                                sendJsonObject(null, socket);
+                            {
+                                // sendJsonObject(null, socket);
+                            }
                         }
                     }
                     finally
