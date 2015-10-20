@@ -23,6 +23,8 @@ public class Producer
 {
     private static final Logger log = LoggerFactory.getLogger(Producer.class);
 
+    private final String configProducerFilePath = "resources/configProducer.ini";
+    
     private static String IP_BROKER;
 
     private static String EXCHANGE_NAME;
@@ -46,7 +48,7 @@ public class Producer
         log.info("Take parameters from configProduser.ini file");
         Properties props = new Properties();
 
-        props.load(new FileInputStream(new File("configProducer.ini")));
+        props.load(new FileInputStream(new File(configProducerFilePath)));
 
         IP_BROKER = props.getProperty("IP_BROKER");
         EXCHANGE_NAME = props.getProperty("EXCHANGE_NAME");
@@ -79,10 +81,10 @@ public class Producer
      * @param providerPackage
      * @throws IOException
      */
-    public void publish(ProviderPackage providerPackage) throws IOException
+    public void publish(MatchStatisticsDelta statisticDelta) throws IOException
     {
         log.info("Publish a new object 'ProviderPackage'");
-        String jsonString = gson.toJson(providerPackage);
+        String jsonString = gson.toJson(statisticDelta);
         channel.basicPublish(EXCHANGE_NAME, "", null, jsonString.getBytes());
         log.info("Object 'ProviderPackage' successfully published");
     }
