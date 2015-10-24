@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>
- * Class provider for transmitting data packages to the Service through a socket Possible only one connection at once
+ * Class provider for transmitting data packages to the Service through a socket. Possible only one connection at once.
  */
 public class Provider
 {
@@ -54,9 +54,9 @@ public class Provider
     public Provider(String propertiesPath)
     {
         /**
-         * properties: FORMAT = string: xml or json PORT_NUM = int PERIOD_TIME = int: send data every time interval. The
-         * time interval is random period: (0 ms, periodWaitTime ms] PATH_TO_LOGS = string: where logs are LOG_FORMAT:
-         * logs extension
+         * properties: FORMAT = string: xml or json; PORT_NUM = int; PERIOD_TIME = int: send data every time interval;
+         * The time interval will be in the random period: (0 ms, periodWaitTime ms]; PATH_TO_LOGS = string: where logs
+         * are LOG_FORMAT: logs extension;
          */
         Properties properties = new Properties();
         log.info("Loading configuration from {}", propertiesPath);
@@ -137,7 +137,6 @@ public class Provider
         /**
          * sending here
          */
-        log.info("xml file {1} has been sent", xml);
         try
         {
             PrintWriter pw = new PrintWriter(socket.getOutputStream());
@@ -149,6 +148,7 @@ public class Provider
             log.error("Can't send xml {} on the xml protocol", xml, e);
             e.printStackTrace();
         }
+        log.info("xml file {1} has been sent", xml);
     }
 
 
@@ -191,7 +191,10 @@ public class Provider
             else if (format == FORMAT_JSON)
             {
                 // formater =
-                // polymorphism
+                /**
+                 * polymorphism: it means LogFormatter should be an interface or an abstract class for JSONLogFormatter,
+                 * XMLLogFormatter
+                 */
             }
             try
             {
@@ -228,10 +231,12 @@ public class Provider
                                     if (currentFileInLogFileList >= logFileList.length)
                                     {
                                         log.info("All log files was procesed");
-                                        return;
+                                        return; // close socket and setverSocket in finnaly
                                     }
-                                    formatter = new LogFormatter(logFileList[currentFileInLogFileList++]); // not null
-                                                                                                           // ever
+                                    /**
+                                     * not null if log files not changed in the process
+                                     */
+                                    formatter = new LogFormatter(logFileList[currentFileInLogFileList++]);
                                     xml = formatter.nextXML();
                                 }
                                 sendXmlObject(xml, socket);
