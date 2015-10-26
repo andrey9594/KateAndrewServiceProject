@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * @author Andrew&Ekaterina
+ * @author Andrey & Ekaterina
  *         Class producer for RabbitMQ
  */
 public class Producer
@@ -76,16 +76,16 @@ public class Producer
 
 
     /**
-     * Published object ProviderPackage in Json format in all queues
+     * Published an object in Json format in all queues
      *
      * @param providerPackage
      * @throws IOException
      */
     public void publish(MatchStatisticsDelta statisticDelta) throws IOException
     {
-        log.info("Publish a new object 'ProviderPackage'");
+        log.info("Publish a new object of " + statisticDelta.getClass());
         String jsonString = gson.toJson(statisticDelta);
         channel.basicPublish(EXCHANGE_NAME, "", null, jsonString.getBytes());
-        log.info("Object 'ProviderPackage' successfully published");
+        log.info("An object " + statisticDelta.getClass() + " successfully published");
     }
 }

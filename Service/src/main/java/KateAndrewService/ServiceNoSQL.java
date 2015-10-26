@@ -381,13 +381,13 @@ public class ServiceNoSQL
 
 					for (int j = 0; j < eventList.getEvent().size(); j++) {
 						EventEntryTCP event = eventList.getEvent().get(j);
-						int curSportId = event.getMatchid();
-						log.info("Sport name of match with {} id is {}", curSportId,
-								matchidToSportName.get(curSportId).name());
+						int curMatchId = event.getMatchid();
+						log.debug("Sport name of match with {} id is {}", curMatchId,
+								matchidToSportName.get(curMatchId).name());
  
 						// update Matches
 						for (String statisticString : event.getStatistics()) {
-							log.info("\n\nStatistic: " + statisticString + "\n\n");
+							log.info("Statistic for matchid = " + curMatchId + ": " + statisticString);
 							MatchStatisticsDelta statisticDelta = new MatchStatisticsDelta(
 									event.getMatchid(),
 									matchidToSportName.get(event.getMatchid()),
