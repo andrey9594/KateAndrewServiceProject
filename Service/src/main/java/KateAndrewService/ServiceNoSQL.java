@@ -21,7 +21,6 @@ import javax.xml.bind.Unmarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
@@ -29,7 +28,6 @@ import com.mongodb.MongoClient;
 import matchstatistic.Match;
 import matchstatistic.MatchType;
 import matchstatistic.Statistics;
-import matchstatistic.sportstatistictypes.StatisticType;
 import ru.splat.kateandrewserviceprojectgenerated.EventEntryTCP;
 import ru.splat.kateandrewserviceprojectgenerated.EventList;
 
@@ -413,15 +411,14 @@ public class ServiceNoSQL
 							}
 							currentMatch.addStatistics(statistic);
 							cache.put(curMatchId, currentMatch);
-						
 							
 							MatchStatisticsDelta statisticDelta = new MatchStatisticsDelta(
 									event.getMatchid(),
 									matchidToSportName.get(event.getMatchid()),
-									null, -1);//////////////////////////
+									statistic);
 
 							// cacheXml(providerPackage.getId(), /////////////////////// TODO
-							// providerPackage.getValue());
+		
 							producer.publish(statisticDelta);
 
 							log.info(
