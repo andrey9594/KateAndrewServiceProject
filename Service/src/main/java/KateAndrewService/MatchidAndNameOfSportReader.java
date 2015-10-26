@@ -8,9 +8,19 @@ import java.util.TreeMap;
 
 import matchstatistic.MatchType;
 
+/**
+ * 
+ * @author Andrey
+ * Class for reading information about sport matches from .csv file
+ */
 public class MatchidAndNameOfSportReader {
 	private Scanner scanner;
 	
+	/**
+	 * Main constructor 
+	 * @param pathToFile Path to .csv file
+	 * @throws FileNotFoundException
+	 */
 	public MatchidAndNameOfSportReader(String pathToFile) throws FileNotFoundException {
 		scanner = new Scanner(new File(pathToFile));
 	}

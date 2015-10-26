@@ -77,7 +77,7 @@ public class ServiceNoSQL
 
     private DBCollection collectionForXml;
 
-    private Map<Integer, Integer> cache = new HashMap<>(); // TODO: cache <Integer(matchid), Prototype>
+    private Map<Integer, Integer> cache = new HashMap<>(); // TODO: cache <Integer(matchid), Match>
 
     private Map<Integer, ReentrantReadWriteLock> locks = new HashMap<>();
     
@@ -86,7 +86,6 @@ public class ServiceNoSQL
     	log.info("Take parameters from config file");
 
     	/**
-    	 * 
     	 * path_to_matchid_list: .csv file with map: matchid in logs -> match sport name
     	 */
         Properties properties = new Properties();
@@ -99,8 +98,6 @@ public class ServiceNoSQL
             log.error("Can't read config.ini! Does it exist?");
             e.printStackTrace();
         }
-
-        //Match m = new Match(null, 1);
         
         IP_PROVIDER = properties.getProperty("IP_PROVIDER");
         PORT_XML = Integer.valueOf(properties.getProperty("PORT_XML"));
@@ -112,9 +109,8 @@ public class ServiceNoSQL
         COLLECTION_NAME_FOR_XML = properties.getProperty("COLLECTION_NAME_FOR_XML");
         PATH_TO_MATCHID_FILE = properties.getProperty("PATH_TO_MATCHID_LIST");
         
-        MatchidAndNameOfSportReader reader = null;
-		try {
-			reader = new MatchidAndNameOfSportReader(PATH_TO_MATCHID_FILE);
+        try {
+            MatchidAndNameOfSportReader reader = new MatchidAndNameOfSportReader(PATH_TO_MATCHID_FILE);
 		} catch (FileNotFoundException e) {
 			log.error("File with map matchid->nameofsport not found in {}!",
 					PATH_TO_MATCHID_FILE, e);
