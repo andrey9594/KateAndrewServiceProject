@@ -26,7 +26,10 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 
+import matchstatistic.Match;
 import matchstatistic.MatchType;
+import matchstatistic.Statistics;
+import matchstatistic.sportstatistictypes.StatisticType;
 import ru.splat.kateandrewserviceprojectgenerated.EventEntryTCP;
 import ru.splat.kateandrewserviceprojectgenerated.EventList;
 
@@ -72,7 +75,7 @@ public class ServiceNoSQL
 
     private DBCollection collectionForXml;
 
-    private Map<Integer, Integer> cache = new HashMap<>(); // TODO: cache <Integer(matchid), Match>
+    private Map<Integer, Match> cache = new HashMap<>(); // TODO: cache <Integer(matchid), Match>
 
     private Map<Integer, ReentrantReadWriteLock> locks = new HashMap<>();
     
@@ -387,7 +390,31 @@ public class ServiceNoSQL
  
 						// update Matches
 						for (String statisticString : event.getStatistics()) {
+						    String parsedStatistic[] = statisticString.split("=");
+						    String statisticCode = parsedStatistic[0];
+						    long statisticValue = Long.parseLong(parsedStatistic[1]);
+						  
+						    log.debug("It's " + statisticCode + " = " + statisticValue); 
 							log.info("Statistic for matchid = " + curMatchId + ": " + statisticString);
+							
+							// get statistic type for statisticCode from .cvs file
+							Statistics statistic = null;
+							
+							Match currentMatch = null;
+							/**
+							 * not thread safe becouse this xml thread
+							 * doesn't work with clients,
+							 * he works with one Provider
+							 */
+							if (!cache.containsKey(curMatchId)) { 
+							    currentMatch = new Match(matchidToSportName.get(curMatchId), -1);
+							} else {
+							    currentMatch = cache.get(curMatchId);
+							}
+							currentMatch.addStatistics(statistic);
+							cache.put(curMatchId, currentMatch);
+						
+							
 							MatchStatisticsDelta statisticDelta = new MatchStatisticsDelta(
 									event.getMatchid(),
 									matchidToSportName.get(event.getMatchid()),

@@ -1,7 +1,7 @@
 package KateAndrewService;
 
 import matchstatistic.MatchType;
-import matchstatistic.sportstatistictypes.StatisticType;
+import matchstatistic.Statistics;
 
 /**
  * @author Andrey
@@ -11,14 +11,12 @@ public class MatchStatisticsDelta {
 	
 	private long matchid;
 	private MatchType sportType;
-	private StatisticType statistic;
-	private long newValue;
+	private Statistics statistic;
 	
-	public MatchStatisticsDelta(long matchid, MatchType sportType, StatisticType statistic, long newValue) {
+	public MatchStatisticsDelta(long matchid, MatchType sportType, Statistics statistic) {
 		this.matchid = matchid;
 		this.sportType = sportType;
 		this.statistic = statistic;
-		this.newValue = newValue;
 	}
 	
 	public void setMatchid(long matchid) {
@@ -37,20 +35,12 @@ public class MatchStatisticsDelta {
 		return sportType;
 	}
 	
-	public void setStatistic(StatisticType statistic) {
+	public void setStatistic(Statistics statistic) {
 		this.statistic = statistic;
 	}
 	
-	public StatisticType getStatistic() {
+	public Statistics getStatistic() {
 		return statistic;
-	}
-	
-	public void setnewValue(long newValue) {
-		this.newValue = newValue;
-	}
-	
-	public long getnewValue() {
-		return newValue;
 	}
 	
 	/**
@@ -58,6 +48,6 @@ public class MatchStatisticsDelta {
 	 */
 	@Override
 	public String toString() {
-		return "DataObject [matchid=" + matchid + ", sportType=" + sportType + ", statistic=" + statistic + ", newValue=" + newValue + "]";
+		return "DataObject [matchid=" + matchid + ", sportType=" + sportType + ", statistic=" + statistic + "]";
 	}
 }
