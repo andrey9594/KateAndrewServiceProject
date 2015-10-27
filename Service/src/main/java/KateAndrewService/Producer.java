@@ -62,7 +62,7 @@ public class Producer
      * @throws IOException
      * @throws TimeoutException
      */
-    Producer() throws IOException, TimeoutException
+    public Producer() throws IOException, TimeoutException
     {
         log.info("connect to the server RabbitMQ");
         configProducer();
