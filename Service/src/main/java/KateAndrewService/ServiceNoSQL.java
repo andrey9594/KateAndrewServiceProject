@@ -28,6 +28,7 @@ import com.mongodb.MongoClient;
 import matchstatistic.Match;
 import matchstatistic.MatchType;
 import matchstatistic.Statistics;
+import matchstatistic.sportstatistictypes.StatisticType;
 import ru.splat.kateandrewserviceprojectgenerated.EventEntryTCP;
 import ru.splat.kateandrewserviceprojectgenerated.EventList;
 
@@ -390,13 +391,20 @@ public class ServiceNoSQL
 						for (String statisticString : event.getStatistics()) {
 						    String parsedStatistic[] = statisticString.split("=");
 						    String statisticCode = parsedStatistic[0];
-						    long statisticValue = Long.parseLong(parsedStatistic[1]);
+						    int statisticValue = Integer.parseInt(parsedStatistic[1]);
 						  
 						    log.debug("It's " + statisticCode + " = " + statisticValue); 
 							log.info("Statistic for matchid = " + curMatchId + ": " + statisticString);
 							
-							// get statistic type for statisticCode from .cvs file
-							Statistics statistic = null;
+							/* get statisticType for statisticCode from .cvs file
+							 addition field guest or home
+							 */
+							StatisticType statisticType = null; //
+							/**
+							 * @isHomeStatistic = @isGuestStatictic = true if statistic is general for all teams
+							 */
+							boolean isHomeStatistic = false;//
+							boolean isGuestStatistic = false; //
 							
 							Match currentMatch = null;
 							/**
@@ -409,13 +417,24 @@ public class ServiceNoSQL
 							} else {
 							    currentMatch = cache.get(curMatchId);
 							}
+							
+							Statistics statistic = currentMatch.getStatistic(statisticType);
+							if (statistic == null) {
+							    statistic = new Statistics(statisticType);
+							}
+							if (isHomeStatistic) {
+							    statistic.setValue1(statisticValue);
+							}
+							if (isGuestStatistic) {
+							    statistic.setValue2(statisticValue);
+							}
 							currentMatch.addStatistics(statistic);
 							cache.put(curMatchId, currentMatch);
 							
 							MatchStatisticsDelta statisticDelta = new MatchStatisticsDelta(
-									event.getMatchid(),
-									matchidToSportName.get(event.getMatchid()),
-									statistic);
+									                                    event.getMatchid(),
+									                                    matchidToSportName.get(event.getMatchid()),
+									                                    statistic);
 
 							// cacheXml(providerPackage.getId(), /////////////////////// TODO
 		
