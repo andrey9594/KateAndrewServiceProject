@@ -129,9 +129,10 @@ public class Provider
         for (int j = 0; j < xml.length() && xml.charAt(j) != ' ' && xml.charAt(j) != '>'; j++)
             s.append(xml.charAt(j));
         /**
-         * we only interested in event_list tag
+         * we only interested in event_list or match_list tags
          */
-        if (!s.toString().equals("<event_list") && !s.toString().equals("<event_list>"))
+        if (!s.toString().equals("<event_list") && !s.toString().equals("<event_list>")
+                && !s.toString().equals("<match_list") && !s.toString().equals("<match_list>"))
             return;
 
         /**
