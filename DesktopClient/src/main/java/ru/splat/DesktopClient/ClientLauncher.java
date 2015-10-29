@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 /**
  * <p>
  *
- * @author Ekaterina Main class for launching a Desktop Client
+ * @author Andrey & Ekaterina Main class for launching a Desktop Client
  */
 public class ClientLauncher
 {
@@ -20,7 +20,7 @@ public class ClientLauncher
 
     /**
      * Main method, which creates ant starts an object of DesktopClient
-     *
+     * 
      * @param args
      */
     public static void main(String[] args)
@@ -35,7 +35,7 @@ public class ClientLauncher
         }
         catch (IOException | TimeoutException e)
         {
-            log.error("Can't create a Client!", e);
+            log.error("Can't create Client!", e);
             e.printStackTrace();
         }
 
