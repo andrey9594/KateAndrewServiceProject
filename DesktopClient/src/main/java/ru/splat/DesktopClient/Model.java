@@ -3,12 +3,15 @@ package ru.splat.DesktopClient;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.TreeBasedTable;
+import matchstatistic.Match;
+import matchstatistic.Statistics;
+import matchstatistic.sportstatistictypes.StatisticType;
 
 
 /**
@@ -24,55 +27,48 @@ public class Model implements Subject
 
     private ArrayList<Observer> observers = new ArrayList<Observer>();
 
-    private com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> modelTable = TreeBasedTable.create();
+    // private com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> modelTable =
 
-    private ProviderType providerType = ProviderType.PROVIDER_XML;
+    /**
+     * Don't use guava because we don't need to remove old match's statistics
+     */
+    private Map<Integer, Match> modelTable;
 
-    private int id = 0;
 
-
-    public void setProviderType(ProviderType providerType)
+    public void setMatchForMatchid(int matchid, Match match)
     {
-        this.providerType = providerType;
+        modelTable.put(matchid, match);
     }
 
 
-    public void setId(int id)
+    public Statistics getStatisticForMatchid(int matchid, StatisticType statisticType)
     {
-        this.id = id;
+        return modelTable.get(matchid).getStatistic(statisticType);
     }
 
 
-    public ProviderType getProviderType()
+    public String getTeam1idForMatchid(int matchid)
     {
-        return providerType;
+        return modelTable.get(matchid).getT1Name();
     }
 
 
-    public int getId()
+    public String getTeam2idForMatchid(int matchid)
     {
-        return id;
+        return modelTable.get(matchid).getT2Name();
     }
 
-    public Set<Timestamp> getKeySetForRow(int row) 
+
+    public void addPackage(MatchStatisticsDelta matchStatisticDelta)
     {
-	return modelTable.row(row).keySet();
+        Match match = modelTable.get(matchStatisticDelta.getMatchid());
+        if (match == null)
+        {
+            match = new Match(matchStatisticDelta.getSportType(), matchStatisticDelta.getTimestamp());
+        }
+        match.addStatistics(matchStatisticDelta.getStatistic());
+        modelTable.put(matchStatisticDelta.getMatchid(), match);
     }
-    
-    public ProviderPackage getPackageForRowAndTime(int row, Timestamp time) 
-    {
-	return modelTable.row(row).get(time);
-    }
-    
-    public void addPackage(int providerId, Timestamp time, ProviderPackage providerPackage) 
-    {
-	modelTable.row(providerId).put(time, providerPackage);
-    }
-    
-//    public com.google.common.collect.Table getModelTable()
-//    {
-//        return modelTable;
-//    }
 
 
     @Override
@@ -90,19 +86,12 @@ public class Model implements Subject
 
 
     @Override
-    public void notifyAllObserver(OperationType operation, int providerId, int packageId)
+    public void notifyAllObserver(OperationType operation, int matchid)
     {
         for (Observer o : observers)
         {
-            o.update(operation, providerId, packageId);
+            o.update(operation, matchid);
         }
     }
-
-
-//    @Override
-//    public com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> getModel()
-//    {
-//        return modelTable;
-//    }
 
 }
