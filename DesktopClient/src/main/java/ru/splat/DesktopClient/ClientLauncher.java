@@ -19,7 +19,7 @@ public class ClientLauncher
 
 
     /**
-     * Main method, witch create ant start DesktopClient
+     * Main method, which creates ant starts an object of DesktopClient
      *
      * @param args
      */
@@ -35,7 +35,7 @@ public class ClientLauncher
         }
         catch (IOException | TimeoutException e)
         {
-            log.error("Can't create an Client!", e);
+            log.error("Can't create a Client!", e);
             e.printStackTrace();
         }
 
