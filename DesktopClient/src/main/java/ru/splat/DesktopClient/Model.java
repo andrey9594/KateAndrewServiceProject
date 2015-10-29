@@ -37,6 +37,7 @@ public class Model implements Subject
 
     public void setMatchForMatchid(int matchid, Match match)
     {
+        log.info("Put match with matchid = " + matchid);
         modelTable.put(matchid, match);
     }
 
@@ -68,12 +69,14 @@ public class Model implements Subject
         }
         match.addStatistics(matchStatisticDelta.getStatistic());
         modelTable.put(matchStatisticDelta.getMatchid(), match);
+        log.info("Put match with matchid = " + matchStatisticDelta.getMatchid());
     }
 
 
     @Override
     public void registerObserver(Observer o)
     {
+        log.debug("added new observer");
         observers.add(o);
     }
 
@@ -81,6 +84,7 @@ public class Model implements Subject
     @Override
     public void removeObserver(Observer o)
     {
+        log.debug("removed one of observers");
         observers.remove(o);
     }
 
@@ -88,6 +92,7 @@ public class Model implements Subject
     @Override
     public void notifyAllObserver(OperationType operation, int matchid)
     {
+        log.info("Update all observers");
         for (Observer o : observers)
         {
             o.update(operation, matchid);
