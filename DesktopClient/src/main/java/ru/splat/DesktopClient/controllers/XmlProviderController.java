@@ -4,11 +4,10 @@ package ru.splat.DesktopClient.controllers;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import ru.splat.DesktopClient.Model;
-import ru.splat.DesktopClient.ProviderType;
 
 
 /**
@@ -48,7 +47,7 @@ public class XmlProviderController implements SelectionListener
     public void widgetSelected(SelectionEvent selectionEvent)
     {
         log.info("Item 'XmlProvider' pressed!");
-        model.setProviderType(ProviderType.PROVIDER_XML);
+//        model.setProviderType(ProviderType.PROVIDER_XML);
         log.info("Filed a request for information from Xml Provider!");
         lblXmlprovider.setText("                                         Data from Xml Provider");
     }

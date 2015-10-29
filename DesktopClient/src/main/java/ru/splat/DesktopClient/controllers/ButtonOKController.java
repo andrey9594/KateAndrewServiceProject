@@ -50,10 +50,10 @@ public class ButtonOKController implements SelectionListener
     @Override
     public void widgetSelected(SelectionEvent selectionEvent)
     {
-        if (!text.getText().isEmpty())
-            model.setId(Integer.parseInt(text.getText()));
-        viewTable.drawTable();
-        log.info("The entered value of the object identifier has been read and saved");
+//        if (!text.getText().isEmpty())
+//            model.setId(Integer.parseInt(text.getText()));
+//        viewTable.drawTable();
+//        log.info("The entered value of the object identifier has been read and saved");
     }
 
 

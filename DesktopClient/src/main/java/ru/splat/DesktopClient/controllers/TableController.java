@@ -46,7 +46,7 @@ public class TableController implements SelectionListener
     @Override
     public void widgetSelected(SelectionEvent selectionEvent)
     {
-        viewTable.drawTable();
+        viewTable.drawTable(-1);
     }
 
 

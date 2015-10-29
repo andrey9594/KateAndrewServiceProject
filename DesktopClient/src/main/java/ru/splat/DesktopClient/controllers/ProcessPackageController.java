@@ -26,7 +26,7 @@ public class ProcessPackageController
      *
      * @param providerPackage the package, which we received.
      */
-    public void processPackageStatistic(MatchStatisticsDelta matchStatiticsDelta, Model model)
+    public void processPackage(MatchStatisticsDelta matchStatiticsDelta, Model model)
     {
         log.info("Got new object of matchStatisticsDelta with matchid = {}" + matchStatiticsDelta.getMatchid());
 
