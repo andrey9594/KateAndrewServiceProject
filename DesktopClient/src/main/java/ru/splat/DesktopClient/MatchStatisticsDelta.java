@@ -22,6 +22,7 @@ public class MatchStatisticsDelta
 
     private Statistics statistic;
 
+    private MatchStatisticsDelta() { }
 
     /**
      * That constructor takes info about some statistic

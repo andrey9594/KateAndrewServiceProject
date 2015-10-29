@@ -4,6 +4,7 @@ package ru.splat.DesktopClient;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,6 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.InstanceCreator;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -32,6 +35,7 @@ import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
+import matchstatistic.sportstatistictypes.StatisticType;
 import ru.splat.DesktopClient.controllers.ButtonOKController;
 import ru.splat.DesktopClient.controllers.JsonProviderController;
 import ru.splat.DesktopClient.controllers.ProcessPackageController;
@@ -106,7 +110,7 @@ public class Client
      */
     public void config() throws IOException
     {
-        log.info("Take parameters from config.ini file");
+        log.info("Take parameters from property file");
         Properties props = new Properties();
 
         props.load(new FileInputStream(new File("config.ini")));
@@ -114,6 +118,7 @@ public class Client
         IP_BROKER = props.getProperty("IP_BROKER");
         EXCHANGE_NAME = props.getProperty("EXCHANGE_NAME");
         TYPE_OF_EXCHANGE = props.getProperty("TYPE_OF_EXCHANGE");
+        log.info("Configuration was successfully loaded");
     }
 
 
@@ -169,7 +174,7 @@ public class Client
         channel.queueBind(queueName, EXCHANGE_NAME, "");
         Consumer consumer = new DefaultConsumer(channel)
         {
-            private Gson gson = new Gson();
+            private Gson gson;
 
 
             @Override
@@ -177,8 +182,20 @@ public class Client
                     byte[] body) throws IOException
             {
                 String jsonString = new String(body, "UTF-8");
-                ProviderPackage providerPackage = gson.fromJson(jsonString, ProviderPackage.class);
-                processPackageController.processPackage(providerPackage, model);
+                InstanceCreator<StatisticType> ic = new InstanceCreator<StatisticType>()
+                {
+                    
+                    @Override
+                    public StatisticType createInstance(Type arg0)
+                    {
+                        return new StatisticType()
+                        {
+                        };
+                    }
+                };
+                gson = new GsonBuilder().registerTypeAdapter(StatisticType.class, ic).create();
+                MatchStatisticsDelta matchStatisticsDelta = gson.fromJson(jsonString, MatchStatisticsDelta.class);
+                processPackageController.processPackage(matchStatisticsDelta, model);
             }
         };
         channel.basicConsume(queueName, true, consumer);
@@ -201,18 +218,19 @@ public class Client
         shlDesktopClient.setBackgroundMode(SWT.INHERIT_FORCE);
 
         gl_shlDesktopClient.numColumns = 3;
-        Label lblEnterIdWhich = new Label(shlDesktopClient, SWT.NONE);
-        lblEnterIdWhich.setText("Enter ID of Object, which history you want to see:");
+//        Label lblEnterIdWhich = new Label(shlDesktopClient, SWT.NONE);
+//        lblEnterIdWhich.setText("Enter ID of Object, which history you want to see:");
 
         text = new Text(shlDesktopClient, SWT.BORDER);
         text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
-        Button btnOk = new Button(shlDesktopClient, SWT.NONE);
-        btnOk.setText("OK");
-        Color bgColor = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
-        btnOk.setBackground(bgColor);
-        Image buttonOK = new Image(display, "resources/buttonOK.png");
-        btnOk.setImage(buttonOK);
+        //Button OK
+//        Button btnOk = new Button(shlDesktopClient, SWT.NONE);
+//        btnOk.setText("OK");
+//        Color bgColor = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
+//        btnOk.setBackground(bgColor);
+//        Image buttonOK = new Image(display, "resources/buttonOK.png");
+//        btnOk.setImage(buttonOK);
 
         Label lblprovider = new Label(shlDesktopClient, SWT.NONE);
         lblprovider.setText("");
@@ -229,8 +247,8 @@ public class Client
         MenuItem mXmlProvider = new MenuItem(menu_Provider, SWT.NONE);
         mXmlProvider.setText("Xml Provider");
 
-        MenuItem mJsonProvider = new MenuItem(menu_Provider, SWT.NONE);
-        mJsonProvider.setText("Json Provider");
+//        MenuItem mJsonProvider = new MenuItem(menu_Provider, SWT.NONE);
+//        mJsonProvider.setText("Json Provider");
 
         MenuItem mView = new MenuItem(menu, SWT.CASCADE);
         mView.setText("View");
@@ -246,9 +264,9 @@ public class Client
 
         // mGraph.addSelectionListener(new GraphController(shlDesktopClient, model.providerId, this));
         mTable.addSelectionListener(new TableController(viewTable, shlDesktopClient));
-        mXmlProvider.addSelectionListener(new XmlProviderController(lblprovider, model));
-        mJsonProvider.addSelectionListener(new JsonProviderController(lblprovider, model));
-        btnOk.addSelectionListener(new ButtonOKController(model, text, viewTable));
+////        mXmlProvider.addSelectionListener(new XmlProviderController(lblprovider, model));
+////        mJsonProvider.addSelectionListener(new JsonProviderController(lblprovider, model));
+//        btnOk.addSelectionListener(new ButtonOKController(model, text, viewTable));
 
         shlDesktopClient.open();
         log.info("Start window have been drawn");
