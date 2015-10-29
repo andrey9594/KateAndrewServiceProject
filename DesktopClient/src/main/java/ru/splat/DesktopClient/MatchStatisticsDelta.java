@@ -1,5 +1,6 @@
 package ru.splat.DesktopClient;
 
+
 import matchstatistic.MatchType;
 import matchstatistic.Statistics;
 
@@ -13,7 +14,7 @@ public class MatchStatisticsDelta
 
     private int team2id;
 
-    private long matchid;
+    private int matchid;
 
     private long timestamp;
 
@@ -21,14 +22,16 @@ public class MatchStatisticsDelta
 
     private Statistics statistic;
 
+
     /**
      * That constructor takes info about some statistic
-     * @param matchid 
+     * 
+     * @param matchid
      * @param timestamp
      * @param sportType
      * @param statistic
      */
-    public MatchStatisticsDelta(long matchid, long timestamp, MatchType sportType, Statistics statistic)
+    public MatchStatisticsDelta(int matchid, long timestamp, MatchType sportType, Statistics statistic)
     {
         this.matchid = matchid;
         this.timestamp = timestamp;
@@ -37,14 +40,16 @@ public class MatchStatisticsDelta
         this.team1id = this.team2id = -1;
     }
 
+
     /**
      * That constructor takes info about team1id and team2id
+     * 
      * @param matchid
      * @param timestamp
      * @param team1id
      * @param team2id
      */
-    public MatchStatisticsDelta(long matchid, long timestamp, int team1id, int team2id)
+    public MatchStatisticsDelta(int matchid, long timestamp, int team1id, int team2id)
     {
         this.matchid = matchid;
         this.timestamp = timestamp;
@@ -53,13 +58,13 @@ public class MatchStatisticsDelta
     }
 
 
-    public void setMatchid(long matchid)
+    public void setMatchid(int matchid)
     {
         this.matchid = matchid;
     }
 
 
-    public long getMatchid()
+    public int getMatchid()
     {
         return matchid;
     }
