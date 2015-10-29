@@ -1,6 +1,7 @@
 package KateAndrewService;
 
 
+import java.beans.Customizer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,6 +32,8 @@ import matchstatistic.Statistics;
 import matchstatistic.sportstatistictypes.StatisticType;
 import ru.splat.kateandrewserviceprojectgenerated.EventEntryTCP;
 import ru.splat.kateandrewserviceprojectgenerated.EventList;
+import ru.splat.kateandrewserviceprojectgenerated.MatchEntryTCP;
+import ru.splat.kateandrewserviceprojectgenerated.MatchList;
 
 
 /**
@@ -297,32 +300,6 @@ public class ServiceNoSQL
 
 
     /**
-     * cache info from provider, which send info in Json format
-     *
-     * @param id identifier of Object, which value we cache
-     * @param value positive or negative value, which we cache
-     */
-    // private void cacheJson(int id, int value)
-    // {
-    // if (!locks.containsKey(id))
-    // {
-    // locks.put(id, new ReentrantReadWriteLock());
-    // }
-    // locks.get(id).writeLock().lock();
-    // try
-    // {
-    // upsertValueJson(id, value);
-    // cache.put(id, value);
-    //
-    // log.info("Cache info from provider, which send info in json format");
-    // }
-    // finally
-    // {
-    // locks.get(id).writeLock().unlock();
-    // }
-    // }
-
-    /**
      * <p>
      *
      * @author Andrey & Ekaterina inner class Thread For xml Provider
@@ -352,119 +329,183 @@ public class ServiceNoSQL
                 while (true)
                 {
                     String xml = scanner.nextLine();
-
-                    /**
-                     * Parsing xml here
-                     */
-                    EventList eventList = null;
-                    try
+                    StringBuilder s = new StringBuilder("");
+                    for (int j = 0; j < xml.length() && xml.charAt(j) != ' ' && xml.charAt(j) != '>'; j++)
+                        s.append(xml.charAt(j));
+                    if (s.toString().equals("<event_list") || s.toString().equals("<event_list>"))
                     {
-                        JAXBContext jaxbContext = JAXBContext.newInstance(EventList.class);
-                        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-                        eventList = (EventList) unmarshaller.unmarshal(new StringBufferInputStream(xml));
-                    }
-                    catch (JAXBException e)
-                    {
-                        log.error("Error parsing xml: {}", xml, e);
-                        e.printStackTrace();
-                    }
-
-                    for (int j = 0; j < eventList.getEvent().size(); j++)
-                    {
-                        EventEntryTCP event = eventList.getEvent().get(j);
-                        int curMatchId = event.getMatchid();
-                        log.debug("Sport name of match with {} id is {}", curMatchId,
-                                matchidToSportName.get(curMatchId).name());
-
-                        // update Matches
-                        for (String allStatisticString : event.getStatistics())
+                        /**
+                         * Parsing eventList from xml here
+                         */
+                        EventList eventList = null;
+                        try
                         {
-                            for (String statisticsString : allStatisticString.split(" "))
+                            JAXBContext jaxbContext = JAXBContext.newInstance(EventList.class);
+                            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+                            eventList = (EventList) unmarshaller.unmarshal(new StringBufferInputStream(xml));
+                        }
+                        catch (JAXBException e)
+                        {
+                            log.error("Error parsing xml: {}", xml, e);
+                            e.printStackTrace();
+                        }
+
+                        for (int j = 0; j < eventList.getEvent().size(); j++)
+                        {
+                            EventEntryTCP event = eventList.getEvent().get(j);
+                            int curMatchId = event.getMatchid();
+                            log.debug("Sport name of match with {} id is {}", curMatchId,
+                                    matchidToSportName.get(curMatchId).name());
+
+                            // update Matches
+                            for (String allStatisticString : event.getStatistics())
                             {
-                                String splitedStatistic[] = statisticsString.split("=");
-                                int statisticCode = Integer.parseInt(splitedStatistic[0]);
-                                int statisticValue = Integer.parseInt(splitedStatistic[1]);
-
-                                /*
-                                 * get statisticType for statisticCode (from .cvs file) from map home 1xxx, away 2xxx
-                                 * teams
-                                 */
-                                MatchType sportType = matchidToSportName.get(curMatchId);
-                                Map<Integer, StatisticType> tempMap = codeToStatistic.get(sportType);
-                                if (tempMap == null)
+                                for (String statisticsString : allStatisticString.split(" "))
                                 {
-                                    /**
-                                     * if we don't have that type of sport, we just do nothing
+                                    String splitedStatistic[] = statisticsString.split("=");
+                                    int statisticCode = Integer.parseInt(splitedStatistic[0]);
+                                    int statisticValue = Integer.parseInt(splitedStatistic[1]);
+
+                                    /*
+                                     * get statisticType for statisticCode (from .cvs file) from map home 1xxx, away
+                                     * 2xxx teams
                                      */
-                                    continue;
-                                }
-                                StatisticType statisticType = codeToStatistic.get(sportType).get(statisticCode);
-                                if (statisticType == null)
-                                {
+                                    MatchType sportType = matchidToSportName.get(curMatchId);
+                                    Map<Integer, StatisticType> tempMap = codeToStatistic.get(sportType);
+                                    if (tempMap == null)
+                                    {
+                                        /**
+                                         * if we don't have that type of sport, we just do nothing
+                                         */
+                                        continue;
+                                    }
+                                    StatisticType statisticType = codeToStatistic.get(sportType).get(statisticCode);
+                                    if (statisticType == null)
+                                    {
+                                        /**
+                                         * if we don't have that code of event, we just do nothing
+                                         */
+                                        continue;
+                                    }
+                                    log.debug("Statistic for matchid = " + curMatchId + ": " + statisticsString + " = "
+                                            + statisticType);
                                     /**
-                                     * if we don't have that code of event, we just do nothing
+                                     * @isHomeStatistic = @isGuestStatictic = true if statistic is general for all teams
                                      */
-                                    continue;
+                                    boolean isHomeStatistic = (statisticValue / 1000) == 1; //
+                                    boolean isGuestStatistic = (statisticValue / 1000) == 2; //
+
+                                    /**
+                                     * clients work with cache but don't work with
+                                     */
+                                    if (!locks.containsKey(curMatchId))
+                                        locks.put(curMatchId, new ReentrantReadWriteLock());
+
+                                    Statistics statistic = null;
+                                    locks.get(curMatchId).writeLock().lock();
+                                    try
+                                    {
+                                        Match currentMatch = null;
+                                        if (!cache.containsKey(curMatchId))
+                                        {
+                                            currentMatch = new Match(matchidToSportName.get(curMatchId),
+                                                    event.getTimestamp());
+                                        }
+                                        else
+                                        {
+                                            currentMatch = cache.get(curMatchId);
+                                        }
+                                        statistic = currentMatch.getStatistic(statisticType);
+                                        if (statistic == null)
+                                        {
+                                            statistic = new Statistics(statisticType);
+                                        }
+                                        if (isHomeStatistic)
+                                        {
+                                            statistic.setValue1(statisticValue);
+                                        }
+                                        if (isGuestStatistic)
+                                        {
+                                            statistic.setValue2(statisticValue);
+                                        }
+                                        currentMatch.addStatistics(statistic);
+
+                                        cache.put(curMatchId, currentMatch);
+                                    }
+                                    finally
+                                    {
+                                        locks.get(curMatchId).writeLock().unlock();
+                                    }
+
+                                    MatchStatisticsDelta statisticDelta = new MatchStatisticsDelta(curMatchId,
+                                            event.getTimestamp(), sportType, statistic);
+
+                                    producer.publish(statisticDelta);
+
+                                    log.info("Statistics from xml for match with matchid = {} is received",
+                                            statisticDelta.getMatchid());
                                 }
-                                log.debug("Statistic for matchid = " + curMatchId + ": " + statisticsString + " = "
-                                        + statisticType);
-                                /**
-                                 * @isHomeStatistic = @isGuestStatictic = true if statistic is general for all teams
-                                 */
-                                boolean isHomeStatistic = (statisticValue / 1000) == 1; //
-                                boolean isGuestStatistic = (statisticValue / 1000) == 2; //
-
-                                Match currentMatch = null;
-
-                                /**
-                                 * clients work with cache but don't work with
-                                 */
-                                if (!locks.containsKey(curMatchId))
-                                    locks.put(curMatchId, new ReentrantReadWriteLock());
-
-                                Statistics statistic = null;
-                                locks.get(curMatchId).writeLock().lock();
-                                try
-                                {
-                                    if (!cache.containsKey(curMatchId))
-                                    {
-                                        currentMatch = new Match(matchidToSportName.get(curMatchId), -1);
-                                    }
-                                    else
-                                    {
-                                        currentMatch = cache.get(curMatchId);
-                                    }
-                                    statistic = currentMatch.getStatistic(statisticType);
-                                    if (statistic == null)
-                                    {
-                                        statistic = new Statistics(statisticType);
-                                    }
-                                    if (isHomeStatistic)
-                                    {
-                                        statistic.setValue1(statisticValue);
-                                    }
-                                    if (isGuestStatistic)
-                                    {
-                                        statistic.setValue2(statisticValue);
-                                    }
-                                    currentMatch.addStatistics(statistic);
-
-                                    cache.put(curMatchId, currentMatch);
-                                }
-                                finally
-                                {
-                                    locks.get(curMatchId).writeLock().unlock();
-                                }
-
-                                MatchStatisticsDelta statisticDelta = new MatchStatisticsDelta(curMatchId,
-                                        event.getTimestamp(), sportType, statistic);
-
-                                producer.publish(statisticDelta);
-
-                                log.info("Statistics from xml for match with matchid = {} is received",
-                                        statisticDelta.getMatchid());
                             }
                         }
+                    }
+                    else
+                    {
+                        /**
+                         * Parsing matchList from xml here
+                         */
+                        MatchList matchList = null;
+                        try
+                        {
+                            JAXBContext jaxbContext = JAXBContext.newInstance(MatchList.class);
+                            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+                            matchList = (MatchList) unmarshaller.unmarshal(new StringBufferInputStream(xml));
+                        }
+                        catch (JAXBException e)
+                        {
+                            log.error("Error parsing xml: {}", xml, e);
+                            e.printStackTrace();
+                        }
+
+                        for (int j = 0; j < matchList.getMatch().size(); j++)
+                        {
+                            MatchEntryTCP matchEntry = matchList.getMatch().get(j);
+                            int curMatchId = matchEntry.getMatchid();
+                            MatchType sportType = matchidToSportName.get(curMatchId);
+
+                            log.debug("Sport name of match with {} id is {}", curMatchId, sportType.name());
+
+                            if (!locks.containsKey(curMatchId))
+                            {
+                                locks.put(curMatchId, new ReentrantReadWriteLock());
+                            }
+
+                            locks.get(curMatchId).writeLock().lock();
+                            try
+                            {
+                                Match currentMatch = null;
+                                if (!cache.containsKey(curMatchId))
+                                {
+                                    currentMatch = new Match(matchidToSportName.get(curMatchId),
+                                            matchEntry.getTimestamp());
+                                }
+                                else
+                                {
+                                    currentMatch = cache.get(curMatchId);
+                                }
+                                currentMatch.setT1Name(Integer.toString(matchEntry.getTeam1Id()));
+                                currentMatch.setT2Name(Integer.toString(matchEntry.getTeam2Id()));
+                                cache.put(curMatchId, currentMatch);
+                            }
+                            finally
+                            {
+                                locks.get(curMatchId).writeLock().unlock();
+                            }
+                            MatchStatisticsDelta matchStatisticsDelta = new MatchStatisticsDelta(curMatchId,
+                                    matchEntry.getTimestamp(), matchEntry.getTeam1Id(), matchEntry.getTeam2Id());                           
+                            producer.publish(matchStatisticsDelta);
+                            log.info("Information about team's id is received");
+                        }
+
                     }
                 }
             }
