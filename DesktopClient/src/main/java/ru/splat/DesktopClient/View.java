@@ -24,13 +24,13 @@ import org.slf4j.LoggerFactory;
 public class View implements Observer
 {
     private static final Logger log = LoggerFactory.getLogger(View.class);
-    
+
     private Shell shell;
 
     private Model model;
 
     private Table table;
-    
+
     private ViewTable viewTable;
 
 
@@ -48,26 +48,25 @@ public class View implements Observer
 
 
     @Override
-    public void update(OperationType operation, int providerId, int packageId)
+    public void update(OperationType operation, int matchid)
     {
-	/**
-	 * Запроси данные от провайдера @providerId 
-	 * а именно пакет @packageId
-	 */
-        if (providerId == model.getProviderType().ordinal()) 
+        if (operation == OperationType.ADDED)
         {
-            if (model.getId() == packageId)
-        	if (this.viewTable != null) 
-        	{
-        	    Display.getDefault().asyncExec(new Runnable() 
-        	    {		      
-		        @Override
-		        public void run() 
-		        {
-		            viewTable.drawTable();		    	
-		        }
-		    });    
-        	}
+            if (this.viewTable != null)
+            {
+                Display.getDefault().asyncExec(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        viewTable.drawTable(matchid);
+                    }
+                });
+            }
+        }
+        if (operation == OperationType.REMOVED)
+        {
+
         }
     }
 
@@ -82,50 +81,54 @@ public class View implements Observer
          *
          * @param shell shell of DC
          */
-        public void drawTable()
+        public void drawTable(int matchid)
         {
-            if (table == null) {
-        	table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
-            	table.setLinesVisible(true);
-            	table.setHeaderVisible(true);
+            /**
+             * Cделать чтобы не вся таблица перересоывалась а столбцы занеси в массив
+             * 
+             */
+            if (matchid == -1) 
+            {
+                // рисуем всю таблицу тогда
+            }
+            
+            if (table == null)
+            {
+                table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+                table.setLinesVisible(true);
+                table.setHeaderVisible(true);
             }
             GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
             data.heightHint = 300;
             data.widthHint = 400;
             table.setLayoutData(data);
-            String[] titles = { "time", "value" };
+            String[] titles = { "matchid", "sportType" };
             for (int i = 0; i < titles.length; i++)
             {
                 TableColumn column = new TableColumn(table, SWT.NONE);
                 column.setText(titles[i]);
+
             }
 
-            // the output values
+            // com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> modelTable = model.getModelTable();
 
-            //com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> modelTable = model.getModelTable();
-
-            boolean found = false;
-            for (Timestamp time : model.getKeySetForRow(model.getProviderType().ordinal()))
+            for (Integer matchId : model.getAllMatchid())
             {
-        	ProviderPackage providerPackage = model.getPackageForRowAndTime(model.getProviderType().ordinal(), time);
-                if (providerPackage.getId() == model.getId())
-                {
-                    found = true;
-                    TableItem item = new TableItem(table, SWT.NONE);
-                    item.setText(0, "" + time);
-                    item.setText(1, "" + providerPackage.getValue());
-                    log.info("Table with info from {} have been drawn",
-                            converProviderID(model.getProviderType().ordinal()));
-                }
-            }
 
-            if (!found)
-            {
                 TableItem item = new TableItem(table, SWT.NONE);
-                item.setText(0, "" + new java.sql.Timestamp(new java.util.Date().getTime()));
-                item.setText(1, "" + "History of Object with id = " + model.getId() + " is empty");
-                log.info("History of Object with id = {} is Empty", model.getId());
+                item.setText(0, "" + matchId);
+                item.setText(1, "" + model.getSportTypeForMatchid(matchId));
+                log.info("Table with info have been drawn");
+
             }
+
+            // if (!found)
+            // {
+            // TableItem item = new TableItem(table, SWT.NONE);
+            // item.setText(0, "" + new java.sql.Timestamp(new java.util.Date().getTime()));
+            // item.setText(1, "" + "History of Object with id = " + model.getId() + " is empty");
+            // log.info("History of Object with id = {} is Empty", model.getId());
+            // }
 
             for (int i = 0; i < titles.length; i++)
             {
@@ -133,23 +136,6 @@ public class View implements Observer
             }
 
             shell.pack();
-        }
-
-
-        /**
-         * Convert number of Provider to name of Provider
-         *
-         * @param providerId number of provider
-         * @return name of provider
-         */
-        public String converProviderID(int providerId)
-        {
-            if (providerId == 0)
-                return "XML Provider";
-            else if (providerId == 1)
-                return "Json ProVider";
-            else
-                return "Null";
         }
     }
 
