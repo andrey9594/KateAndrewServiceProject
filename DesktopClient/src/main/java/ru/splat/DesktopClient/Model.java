@@ -1,8 +1,8 @@
 package ru.splat.DesktopClient;
 
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import matchstatistic.Match;
+import matchstatistic.MatchType;
 import matchstatistic.Statistics;
 import matchstatistic.sportstatistictypes.StatisticType;
 
@@ -32,7 +33,7 @@ public class Model implements Subject
     /**
      * Don't use guava because we don't need to remove old match's statistics
      */
-    private Map<Integer, Match> modelTable;
+    private Map<Integer, Match> modelTable = new HashMap<>();
 
 
     public void setMatchForMatchid(int matchid, Match match)
@@ -41,7 +42,14 @@ public class Model implements Subject
         modelTable.put(matchid, match);
     }
 
-
+    public Set<Integer> getAllMatchid() {
+        return modelTable.keySet();
+    }
+    
+    public MatchType getSportTypeForMatchid(int matchid) {
+        return modelTable.get(matchid).getType();
+    }
+    
     public Statistics getStatisticForMatchid(int matchid, StatisticType statisticType)
     {
         return modelTable.get(matchid).getStatistic(statisticType);
