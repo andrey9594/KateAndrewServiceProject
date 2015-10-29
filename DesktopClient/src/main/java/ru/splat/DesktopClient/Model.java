@@ -60,6 +60,11 @@ public class Model implements Subject
     }
 
 
+    /**
+     * add new information from that object of MatchStatisticsDelta class
+     * 
+     * @param matchStatisticDelta
+     */
     public void addPackage(MatchStatisticsDelta matchStatisticDelta)
     {
         Match match = modelTable.get(matchStatisticDelta.getMatchid());
@@ -67,7 +72,17 @@ public class Model implements Subject
         {
             match = new Match(matchStatisticDelta.getSportType(), matchStatisticDelta.getTimestamp());
         }
-        match.addStatistics(matchStatisticDelta.getStatistic());
+
+        if (matchStatisticDelta.getTeam1id() == -1)
+        {
+            match.addStatistics(matchStatisticDelta.getStatistic());
+        }
+        else
+        {
+            match.setT1Name(Integer.toString(matchStatisticDelta.getTeam1id()));
+            match.setT2Name(Integer.toString(matchStatisticDelta.getTeam2id()));
+        }
+
         modelTable.put(matchStatisticDelta.getMatchid(), match);
         log.info("Put match with matchid = " + matchStatisticDelta.getMatchid());
     }
