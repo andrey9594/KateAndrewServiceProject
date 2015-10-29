@@ -13,14 +13,17 @@ public class MatchStatisticsDelta
 
     private long matchid;
 
+    private long timestamp;
+
     private MatchType sportType;
 
     private Statistics statistic;
 
 
-    public MatchStatisticsDelta(long matchid, MatchType sportType, Statistics statistic)
+    public MatchStatisticsDelta(long matchid, long timestamp, MatchType sportType, Statistics statistic)
     {
         this.matchid = matchid;
+        this.timestamp = timestamp;
         this.sportType = sportType;
         this.statistic = statistic;
     }
@@ -68,6 +71,7 @@ public class MatchStatisticsDelta
     @Override
     public String toString()
     {
-        return "DataObject [matchid=" + matchid + ", sportType=" + sportType + ", statistic=" + statistic + "]";
+        return "DataObject [matchid=" + matchid + ", timestamp=" + timestamp + ", sportType=" + sportType
+                + ", statistic=" + statistic + "]";
     }
 }
