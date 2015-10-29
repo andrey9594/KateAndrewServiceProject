@@ -295,32 +295,6 @@ public class ServiceNoSQL
     // log.info("value in json MongoDB collection updated");
     // }
 
-    /**
-     * cache info from provider, which send info in Xml format
-     *
-     * @param id identifier of Object, which value we cache
-     * @param value positive or negative value, which we cache
-     */
-    // private void cacheXml(int id, int value)
-    // {
-    // if (!locks.containsKey(id))
-    // {
-    // locks.put(id, new ReentrantReadWriteLock());
-    // }
-    // locks.get(id).writeLock().lock();
-    // try
-    // {
-    // upsertValueXml(id, value);
-    // cache.put(id, value);
-    //
-    // log.info("Cache info from provider, which send info in xml format");
-    // }
-    // finally
-    // {
-    // locks.get(id).writeLock().unlock();
-    // }
-    // }
-
 
     /**
      * cache info from provider, which send info in Json format
@@ -411,8 +385,6 @@ public class ServiceNoSQL
                                 int statisticCode = Integer.parseInt(splitedStatistic[0]);
                                 int statisticValue = Integer.parseInt(splitedStatistic[1]);
 
-                                log.debug("It's " + statisticCode + " = " + statisticValue);
-
                                 /*
                                  * get statisticType for statisticCode (from .cvs file) from map home 1xxx, away 2xxx
                                  * teams
@@ -434,7 +406,7 @@ public class ServiceNoSQL
                                      */
                                     continue;
                                 }
-                                log.info("Statistic for matchid = " + curMatchId + ": " + statisticsString + " = "
+                                log.debug("Statistic for matchid = " + curMatchId + ": " + statisticsString + " = "
                                         + statisticType);
                                 /**
                                  * @isHomeStatistic = @isGuestStatictic = true if statistic is general for all teams
