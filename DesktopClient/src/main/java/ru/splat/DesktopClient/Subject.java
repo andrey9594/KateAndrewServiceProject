@@ -13,5 +13,5 @@ public interface Subject
     public void removeObserver(Observer o);
 
 
-    public void notifyAllObserver(OperationType operation, int providerId, int packageId);
+    public void notifyAllObserver(OperationType operation, int matchid);
 }

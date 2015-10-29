@@ -290,10 +290,10 @@ public class GraphController implements SelectionListener
      * @param value positive or negative value, which must convert to coordinates
      * @return Value in Coordinates
      */
-    private int convertValueToCoordinates(int value)
-    {
-        log.info("value is converting");
-        return (value / (-13750000) + 255);
-    }
+//    private int convertValueToCoordinates(int value)
+//    {
+//        log.info("value is converting");
+//        return (value / (-13750000) + 255);
+//    }
 
 }

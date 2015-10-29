@@ -89,7 +89,7 @@ public class Client
 
         log.debug("Creating view");
         view = new View(model, shlDesktopClient);
-  
+
         log.debug("VIew was created");
 
         model.registerObserver(view);

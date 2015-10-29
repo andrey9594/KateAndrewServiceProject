@@ -50,6 +50,10 @@ public class View implements Observer
     @Override
     public void update(OperationType operation, int providerId, int packageId)
     {
+	/**
+	 * Запроси данные от провайдера @providerId 
+	 * а именно пакет @packageId
+	 */
         if (providerId == model.getProviderType().ordinal()) 
         {
             if (model.getId() == packageId)
