@@ -1,5 +1,4 @@
-package KateAndrewService;
-
+package ru.splat.DesktopClient;
 
 import matchstatistic.MatchType;
 import matchstatistic.Statistics;
