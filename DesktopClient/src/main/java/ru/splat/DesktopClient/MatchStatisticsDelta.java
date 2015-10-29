@@ -70,6 +70,18 @@ public class MatchStatisticsDelta
     }
 
 
+    public void setTimestamp(long timestamp)
+    {
+        this.timestamp = timestamp;
+    }
+
+
+    public long getTimestamp()
+    {
+        return timestamp;
+    }
+
+
     public int getTeam1id()
     {
         return team1id;
