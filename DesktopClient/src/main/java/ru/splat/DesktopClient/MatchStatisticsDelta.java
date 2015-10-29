@@ -1,4 +1,4 @@
-package ru.splat.DesktopClient;
+package KateAndrewService;
 
 
 import matchstatistic.MatchType;
@@ -10,6 +10,9 @@ import matchstatistic.Statistics;
  */
 public class MatchStatisticsDelta
 {
+    private int team1id;
+
+    private int team2id;
 
     private long matchid;
 
@@ -19,13 +22,35 @@ public class MatchStatisticsDelta
 
     private Statistics statistic;
 
-
+    /**
+     * That constructor takes info about some statistic
+     * @param matchid 
+     * @param timestamp
+     * @param sportType
+     * @param statistic
+     */
     public MatchStatisticsDelta(long matchid, long timestamp, MatchType sportType, Statistics statistic)
     {
         this.matchid = matchid;
         this.timestamp = timestamp;
         this.sportType = sportType;
         this.statistic = statistic;
+        this.team1id = this.team2id = -1;
+    }
+
+    /**
+     * That constructor takes info about team1id and team2id
+     * @param matchid
+     * @param timestamp
+     * @param team1id
+     * @param team2id
+     */
+    public MatchStatisticsDelta(long matchid, long timestamp, int team1id, int team2id)
+    {
+        this.matchid = matchid;
+        this.timestamp = timestamp;
+        this.team1id = team1id;
+        this.team2id = team2id;
     }
 
 
@@ -38,6 +63,30 @@ public class MatchStatisticsDelta
     public long getMatchid()
     {
         return matchid;
+    }
+
+
+    public int getTeam1id()
+    {
+        return team1id;
+    }
+
+
+    public void setTeam1id(int team1id)
+    {
+        this.team1id = team1id;
+    }
+
+
+    public int getTeam2id()
+    {
+        return team2id;
+    }
+
+
+    public void setTeam2id(int team2id)
+    {
+        this.team2id = team2id;
     }
 
 
@@ -71,7 +120,7 @@ public class MatchStatisticsDelta
     @Override
     public String toString()
     {
-        return "DataObject [matchid=" + matchid + ", timestamp=" + timestamp + ", sportType=" + sportType
-                + ", statistic=" + statistic + "]";
+        return "DataObject [matchid=" + matchid + ", timestamp=" + timestamp + ", team1id=" + team1id + ", team2id="
+                + team2id + ", sportType=" + sportType + ", statistic=" + statistic + "]";
     }
 }
