@@ -217,7 +217,7 @@ public class Client
         shlDesktopClient.setBackgroundImage(bgImg);
         shlDesktopClient.setBackgroundMode(SWT.INHERIT_FORCE);
 
-        gl_shlDesktopClient.numColumns = 3;
+        gl_shlDesktopClient.numColumns = 1;
 //        Label lblEnterIdWhich = new Label(shlDesktopClient, SWT.NONE);
 //        lblEnterIdWhich.setText("Enter ID of Object, which history you want to see:");
 

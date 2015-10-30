@@ -1,7 +1,8 @@
 package ru.splat.DesktopClient;
 
 
-import java.sql.Timestamp;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -59,6 +60,9 @@ public class View implements Observer
                     @Override
                     public void run()
                     {
+                        /**
+                         * redraw only one line
+                         */
                         viewTable.drawTable(matchid);
                     }
                 });
@@ -66,7 +70,9 @@ public class View implements Observer
         }
         if (operation == OperationType.REMOVED)
         {
-
+            /**
+             * we don't need it yet
+             */
         }
     }
 
@@ -76,6 +82,9 @@ public class View implements Observer
      */
     public class ViewTable
     {
+        private Set<Integer> matchidSet = new TreeSet<>();
+
+
         /**
          * Draws a specific table values for a given object identifier
          *
@@ -83,43 +92,52 @@ public class View implements Observer
          */
         public void drawTable(int matchid)
         {
-            /**
-             * Cделать чтобы не вся таблица перересоывалась а столбцы занеси в массив
-             * 
-             */
-            if (matchid == -1) 
-            {
-                // рисуем всю таблицу тогда
-            }
-            
             if (table == null)
             {
                 table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
                 table.setLinesVisible(true);
                 table.setHeaderVisible(true);
             }
-            GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
-            data.heightHint = 300;
-            data.widthHint = 400;
-            table.setLayoutData(data);
-            String[] titles = { "matchid", "sportType" };
-            for (int i = 0; i < titles.length; i++)
+            if (matchid != -1) // TODO == 1!!!!!!!!!!!!!!!!!!!!!
             {
-                TableColumn column = new TableColumn(table, SWT.NONE);
-                column.setText(titles[i]);
+                GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
+                data.heightHint = 300;
+                data.widthHint = 400;
+                table.setLayoutData(data);
+                String[] titles = { "matchid", "sportType" };
+                for (int i = 0; i < titles.length; i++)
+                {
+                    TableColumn column = new TableColumn(table, SWT.NONE);
+                    column.setText(titles[i]);
 
+                }
+
+                // com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> modelTable =
+                // model.getModelTable();
+
+                for (Integer matchId : model.getAllMatchid())
+                {
+
+                    TableItem item = new TableItem(table, SWT.NONE);
+                    item.setText(0, "" + matchId);
+                    item.setText(1, "" + model.getSportTypeForMatchid(matchId));
+                    log.info("Table with info have been drawn");
+
+                }
+                for (int i = 0; i < titles.length; i++)
+                {
+                    table.getColumn(i).pack();
+                }
             }
-
-            // com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> modelTable = model.getModelTable();
-
-            for (Integer matchId : model.getAllMatchid())
+            else
             {
-
-                TableItem item = new TableItem(table, SWT.NONE);
-                item.setText(0, "" + matchId);
-                item.setText(1, "" + model.getSportTypeForMatchid(matchId));
-                log.info("Table with info have been drawn");
-
+                if (!matchidSet.contains(matchid))
+                {
+                    // создаем новый item
+                    // иначе перерисовываем что есть уж
+                    // когда детально будем смотреть всю статистику
+                    // тогда и будем её для ровно одной строки делать
+                }
             }
 
             // if (!found)
@@ -130,12 +148,7 @@ public class View implements Observer
             // log.info("History of Object with id = {} is Empty", model.getId());
             // }
 
-            for (int i = 0; i < titles.length; i++)
-            {
-                table.getColumn(i).pack();
-            }
-
-            shell.pack();
+            shell.pack(); // ?????????????????????
         }
     }
 
