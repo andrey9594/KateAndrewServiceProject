@@ -104,7 +104,7 @@ public class View implements Observer
                 data.heightHint = 300;
                 data.widthHint = 400;
                 table.setLayoutData(data);
-                String[] titles = { "matchid", "sportType" };
+                String[] titles = { "matchid", "sportType", "team1id", "team2id", "score", "isFinished"  };
                 for (int i = 0; i < titles.length; i++)
                 {
                     TableColumn column = new TableColumn(table, SWT.NONE);
@@ -121,6 +121,16 @@ public class View implements Observer
                     TableItem item = new TableItem(table, SWT.NONE);
                     item.setText(0, "" + matchId);
                     item.setText(1, "" + model.getSportTypeForMatchid(matchId));
+                    String team1id = model.getTeam1idForMatchid(matchid);
+                    if (team1id == null)
+                        team1id = "?";
+                    String team2id = model.getTeam2idForMatchid(matchid);
+                    if (team2id == null)
+                        team2id = "?";
+                    item.setText(2, "" + team1id);
+                    item.setText(3, "" + team2id);
+                    item.setText(4, "?");
+                    item.setText(5, "?");
                     log.info("Table with info have been drawn");
 
                 }
