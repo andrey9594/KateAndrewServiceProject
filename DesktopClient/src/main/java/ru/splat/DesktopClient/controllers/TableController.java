@@ -44,7 +44,7 @@ public class TableController implements SelectionListener
     public void widgetSelected(SelectionEvent selectionEvent)
     {
         log.info("Table item is selected");
-        viewTable.drawTable(-1);
+        viewTable.drawTable(-1); // matchid == -1 means redraw all that table
     }
 
 
