@@ -28,7 +28,7 @@ public class ProcessPackageController
      */
     public void processPackage(MatchStatisticsDelta matchStatiticsDelta, Model model)
     {
-        log.info("Got new object of matchStatisticsDelta with matchid = {}" + matchStatiticsDelta.getMatchid());
+        log.info("Got new object of matchStatisticsDelta with matchid = " + matchStatiticsDelta.getMatchid());
 
         model.addPackage(matchStatiticsDelta);
         model.notifyAllObserver(OperationType.ADDED, matchStatiticsDelta.getMatchid());
