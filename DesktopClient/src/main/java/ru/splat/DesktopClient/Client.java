@@ -221,8 +221,8 @@ public class Client
 //        Label lblEnterIdWhich = new Label(shlDesktopClient, SWT.NONE);
 //        lblEnterIdWhich.setText("Enter ID of Object, which history you want to see:");
 
-        text = new Text(shlDesktopClient, SWT.BORDER);
-        text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+//        text = new Text(shlDesktopClient, SWT.BORDER);
+//        text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
         //Button OK
 //        Button btnOk = new Button(shlDesktopClient, SWT.NONE);
@@ -263,7 +263,7 @@ public class Client
         mGraph.setText("Graph");
 
         // mGraph.addSelectionListener(new GraphController(shlDesktopClient, model.providerId, this));
-        mTable.addSelectionListener(new TableController(viewTable, shlDesktopClient));
+        mTable.addSelectionListener(new TableController(viewTable));
 ////        mXmlProvider.addSelectionListener(new XmlProviderController(lblprovider, model));
 ////        mJsonProvider.addSelectionListener(new JsonProviderController(lblprovider, model));
 //        btnOk.addSelectionListener(new ButtonOKController(model, text, viewTable));

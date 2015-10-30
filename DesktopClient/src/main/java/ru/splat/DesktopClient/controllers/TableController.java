@@ -23,18 +23,15 @@ public class TableController implements SelectionListener
 
     private View.ViewTable viewTable;
 
-    private Shell shell;
-
 
     /**
      * Constructor of TableController
      *
      * @param view
      */
-    public TableController(View.ViewTable view, Shell shell)
+    public TableController(View.ViewTable view)
     {
         this.viewTable = view;
-        this.shell = shell;
     }
 
 
@@ -46,6 +43,7 @@ public class TableController implements SelectionListener
     @Override
     public void widgetSelected(SelectionEvent selectionEvent)
     {
+        log.info("Table item is selected");
         viewTable.drawTable(-1);
     }
 
