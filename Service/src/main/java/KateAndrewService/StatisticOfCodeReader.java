@@ -8,8 +8,12 @@ import java.util.Map;
 import java.util.Scanner;
 
 import matchstatistic.MatchType;
+import matchstatistic.sportstatistictypes.Basketball;
 import matchstatistic.sportstatistictypes.Football;
+import matchstatistic.sportstatistictypes.Handball;
+import matchstatistic.sportstatistictypes.Icehockey;
 import matchstatistic.sportstatistictypes.StatisticType;
+import matchstatistic.sportstatistictypes.Volleyball;
 
 
 /**
@@ -47,16 +51,57 @@ public class StatisticOfCodeReader
             String statisticTypeString = strings[2];
 
             MatchType sportType = null;
+            Map<Integer, StatisticType> tempMap = null;
             switch (sportName)
             {
                 case "Soccer":
                     sportType = MatchType.FOOTBALL;
-                    Map<Integer, StatisticType> tempMap = statisticForCodeMap.get(sportType);
+                    tempMap = statisticForCodeMap.get(sportType);
                     if (tempMap == null)
                     {
                         tempMap = new HashMap<Integer, StatisticType>();
                     }
                     tempMap.put(code, Football.valueOf(statisticTypeString));
+                    statisticForCodeMap.put(sportType, tempMap);
+                    break;
+                case "Basketball":
+                    sportType = MatchType.BASKETBALL;
+                    tempMap = statisticForCodeMap.get(sportType);
+                    if (tempMap == null)
+                    {
+                        tempMap = new HashMap<Integer, StatisticType>();
+                    }
+                    tempMap.put(code, Basketball.valueOf(statisticTypeString));
+                    statisticForCodeMap.put(sportType, tempMap);
+                    break;
+                case "Icehockey":
+                    sportType = MatchType.ICE_HOCKEY;
+                    tempMap = statisticForCodeMap.get(sportType);
+                    if (tempMap == null)
+                    {
+                        tempMap = new HashMap<Integer, StatisticType>();
+                    }
+                    tempMap.put(code, Icehockey.valueOf(statisticTypeString));
+                    statisticForCodeMap.put(sportType, tempMap);
+                    break;
+                case "Volleyball":
+                    sportType = MatchType.VOLLEYBALL;
+                    tempMap = statisticForCodeMap.get(sportType);
+                    if (tempMap == null)
+                    {
+                        tempMap = new HashMap<Integer, StatisticType>();
+                    }
+                    tempMap.put(code, Volleyball.valueOf(statisticTypeString));
+                    statisticForCodeMap.put(sportType, tempMap);
+                    break;
+                case "Handball":
+                    sportType = MatchType.HANDBALL;
+                    tempMap = statisticForCodeMap.get(sportType);
+                    if (tempMap == null)
+                    {
+                        tempMap = new HashMap<Integer, StatisticType>();
+                    }
+                    tempMap.put(code, Handball.valueOf(statisticTypeString));
                     statisticForCodeMap.put(sportType, tempMap);
                     break;
             }
