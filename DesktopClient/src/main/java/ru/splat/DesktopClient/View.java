@@ -1,12 +1,13 @@
 package ru.splat.DesktopClient;
 
 
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -82,13 +83,13 @@ public class View implements Observer
      */
     public class ViewTable
     {
-        private Set<Integer> matchidSet = new TreeSet<>();
+        private Map<Integer, TableItem> matchidItemMap = new HashMap<>();
 
 
         /**
          * Draws a specific table values for a given object identifier
          *
-         * @param shell shell of DC
+         * @param matchid Matchid for match or -1 for redrawing all the table
          */
         public void drawTable(int matchid)
         {
@@ -97,27 +98,31 @@ public class View implements Observer
                 table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
                 table.setLinesVisible(true);
                 table.setHeaderVisible(true);
-            }
-            if (matchid != -1) // TODO == 1!!!!!!!!!!!!!!!!!!!!!
-            {
+                
                 GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
                 data.heightHint = 300;
                 data.widthHint = 400;
                 table.setLayoutData(data);
-                String[] titles = { "matchid", "sportType", "team1id", "team2id", "score", "isFinished"  };
+                String[] titles = { "matchid", "sportType", "team1id", "team2id", "score", "isFinished" };
                 for (int i = 0; i < titles.length; i++)
                 {
                     TableColumn column = new TableColumn(table, SWT.NONE);
                     column.setText(titles[i]);
-
                 }
-
+                for (int i = 0; i < titles.length; i++)
+                {
+                    table.getColumn(i).pack();
+                }
+            }
+            /**
+             * if @matchid == -1 then redraw all the table else redraw only one line for match with that matchid
+             */
+            if (matchid == -1)
+            {
                 // com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> modelTable =
-                // model.getModelTable();
 
                 for (Integer matchId : model.getAllMatchid())
                 {
-
                     TableItem item = new TableItem(table, SWT.NONE);
                     item.setText(0, "" + matchId);
                     item.setText(1, "" + model.getSportTypeForMatchid(matchId));
@@ -131,23 +136,39 @@ public class View implements Observer
                     item.setText(3, "" + team2id);
                     item.setText(4, "?");
                     item.setText(5, "?");
+                    matchidItemMap.put(matchId, item);
                     log.info("Table with info have been drawn");
 
-                }
-                for (int i = 0; i < titles.length; i++)
-                {
-                    table.getColumn(i).pack();
                 }
             }
             else
             {
-                if (!matchidSet.contains(matchid))
+                TableItem item = null;
+                if (!matchidItemMap.containsKey(matchid))
                 {
-                    // создаем новый item
-                    // иначе перерисовываем что есть уж
-                    // когда детально будем смотреть всю статистику
-                    // тогда и будем её для ровно одной строки делать
+                    item = new TableItem(table, SWT.NONE);
+                    matchidItemMap.put(matchid, item);
+                    log.info("Item with matchid = {} added", matchid);
+                    
                 }
+                else 
+                {
+                    item = matchidItemMap.get(matchid);
+                }
+                    item.setText(0, "" + matchid);
+                    item.setText(1, "" + model.getSportTypeForMatchid(matchid));
+                    String team1id = model.getTeam1idForMatchid(matchid);
+                    if (team1id == null)
+                        team1id = "?";
+                    String team2id = model.getTeam2idForMatchid(matchid);
+                    if (team2id == null)
+                        team2id = "?";
+                    item.setText(2, "" + team1id);
+                    item.setText(3, "" + team2id);
+                    item.setText(4, "?");
+                    item.setText(5, "?");
+                    log.info("Item with matchid = {} updated", matchid);
+                               
             }
 
             // if (!found)
