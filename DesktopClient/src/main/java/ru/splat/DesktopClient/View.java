@@ -5,15 +5,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Item;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import matchstatistic.Statistics;
+import matchstatistic.sportstatistictypes.Football;
+import matchstatistic.sportstatistictypes.StatisticType;
 
 
 /**
@@ -29,6 +36,8 @@ public class View implements Observer
 
     private Shell shell;
 
+    private Display display;
+
     private Model model;
 
     private Table table;
@@ -42,10 +51,11 @@ public class View implements Observer
     }
 
 
-    public View(Model model, Shell shell)
+    public View(Model model, Shell shell, Display display)
     {
         this.model = model;
         this.shell = shell;
+        this.display = display;
     }
 
 
@@ -85,6 +95,10 @@ public class View implements Observer
     {
         private Map<Integer, TableItem> matchidItemMap = new HashMap<>();
 
+        private TableItem selectedItem = null;
+
+        private Shell subShell;
+
 
         private void updateItem(int matchid, TableItem item)
         {
@@ -117,6 +131,94 @@ public class View implements Observer
                 table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
                 table.setLinesVisible(true);
                 table.setHeaderVisible(true);
+
+                table.addSelectionListener(new SelectionListener()
+                {
+                    @Override
+                    public void widgetSelected(SelectionEvent e)
+                    {
+                        selectedItem = (TableItem) e.item;
+                    }
+
+
+                    @Override
+                    public void widgetDefaultSelected(SelectionEvent e)
+                    {
+
+                    }
+                });
+
+                table.addListener(SWT.MouseDoubleClick, new Listener()
+                {
+
+                    @Override
+                    public void handleEvent(Event event)
+                    {
+                        if (subShell == null)
+                        {
+                            subShell = new Shell(display);
+                            subShell.addListener(SWT.Close, new Listener()
+                            {
+                                @Override
+                                public void handleEvent(Event event)
+                                {
+                                    subShell.setVisible(false);
+                                    event.doit = false;
+                                }
+                            });
+                            subShell.open();
+                        }
+                        int currentLineMatchid = Integer.parseInt(selectedItem.getText(0));
+                        Map <StatisticType, String> statisticValues = new HashMap<>();
+                        switch (model.getSportTypeForMatchid(currentLineMatchid))
+                        {
+                            case FOOTBALL:
+                                for (StatisticType st : Football.values()) {
+                                    Statistics statistics = model.getStatisticForMatchid(currentLineMatchid, st);
+                                    if (statistics != null)
+                                    {
+                                        String value1 = statistics.getValue1() == -1 ? "?" : "" + statistics.getValue1();
+                                        String value2 = statistics.getValue2() == -1 ? "?" : "" + statistics.getValue2();
+                                        statisticValues.put(st, value1 + "-" + value2);
+                                    }
+                                }
+
+                                break;
+                            case BASKETBALL:
+                                
+                                break;
+                            case ICE_HOCKEY:
+                                
+                                break;
+                            case VOLLEYBALL:
+                                
+                                break;
+                            case HANDBALL:
+                                
+                                break;
+                            default:
+                                return;          
+                        }
+                        Table subTable = new Table(subShell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+                        subTable.setLinesVisible(true);
+                        subTable.setHeaderVisible(true);
+                        GridData subData = new GridData(SWT.FILL, SWT.FILL, true, true);
+                        subTable.setLayoutData(subData);
+                        for (StatisticType st : statisticValues.keySet())
+                        {
+                            TableColumn column = new TableColumn(subTable, SWT.NONE);
+                            column.setText(statisticValues.get(st));
+                        }
+                        for (int i = 0; i < statisticValues.size(); i++)
+                        {
+                            subTable.getColumn(i).pack();
+                        }
+                        TableItem item = new TableItem(subTable, SWT.NONE);
+                        item.setText(0, "hey!");
+                        subShell.setVisible(true);
+                        subShell.pack();
+                    }
+                });
 
                 GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
                 // data.heightHint = 300;
