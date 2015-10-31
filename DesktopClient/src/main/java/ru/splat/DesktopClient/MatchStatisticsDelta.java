@@ -10,9 +10,9 @@ import matchstatistic.Statistics;
  */
 public class MatchStatisticsDelta
 {
-    private int team1id;
+    private String team1Name;
 
-    private int team2id;
+    private String team2Name;
 
     private int matchid;
 
@@ -22,7 +22,6 @@ public class MatchStatisticsDelta
 
     private Statistics statistic;
 
-    private MatchStatisticsDelta() { }
 
     /**
      * That constructor takes info about some statistic
@@ -38,7 +37,6 @@ public class MatchStatisticsDelta
         this.timestamp = timestamp;
         this.sportType = sportType;
         this.statistic = statistic;
-        this.team1id = this.team2id = -1;
     }
 
 
@@ -47,15 +45,17 @@ public class MatchStatisticsDelta
      * 
      * @param matchid
      * @param timestamp
-     * @param team1id
-     * @param team2id
+     * @param sportType
+     * @param team1Name
+     * @param team2Name
      */
-    public MatchStatisticsDelta(int matchid, long timestamp, int team1id, int team2id)
+    public MatchStatisticsDelta(int matchid, long timestamp, MatchType sportType, String team1Name, String team2Name)
     {
         this.matchid = matchid;
         this.timestamp = timestamp;
-        this.team1id = team1id;
-        this.team2id = team2id;
+        this.sportType = sportType;
+        this.team1Name = team1Name;
+        this.team2Name = team2Name;
     }
 
 
@@ -83,27 +83,27 @@ public class MatchStatisticsDelta
     }
 
 
-    public int getTeam1id()
+    public String getTeam1Name()
     {
-        return team1id;
+        return team1Name;
     }
 
 
-    public void setTeam1id(int team1id)
+    public void setTeam1Name(String team1Name)
     {
-        this.team1id = team1id;
+        this.team1Name = team1Name;
     }
 
 
-    public int getTeam2id()
+    public String getTeam2Name()
     {
-        return team2id;
+        return team2Name;
     }
 
 
-    public void setTeam2id(int team2id)
+    public void setTeam2Name(String team2Name)
     {
-        this.team2id = team2id;
+        this.team2Name = team2Name;
     }
 
 
@@ -137,7 +137,7 @@ public class MatchStatisticsDelta
     @Override
     public String toString()
     {
-        return "DataObject [matchid=" + matchid + ", timestamp=" + timestamp + ", team1id=" + team1id + ", team2id="
-                + team2id + ", sportType=" + sportType + ", statistic=" + statistic + "]";
+        return "DataObject [matchid=" + matchid + ", timestamp=" + timestamp + ", team1Name=" + team1Name
+                + ", team2Name=" + team2Name + ", sportType=" + sportType + ", statistic=" + statistic + "]";
     }
 }

@@ -354,8 +354,12 @@ public class ServiceNoSQL
                         {
                             EventEntryTCP event = eventList.getEvent().get(j);
                             int curMatchId = event.getMatchid();
-                            log.debug("Sport name of match with {} id is {}", curMatchId,
-                                    matchidToSportName.get(curMatchId).name());
+
+                            MatchType sportType = matchidToSportName.get(curMatchId);
+                            if (sportType == null)
+                                continue;
+
+                            log.debug("Sport name of match with {} id is {}", curMatchId, sportType.name());
 
                             // update Matches
                             for (String allStatisticString : event.getStatistics())
@@ -370,7 +374,7 @@ public class ServiceNoSQL
                                      * get statisticType for statisticCode (from .cvs file) from map home 1xxx, away
                                      * 2xxx teams
                                      */
-                                    MatchType sportType = matchidToSportName.get(curMatchId);
+                                    sportType = matchidToSportName.get(curMatchId);
                                     Map<Integer, StatisticType> tempMap = codeToStatistic.get(sportType);
                                     if (tempMap == null)
                                     {
@@ -379,7 +383,7 @@ public class ServiceNoSQL
                                          */
                                         continue;
                                     }
-                                    StatisticType statisticType = codeToStatistic.get(sportType).get(statisticCode);
+                                    StatisticType statisticType = tempMap.get(statisticCode);
                                     if (statisticType == null)
                                     {
                                         /**
@@ -472,6 +476,8 @@ public class ServiceNoSQL
                             int curMatchId = matchEntry.getMatchid();
                             MatchType sportType = matchidToSportName.get(curMatchId);
 
+                            if (sportType == null)
+                                continue;
                             log.debug("Sport name of match with {} id is {}", curMatchId, sportType.name());
 
                             if (!locks.containsKey(curMatchId))
@@ -501,7 +507,7 @@ public class ServiceNoSQL
                                 locks.get(curMatchId).writeLock().unlock();
                             }
                             MatchStatisticsDelta matchStatisticsDelta = new MatchStatisticsDelta(curMatchId,
-                                    matchEntry.getTimestamp(), matchEntry.getTeam1Id(), matchEntry.getTeam2Id());                           
+                                    matchEntry.getTimestamp(), sportType, matchEntry.getTeam1(), matchEntry.getTeam2());
                             producer.publish(matchStatisticsDelta);
                             log.info("Information about team's id is received");
                         }

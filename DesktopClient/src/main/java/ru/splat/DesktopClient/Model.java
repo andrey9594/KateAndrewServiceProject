@@ -42,27 +42,31 @@ public class Model implements Subject
         modelTable.put(matchid, match);
     }
 
-    public Set<Integer> getAllMatchid() {
+
+    public Set<Integer> getAllMatchid()
+    {
         return modelTable.keySet();
     }
-    
-    public MatchType getSportTypeForMatchid(int matchid) {
+
+
+    public MatchType getSportTypeForMatchid(int matchid)
+    {
         return modelTable.get(matchid).getType();
     }
-    
+
+
     public Statistics getStatisticForMatchid(int matchid, StatisticType statisticType)
     {
         return modelTable.get(matchid).getStatistic(statisticType);
     }
 
-
-    public String getTeam1idForMatchid(int matchid)
+    public String getTeam1NameForMatchid(int matchid)
     {
         return modelTable.get(matchid).getT1Name();
     }
 
 
-    public String getTeam2idForMatchid(int matchid)
+    public String getTeam2NameForMatchid(int matchid)
     {
         return modelTable.get(matchid).getT2Name();
     }
@@ -81,14 +85,14 @@ public class Model implements Subject
             match = new Match(matchStatisticDelta.getSportType(), matchStatisticDelta.getTimestamp());
         }
 
-        if (matchStatisticDelta.getTeam1id() == -1)
+        if (matchStatisticDelta.getStatistic() != null)
         {
             match.addStatistics(matchStatisticDelta.getStatistic());
         }
         else
         {
-            match.setT1Name(Integer.toString(matchStatisticDelta.getTeam1id()));
-            match.setT2Name(Integer.toString(matchStatisticDelta.getTeam2id()));
+            match.setT1Name(matchStatisticDelta.getTeam1Name());
+            match.setT2Name(matchStatisticDelta.getTeam2Name());
         }
 
         modelTable.put(matchStatisticDelta.getMatchid(), match);

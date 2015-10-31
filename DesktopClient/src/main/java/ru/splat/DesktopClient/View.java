@@ -86,6 +86,25 @@ public class View implements Observer
         private Map<Integer, TableItem> matchidItemMap = new HashMap<>();
 
 
+        private void updateItem(int matchid, TableItem item)
+        {
+            item.setText(0, "" + matchid);
+            item.setText(1, "" + model.getSportTypeForMatchid(matchid));
+            String team1Name = model.getTeam1NameForMatchid(matchid);
+            if (team1Name == null)
+                team1Name = "?";
+            String team2Name = model.getTeam2NameForMatchid(matchid);
+            if (team2Name == null)
+                team2Name = "?";
+            item.setText(2, "" + team1Name);
+            item.setText(3, "" + team2Name);
+            item.setText(4, "?");
+            item.setText(5, "?");
+            matchidItemMap.put(matchid, item);
+            log.info("Table with info have been drawn");
+        }
+
+
         /**
          * Draws a specific table values for a given object identifier
          *
@@ -98,12 +117,12 @@ public class View implements Observer
                 table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
                 table.setLinesVisible(true);
                 table.setHeaderVisible(true);
-                
+
                 GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
-                data.heightHint = 300;
-                data.widthHint = 400;
+                // data.heightHint = 300;
+                // data.widthHint = 400;
                 table.setLayoutData(data);
-                String[] titles = { "matchid", "sportType", "team1id", "team2id", "score", "isFinished" };
+                String[] titles = { "matchid", "sportType", "team1Name", "team2Name", "score", "isFinished" };
                 for (int i = 0; i < titles.length; i++)
                 {
                     TableColumn column = new TableColumn(table, SWT.NONE);
@@ -124,21 +143,7 @@ public class View implements Observer
                 for (Integer matchId : model.getAllMatchid())
                 {
                     TableItem item = new TableItem(table, SWT.NONE);
-                    item.setText(0, "" + matchId);
-                    item.setText(1, "" + model.getSportTypeForMatchid(matchId));
-                    String team1id = model.getTeam1idForMatchid(matchid);
-                    if (team1id == null)
-                        team1id = "?";
-                    String team2id = model.getTeam2idForMatchid(matchid);
-                    if (team2id == null)
-                        team2id = "?";
-                    item.setText(2, "" + team1id);
-                    item.setText(3, "" + team2id);
-                    item.setText(4, "?");
-                    item.setText(5, "?");
-                    matchidItemMap.put(matchId, item);
-                    log.info("Table with info have been drawn");
-
+                    updateItem(matchId, item);
                 }
             }
             else
@@ -149,36 +154,17 @@ public class View implements Observer
                     item = new TableItem(table, SWT.NONE);
                     matchidItemMap.put(matchid, item);
                     log.info("Item with matchid = {} added", matchid);
-                    
+
                 }
-                else 
+                else
                 {
                     item = matchidItemMap.get(matchid);
                 }
-                    item.setText(0, "" + matchid);
-                    item.setText(1, "" + model.getSportTypeForMatchid(matchid));
-                    String team1id = model.getTeam1idForMatchid(matchid);
-                    if (team1id == null)
-                        team1id = "?";
-                    String team2id = model.getTeam2idForMatchid(matchid);
-                    if (team2id == null)
-                        team2id = "?";
-                    item.setText(2, "" + team1id);
-                    item.setText(3, "" + team2id);
-                    item.setText(4, "?");
-                    item.setText(5, "?");
-                    log.info("Item with matchid = {} updated", matchid);
-                               
+
+                updateItem(matchid, item);
+                log.info("Item with matchid = {} updated", matchid);
+
             }
-
-            // if (!found)
-            // {
-            // TableItem item = new TableItem(table, SWT.NONE);
-            // item.setText(0, "" + new java.sql.Timestamp(new java.util.Date().getTime()));
-            // item.setText(1, "" + "History of Object with id = " + model.getId() + " is empty");
-            // log.info("History of Object with id = {} is Empty", model.getId());
-            // }
-
             shell.pack(); // ?????????????????????
         }
     }
