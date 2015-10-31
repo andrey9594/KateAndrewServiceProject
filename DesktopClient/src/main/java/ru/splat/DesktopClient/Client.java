@@ -10,11 +10,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
@@ -35,12 +32,15 @@ import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
+import matchstatistic.Statistics;
+import matchstatistic.sportstatistictypes.Basketball;
+import matchstatistic.sportstatistictypes.Football;
+import matchstatistic.sportstatistictypes.Handball;
+import matchstatistic.sportstatistictypes.Icehockey;
 import matchstatistic.sportstatistictypes.StatisticType;
-import ru.splat.DesktopClient.controllers.ButtonOKController;
-import ru.splat.DesktopClient.controllers.JsonProviderController;
+import matchstatistic.sportstatistictypes.Volleyball;
 import ru.splat.DesktopClient.controllers.ProcessPackageController;
 import ru.splat.DesktopClient.controllers.TableController;
-import ru.splat.DesktopClient.controllers.XmlProviderController;
 
 
 /**
@@ -92,7 +92,7 @@ public class Client
         shlDesktopClient = new Shell(display);
 
         log.debug("Creating view");
-        view = new View(model, shlDesktopClient);
+        view = new View(model, shlDesktopClient, display);
 
         log.debug("VIew was created");
 
@@ -188,13 +188,51 @@ public class Client
                     @Override
                     public StatisticType createInstance(Type arg0)
                     {
-                        return new StatisticType()
-                        {
-                        };
+                        return null;
                     }
                 };
                 gson = new GsonBuilder().registerTypeAdapter(StatisticType.class, ic).create();
+                
+               
                 MatchStatisticsDelta matchStatisticsDelta = gson.fromJson(jsonString, MatchStatisticsDelta.class);
+                
+                /**
+                 * custom deserealization
+                 * for polymorphics 
+                 * (we lost some info about type of statistic)
+                 */
+                int pos = jsonString.indexOf("type");
+                String type = jsonString.substring(pos);
+                StringBuilder sb = new StringBuilder();
+                for (int q = jsonString.indexOf("type") + 7; jsonString.charAt(q + 1) != ','; q++)
+                    sb.append(jsonString.charAt(q));
+                type = sb.toString();
+                Statistics newStatistic = null;
+                switch(matchStatisticsDelta.getSportType())
+                {
+                    case FOOTBALL:
+                        newStatistic = new Statistics(Football.valueOf(type));
+                        break;
+                    case BASKETBALL:
+                        newStatistic = new Statistics(Basketball.valueOf(type));
+                        break;
+                    case ICE_HOCKEY:
+                        newStatistic = new Statistics(Icehockey.valueOf(type)); 
+                        break;
+                    case VOLLEYBALL:
+                        newStatistic = new Statistics(Volleyball.valueOf(type));
+                        break;
+                    case HANDBALL:
+                        newStatistic = new Statistics(Handball.valueOf(type));
+                        break;
+                    default:
+                        return;
+                }
+                
+                newStatistic.setValue1(matchStatisticsDelta.getStatistic().getValue1());
+                newStatistic.setValue2(matchStatisticsDelta.getStatistic().getValue2());
+                matchStatisticsDelta.setStatistic(newStatistic);
+
                 processPackageController.processPackage(matchStatisticsDelta, model);
             }
         };

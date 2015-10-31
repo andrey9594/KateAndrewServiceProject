@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import matchstatistic.Match;
 import matchstatistic.MatchType;
 import matchstatistic.Statistics;
+import matchstatistic.sportstatistictypes.Football;
 import matchstatistic.sportstatistictypes.StatisticType;
 
 
