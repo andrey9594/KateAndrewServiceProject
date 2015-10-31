@@ -396,8 +396,8 @@ public class ServiceNoSQL
                                     /**
                                      * @isHomeStatistic = @isGuestStatictic = true if statistic is general for all teams
                                      */
-                                    boolean isHomeStatistic = (statisticValue / 1000) == 1; //
-                                    boolean isGuestStatistic = (statisticValue / 1000) == 2; //
+                                    boolean isHomeStatistic = (statisticCode / 1000) == 1; //
+                                    boolean isGuestStatistic = (statisticCode / 1000) == 2; //
 
                                     /**
                                      * clients work with cache but don't work with
@@ -423,6 +423,8 @@ public class ServiceNoSQL
                                         if (statistic == null)
                                         {
                                             statistic = new Statistics(statisticType);
+                                            statistic.setValue1(-1);
+                                            statistic.setValue2(-1);
                                         }
                                         if (isHomeStatistic)
                                         {
@@ -440,6 +442,7 @@ public class ServiceNoSQL
                                     {
                                         locks.get(curMatchId).writeLock().unlock();
                                     }
+                                    
 
                                     MatchStatisticsDelta statisticDelta = new MatchStatisticsDelta(curMatchId,
                                             event.getTimestamp(), sportType, statistic);
