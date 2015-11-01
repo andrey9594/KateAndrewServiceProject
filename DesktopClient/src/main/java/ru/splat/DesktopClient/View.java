@@ -1,6 +1,7 @@
 package ru.splat.DesktopClient;
 
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -112,7 +113,7 @@ public class View implements Observer
                 team2Name = "?";
             item.setText(2, "" + team1Name);
             item.setText(3, "" + team2Name);
-            item.setText(4, "?");
+            item.setText(4, "" + new Date(model.getStartForMatchid(matchid)));
             item.setText(5, "?");
             matchidItemMap.put(matchid, item);
             log.info("Table with info have been drawn");
@@ -120,7 +121,7 @@ public class View implements Observer
 
 
         /**
-         * Draws a specific table values for a given object identifier
+         * Draws a specific table values for the given object identifier
          *
          * @param matchid Matchid for match or -1 for redrawing all the table
          */
@@ -207,7 +208,7 @@ public class View implements Observer
                         for (StatisticType st : statisticValues.keySet())
                         {
                             TableColumn column = new TableColumn(subTable, SWT.NONE);
-                            column.setText(statisticValues.get(st));
+                            column.setText(st.toString());
                         }
                         for (int i = 0; i < statisticValues.size(); i++)
                         {
@@ -221,10 +222,10 @@ public class View implements Observer
                 });
 
                 GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
-                // data.heightHint = 300;
-                // data.widthHint = 400;
+                data.heightHint = 350;
+                data.widthHint = 900;
                 table.setLayoutData(data);
-                String[] titles = { "matchid", "sportType", "team1Name", "team2Name", "score", "isFinished" };
+                String[] titles = { "matchid", "sport type", "team 1 name", "team 2 name", "start time",  "score"};
                 for (int i = 0; i < titles.length; i++)
                 {
                     TableColumn column = new TableColumn(table, SWT.NONE);
@@ -232,8 +233,13 @@ public class View implements Observer
                 }
                 for (int i = 0; i < titles.length; i++)
                 {
+                    table.getColumn(i).setAlignment(SWT.CENTER);
                     table.getColumn(i).pack();
                 }
+                table.getColumn(1).setWidth(110);
+                table.getColumn(2).setWidth(200);
+                table.getColumn(3).setWidth(200);
+                table.getColumn(4).setWidth(225);
             }
             /**
              * if @matchid == -1 then redraw all the table else redraw only one line for match with that matchid
@@ -241,7 +247,7 @@ public class View implements Observer
             if (matchid == -1)
             {
                 // com.google.common.collect.Table<Integer, Timestamp, ProviderPackage> modelTable =
-
+                table.removeAll();
                 for (Integer matchId : model.getAllMatchid())
                 {
                     TableItem item = new TableItem(table, SWT.NONE);
@@ -267,7 +273,7 @@ public class View implements Observer
                 log.info("Item with matchid = {} updated", matchid);
 
             }
-            shell.pack(); // ?????????????????????
+                shell.pack(); // ?????????????????????
         }
     }
 

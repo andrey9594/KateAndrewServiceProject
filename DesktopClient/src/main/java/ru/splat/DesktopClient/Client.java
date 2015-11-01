@@ -201,37 +201,40 @@ public class Client
                  * for polymorphics 
                  * (we lost some info about type of statistic)
                  */
-                int pos = jsonString.indexOf("type");
-                String type = jsonString.substring(pos);
-                StringBuilder sb = new StringBuilder();
-                for (int q = jsonString.indexOf("type") + 7; jsonString.charAt(q + 1) != ','; q++)
-                    sb.append(jsonString.charAt(q));
-                type = sb.toString();
-                Statistics newStatistic = null;
-                switch(matchStatisticsDelta.getSportType())
+                if (matchStatisticsDelta.getTeam1Name() == null)
                 {
-                    case FOOTBALL:
-                        newStatistic = new Statistics(Football.valueOf(type));
-                        break;
-                    case BASKETBALL:
-                        newStatistic = new Statistics(Basketball.valueOf(type));
-                        break;
-                    case ICE_HOCKEY:
-                        newStatistic = new Statistics(Icehockey.valueOf(type)); 
-                        break;
-                    case VOLLEYBALL:
-                        newStatistic = new Statistics(Volleyball.valueOf(type));
-                        break;
-                    case HANDBALL:
-                        newStatistic = new Statistics(Handball.valueOf(type));
-                        break;
-                    default:
-                        return;
+                    int pos = jsonString.indexOf("type");
+                    String type = jsonString.substring(pos);
+                    StringBuilder sb = new StringBuilder();
+                    for (int q = jsonString.indexOf("type") + 7; jsonString.charAt(q + 1) != ','; q++)
+                        sb.append(jsonString.charAt(q));
+                    type = sb.toString();
+                    Statistics newStatistic = null;
+                    switch (matchStatisticsDelta.getSportType())
+                    {
+                        case FOOTBALL:
+                            newStatistic = new Statistics(Football.valueOf(type));
+                            break;
+                        case BASKETBALL:
+                            newStatistic = new Statistics(Basketball.valueOf(type));
+                            break;
+                        case ICE_HOCKEY:
+                            newStatistic = new Statistics(Icehockey.valueOf(type));
+                            break;
+                        case VOLLEYBALL:
+                            newStatistic = new Statistics(Volleyball.valueOf(type));
+                            break;
+                        case HANDBALL:
+                            newStatistic = new Statistics(Handball.valueOf(type));
+                            break;
+                        default:
+                            return;
+                    }
+
+                    newStatistic.setValue1(matchStatisticsDelta.getStatistic().getValue1());
+                    newStatistic.setValue2(matchStatisticsDelta.getStatistic().getValue2());
+                    matchStatisticsDelta.setStatistic(newStatistic);
                 }
-                
-                newStatistic.setValue1(matchStatisticsDelta.getStatistic().getValue1());
-                newStatistic.setValue2(matchStatisticsDelta.getStatistic().getValue2());
-                matchStatisticsDelta.setStatistic(newStatistic);
 
                 processPackageController.processPackage(matchStatisticsDelta, model);
             }
@@ -254,6 +257,7 @@ public class Client
         shlDesktopClient.setImage(icon);
         shlDesktopClient.setBackgroundImage(bgImg);
         shlDesktopClient.setBackgroundMode(SWT.INHERIT_FORCE);
+        shlDesktopClient.setSize(900, 350);
 
         gl_shlDesktopClient.numColumns = 1;
 //        Label lblEnterIdWhich = new Label(shlDesktopClient, SWT.NONE);
