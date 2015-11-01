@@ -71,6 +71,10 @@ public class Model implements Subject
     {
         return modelTable.get(matchid).getT2Name();
     }
+    
+    public long getStartForMatchid(int matchid) {
+        return modelTable.get(matchid).getStart();
+    }
 
 
     /**
