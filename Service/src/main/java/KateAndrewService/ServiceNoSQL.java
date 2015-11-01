@@ -1,13 +1,13 @@
 package KateAndrewService;
 
 
-import java.beans.Customizer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringBufferInputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -22,9 +22,12 @@ import javax.xml.bind.Unmarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
+import com.mongodb.WriteConcern;
 
 import matchstatistic.Match;
 import matchstatistic.MatchType;
@@ -78,7 +81,7 @@ public class ServiceNoSQL
 
     private DBCollection collectionForXml;
 
-    private Map<Integer, Match> cache = new HashMap<>(); // TODO: cache <Integer(matchid), Match>
+    private Map<Integer, Match> cache = new HashMap<>(); 
 
     private Map<MatchType, Map<Integer, StatisticType>> codeToStatistic = new HashMap<>(); // <Soccer, <1026, ATTACK>>
 
@@ -146,87 +149,88 @@ public class ServiceNoSQL
      */
     public void start()
     {
-        // connectDB();
-        // loadPackagesFromDBToCache();
+        connectDB();
         connectToProviders();
         log.info("Service was started");
     }
 
+
     /**
      * connect to DB
      */
-    // private void connectDB()
-    // {
-    // log.info("Creating connection to MongoDB...");
-    //
-    // try
-    // {
-    // mongo = new MongoClient(IP_DB, PORT_DB);
-    // }
-    // catch (UnknownHostException e)
-    // {
-    // log.error("Can't connect to MongoDB", e);
-    // e.printStackTrace();
-    // }
-    // mongo.setWriteConcern(WriteConcern.JOURNALED);
-    //
-    // db = mongo.getDB(DATABASE_NAME);
-    //
-    // if (!db.collectionExists(COLLECTION_NAME_FOR_JSON))
-    // {
-    // db.createCollection(COLLECTION_NAME_FOR_JSON, null);
-    // db.getCollection(COLLECTION_NAME_FOR_JSON).createIndex(new BasicDBObject("id", 1), null, true);
-    // }
-    // collectionForJson = db.getCollection(COLLECTION_NAME_FOR_JSON);
-    //
-    // if (!db.collectionExists(COLLECTION_NAME_FOR_XML))
-    // {
-    // db.createCollection(COLLECTION_NAME_FOR_XML, null);
-    // db.getCollection(COLLECTION_NAME_FOR_XML).createIndex(new BasicDBObject("id", 1), null, true);
-    // }
-    // collectionForXml = db.getCollection(COLLECTION_NAME_FOR_XML);
-    //
-    // log.info("Connection to MongoDB was created");
-    // }
+    private void connectDB()
+    {
+        log.info("Creating connection to MongoDB...");
+
+        try
+        {
+            mongo = new MongoClient(IP_DB, PORT_DB);
+        }
+        catch (UnknownHostException e)
+        {
+            log.error("Can't connect to MongoDB", e);
+            e.printStackTrace();
+        }
+        mongo.setWriteConcern(WriteConcern.JOURNALED);
+
+        db = mongo.getDB(DATABASE_NAME);
+
+//        if (!db.collectionExists(COLLECTION_NAME_FOR_JSON))
+//        {
+//            db.createCollection(COLLECTION_NAME_FOR_JSON, null);
+//            db.getCollection(COLLECTION_NAME_FOR_JSON).createIndex(new BasicDBObject("id", 1), null, true);
+//        }
+//        collectionForJson = db.getCollection(COLLECTION_NAME_FOR_JSON);
+
+        if (!db.collectionExists(COLLECTION_NAME_FOR_XML))
+        {
+            db.createCollection(COLLECTION_NAME_FOR_XML, null);
+            db.getCollection(COLLECTION_NAME_FOR_XML).createIndex(new BasicDBObject("id", 1), null, true);
+        }
+        collectionForXml = db.getCollection(COLLECTION_NAME_FOR_XML);
+
+        log.info("Connection to MongoDB was created");
+    }
 
 
     /**
-     * Method for loading data from DB to cache
+     * Method for loading data from DB to cache don't need because in our case Provider sends packages from the start
+     * time after time
      */
-    // private void loadPackagesFromDBToCache()
-    // {
-    // log.info("loading data from xml collection into cache");
-    // DBCursor cursorForXmlCollection = collectionForXml.find();
-    // try
-    // {
-    // while (cursorForXmlCollection.hasNext())
-    // {
-    // DBObject document = cursorForXmlCollection.next();
-    // cache.put((Integer) document.get("id"), (Integer) document.get("value"));
-    // }
-    // }
-    // finally
-    // {
-    // cursorForXmlCollection.close();
-    // }
-    // log.info("Data from xml collection was loaded into cache");
-    //
-    // log.info("loading data from json collection into cache");
-    // DBCursor cursorForJsonCollection = collectionForJson.find();
-    // try
-    // {
-    // while (cursorForJsonCollection.hasNext())
-    // {
-    // DBObject document = cursorForJsonCollection.next();
-    // cache.put((Integer) document.get("id"), (Integer) document.get("value"));
-    // }
-    // }
-    // finally
-    // {
-    // cursorForJsonCollection.close();
-    // }
-    // log.info("Data from json collection was loaded into cache");
-    // }
+//    private void loadPackagesFromDBToCache()
+//    {
+//        log.info("loading data from xml collection into cache");
+//        DBCursor cursorForXmlCollection = collectionForXml.find();
+//        try
+//        {
+//            while (cursorForXmlCollection.hasNext())
+//            {
+//                DBObject document = cursorForXmlCollection.next();
+//                cache.put((Integer) document.get("id"), (Integer) document.get("value"));
+//            }
+//        }
+//        finally
+//        {
+//            cursorForXmlCollection.close();
+//        }
+//        log.info("Data from xml collection was loaded into cache");
+//
+//        log.info("loading data from json collection into cache");
+//        DBCursor cursorForJsonCollection = collectionForJson.find();
+//        try
+//        {
+//            while (cursorForJsonCollection.hasNext())
+//            {
+//                DBObject document = cursorForJsonCollection.next();
+//                cache.put((Integer) document.get("id"), (Integer) document.get("value"));
+//            }
+//        }
+//        finally
+//        {
+//            cursorForJsonCollection.close();
+//        }
+//        log.info("Data from json collection was loaded into cache");
+//    }
 
     /**
      * take info from providers in xml and json format
@@ -247,20 +251,21 @@ public class ServiceNoSQL
         }
         log.info("Thread for working with xml provider was created");
 
-        // log.info("Creating thread for working with json provider...");
-        // try
-        // {
-        // Socket socket = new Socket(IP_PROVIDER, PORT_JSON);
-        // Thread threadjson = new Thread(new ThreadForJsonProvider(socket, new Producer()));
-        // threadjson.start();
-        // }
-        // catch (IOException | TimeoutException e)
-        // {
-        // log.error("Error connecting with json provider", e);
-        // e.printStackTrace();
-        // }
-        // log.info("Thread for working with json provider was created");
+//        log.info("Creating thread for working with json provider...");
+//        try
+//        {
+//            Socket socket = new Socket(IP_PROVIDER, PORT_JSON);
+//            Thread threadjson = new Thread(new ThreadForJsonProvider(socket, new Producer()));
+//            threadjson.start();
+//        }
+//        catch (IOException | TimeoutException e)
+//        {
+//            log.error("Error connecting with json provider", e);
+//            e.printStackTrace();
+//        }
+//        log.info("Thread for working with json provider was created");
     }
+
 
     /**
      * update/insert value in xml MongoDB collection
@@ -268,17 +273,21 @@ public class ServiceNoSQL
      * @param id identifier of Object, which value we update/insert
      * @param value positive or negative value, which we update/insert
      */
-    // private void upsertValueXml(int id, int value)
-    // {
-    // BasicDBObject query = new BasicDBObject("id", id);
-    // BasicDBObject newDocument = new BasicDBObject("id", id).append("value", value);
-    //
-    // boolean upsert = true;
-    // boolean multiUpsert = false;
-    // collectionForXml.update(query, newDocument, upsert, multiUpsert);
-    //
-    // log.info("value in xml MongoDB collection updated");
-    // }
+    private void upsertValueXml(int id, Match match)
+    {
+        BasicDBObject query = new BasicDBObject("id", id);
+
+        String matchJsonString = "";
+        Gson gson = new Gson();
+        matchJsonString = gson.toJson(match, Match.class);
+        BasicDBObject newDocument = new BasicDBObject("id", id).append("match", matchJsonString);
+
+        boolean upsert = true;
+        boolean multiUpsert = false;
+        collectionForXml.update(query, newDocument, upsert, multiUpsert);
+
+        log.info("value in xml MongoDB collection updated");
+    }
 
     /**
      * update/insert value in json MongoDB collection
@@ -286,17 +295,17 @@ public class ServiceNoSQL
      * @param id identifier of Object, which value we update/insert
      * @param value positive or negative value, which we update/insert
      */
-    // private void upsertValueJson(int id, int value)
-    // {
-    // BasicDBObject query = new BasicDBObject("id", id);
-    // BasicDBObject newDocument = new BasicDBObject("id", id).append("value", value);
-    //
-    // boolean upsert = true;
-    // boolean multiUpsert = false;
-    // collectionForJson.update(query, newDocument, upsert, multiUpsert);
-    //
-    // log.info("value in json MongoDB collection updated");
-    // }
+//    private void upsertValueJson(int id, int value)
+//    {
+//        BasicDBObject query = new BasicDBObject("id", id);
+//        BasicDBObject newDocument = new BasicDBObject("id", id).append("value", value);
+//
+//        boolean upsert = true;
+//        boolean multiUpsert = false;
+//        collectionForJson.update(query, newDocument, upsert, multiUpsert);
+//
+//        log.info("value in json MongoDB collection updated");
+//    }
 
 
     /**
@@ -437,12 +446,12 @@ public class ServiceNoSQL
                                         currentMatch.addStatistics(statistic);
 
                                         cache.put(curMatchId, currentMatch);
+                                        upsertValueXml(curMatchId, currentMatch);
                                     }
                                     finally
                                     {
                                         locks.get(curMatchId).writeLock().unlock();
                                     }
-                                    
 
                                     MatchStatisticsDelta statisticDelta = new MatchStatisticsDelta(curMatchId,
                                             event.getTimestamp(), sportType, statistic);
@@ -504,6 +513,7 @@ public class ServiceNoSQL
                                 currentMatch.setT1Name(Integer.toString(matchEntry.getTeam1Id()));
                                 currentMatch.setT2Name(Integer.toString(matchEntry.getTeam2Id()));
                                 cache.put(curMatchId, currentMatch);
+                                upsertValueXml(curMatchId, currentMatch);
                             }
                             finally
                             {
@@ -544,60 +554,61 @@ public class ServiceNoSQL
      *
      * @author Ekaterina inner class Thread For Json Provider
      */
-    // private class ThreadForJsonProvider implements Runnable
-    // {
-    //
-    // private final Socket socket;
-    //
-    // private final Producer producer;
-    //
-    //
-    // public ThreadForJsonProvider(Socket socket, Producer producer)
-    // {
-    // this.socket = socket;
-    // this.producer = producer;
-    // }
-    //
-    //
-    // /**
-    // * Take and deserialize data from Json Provider
-    // */
-    // @Override public void run()
-    // {
-    // try
-    // {
-    // Gson gson = new Gson();
-    // Scanner scanner = new Scanner(socket.getInputStream());
-    //
-    // while (true)
-    // {
-    //// String json = scanner.next();
-    //// ProviderPackage providerPackage = gson.fromJson(json, ProviderPackage.class);
-    ////
-    //// cacheJson(providerPackage.getId(), providerPackage.getValue());
-    //// producer.publish(providerPackage);
-    ////
-    //// log.info("Data from json provider with Value = {} is received", providerPackage.getValue());
-    // break;////////////////////////////////////////////////////////
-    // }
-    // }
-    // catch (IOException e)
-    // {
-    // log.error("Error in receiving data from Json Provider", e);
-    // e.printStackTrace();
-    // }
-    // finally
-    // {
-    // try
-    // {
-    // socket.close();
-    // }
-    // catch (IOException e)
-    // {
-    // log.error("Error in socket closing", e);
-    // e.printStackTrace();
-    // }
-    // }
-    // }
-    // }
+//    private class ThreadForJsonProvider implements Runnable
+//    {
+//
+//        private final Socket socket;
+//
+//        private final Producer producer;
+//
+//
+//        public ThreadForJsonProvider(Socket socket, Producer producer)
+//        {
+//            this.socket = socket;
+//            this.producer = producer;
+//        }
+//
+//
+//        /**
+//         * Take and deserialize data from Json Provider
+//         */
+//        @Override
+//        public void run()
+//        {
+//            try
+//            {
+//                Gson gson = new Gson();
+//                Scanner scanner = new Scanner(socket.getInputStream());
+//
+//                while (true)
+//                {
+//                    // String json = scanner.next();
+//                    // ProviderPackage providerPackage = gson.fromJson(json, ProviderPackage.class);
+//                    //
+//                    // cacheJson(providerPackage.getId(), providerPackage.getValue());
+//                    // producer.publish(providerPackage);
+//                    //
+//                    // log.info("Data from json provider with Value = {} is received", providerPackage.getValue());
+//                    break;////////////////////////////////////////////////////////
+//                }
+//            }
+//            catch (IOException e)
+//            {
+//                log.error("Error in receiving data from Json Provider", e);
+//                e.printStackTrace();
+//            }
+//            finally
+//            {
+//                try
+//                {
+//                    socket.close();
+//                }
+//                catch (IOException e)
+//                {
+//                    log.error("Error in socket closing", e);
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    }
 }
