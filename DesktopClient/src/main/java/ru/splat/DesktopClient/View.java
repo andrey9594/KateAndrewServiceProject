@@ -9,6 +9,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -20,8 +21,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import matchstatistic.Statistics;
+import matchstatistic.sportstatistictypes.Basketball;
 import matchstatistic.sportstatistictypes.Football;
+import matchstatistic.sportstatistictypes.Handball;
+import matchstatistic.sportstatistictypes.Icehockey;
 import matchstatistic.sportstatistictypes.StatisticType;
+import matchstatistic.sportstatistictypes.Volleyball;
 
 
 /**
@@ -114,7 +119,6 @@ public class View implements Observer
             item.setText(2, "" + team1Name);
             item.setText(3, "" + team2Name);
             item.setText(4, "" + new Date(model.getStartForMatchid(matchid)));
-            item.setText(5, "?");
             matchidItemMap.put(matchid, item);
             log.info("Table with info have been drawn");
         }
@@ -151,6 +155,8 @@ public class View implements Observer
 
                 table.addListener(SWT.MouseDoubleClick, new Listener()
                 {
+                    private Table subTable;
+
 
                     @Override
                     public void handleEvent(Event event)
@@ -167,44 +173,58 @@ public class View implements Observer
                                     event.doit = false;
                                 }
                             });
+                            GridLayout glSubShell = new GridLayout();
+                            subShell.setLayout(glSubShell);
+                            glSubShell.numColumns = 1;
                             subShell.open();
                         }
+
                         int currentLineMatchid = Integer.parseInt(selectedItem.getText(0));
-                        Map <StatisticType, String> statisticValues = new HashMap<>();
+                        Map<StatisticType, String> statisticValues = new HashMap<>();
+                        StatisticType[] allStatistics = null;
                         switch (model.getSportTypeForMatchid(currentLineMatchid))
                         {
                             case FOOTBALL:
-                                for (StatisticType st : Football.values()) {
-                                    Statistics statistics = model.getStatisticForMatchid(currentLineMatchid, st);
-                                    if (statistics != null)
-                                    {
-                                        String value1 = statistics.getValue1() == -1 ? "?" : "" + statistics.getValue1();
-                                        String value2 = statistics.getValue2() == -1 ? "?" : "" + statistics.getValue2();
-                                        statisticValues.put(st, value1 + "-" + value2);
-                                    }
-                                }
-
+                                allStatistics = Football.values();
                                 break;
                             case BASKETBALL:
-                                
+                                allStatistics = Basketball.values();
                                 break;
                             case ICE_HOCKEY:
-                                
+                                allStatistics = Icehockey.values();
                                 break;
                             case VOLLEYBALL:
-                                
+                                allStatistics = Volleyball.values();
                                 break;
                             case HANDBALL:
-                                
+                                allStatistics = Handball.values();
                                 break;
                             default:
-                                return;          
+                                return;
                         }
-                        Table subTable = new Table(subShell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+                        for (StatisticType st : allStatistics)
+                        {
+                            Statistics statistics = model.getStatisticForMatchid(currentLineMatchid, st);
+                            if (statistics != null)
+                            {
+                                String value1 = statistics.getValue1() == -1 ? "?"
+                                        : "" + statistics.getValue1();
+                                String value2 = statistics.getValue2() == -1 ? "?"
+                                        : "" + statistics.getValue2();
+                                statisticValues.put(st, value1 + "-" + value2);
+                            }
+                        }
+                        
+                        if (subTable != null)
+                        {
+                            subTable.dispose();
+                        }
+                        subTable = new Table(subShell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
                         subTable.setLinesVisible(true);
                         subTable.setHeaderVisible(true);
                         GridData subData = new GridData(SWT.FILL, SWT.FILL, true, true);
                         subTable.setLayoutData(subData);
+
                         for (StatisticType st : statisticValues.keySet())
                         {
                             TableColumn column = new TableColumn(subTable, SWT.NONE);
@@ -214,8 +234,15 @@ public class View implements Observer
                         {
                             subTable.getColumn(i).pack();
                         }
+
                         TableItem item = new TableItem(subTable, SWT.NONE);
-                        item.setText(0, "hey!");
+                        int ii = 0;
+                        for (StatisticType st : statisticValues.keySet())
+                        {
+                            item.setText(ii, statisticValues.get(st));
+                            ii++;
+                        }
+
                         subShell.setVisible(true);
                         subShell.pack();
                     }
@@ -223,9 +250,9 @@ public class View implements Observer
 
                 GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
                 data.heightHint = 350;
-                data.widthHint = 900;
+                data.widthHint = 800;
                 table.setLayoutData(data);
-                String[] titles = { "matchid", "sport type", "team 1 name", "team 2 name", "start time",  "score"};
+                String[] titles = { "matchid", "sport type", "team 1 name", "team 2 name", "start time" };
                 for (int i = 0; i < titles.length; i++)
                 {
                     TableColumn column = new TableColumn(table, SWT.NONE);
@@ -273,7 +300,7 @@ public class View implements Observer
                 log.info("Item with matchid = {} updated", matchid);
 
             }
-                shell.pack(); // ?????????????????????
+            shell.pack(); // ?????????????????????
         }
     }
 

@@ -65,8 +65,6 @@ public class Client
 
     private static volatile Client instance;
 
-    private static Text text;
-
     private final Model model;
 
     private final View view;
@@ -257,7 +255,7 @@ public class Client
         shlDesktopClient.setImage(icon);
         shlDesktopClient.setBackgroundImage(bgImg);
         shlDesktopClient.setBackgroundMode(SWT.INHERIT_FORCE);
-        shlDesktopClient.setSize(900, 350);
+        shlDesktopClient.setSize(800, 350);
 
         gl_shlDesktopClient.numColumns = 1;
 //        Label lblEnterIdWhich = new Label(shlDesktopClient, SWT.NONE);
