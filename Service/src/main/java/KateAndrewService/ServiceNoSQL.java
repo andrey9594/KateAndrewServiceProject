@@ -116,10 +116,10 @@ public class ServiceNoSQL
         COLLECTION_NAME_FOR_XML = properties.getProperty("COLLECTION_NAME_FOR_XML");
         PATH_TO_MATCHID_FILE = properties.getProperty("PATH_TO_MATCHID_LIST");
 
-        MatchidAndNameOfSportReader reader = null;
+        MatchidToSportReader reader = null;
         try
         {
-            reader = new MatchidAndNameOfSportReader(PATH_TO_MATCHID_FILE);
+            reader = new MatchidToSportReader(PATH_TO_MATCHID_FILE);
         }
         catch (FileNotFoundException e)
         {

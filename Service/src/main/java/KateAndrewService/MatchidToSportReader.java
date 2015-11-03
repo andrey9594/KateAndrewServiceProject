@@ -14,7 +14,7 @@ import matchstatistic.MatchType;
  * 
  * @author Andrey Class for reading information about sport matches from .csv file
  */
-public class MatchidAndNameOfSportReader
+public class MatchidToSportReader
 {
     private Scanner scanner;
 
@@ -25,7 +25,7 @@ public class MatchidAndNameOfSportReader
      * @param pathToFile Path to .csv file
      * @throws FileNotFoundException
      */
-    public MatchidAndNameOfSportReader(String pathToFile) throws FileNotFoundException
+    public MatchidToSportReader(String pathToFile) throws FileNotFoundException
     {
         scanner = new Scanner(new File(pathToFile));
     }
