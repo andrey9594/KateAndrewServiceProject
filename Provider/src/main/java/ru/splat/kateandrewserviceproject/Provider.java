@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.FormatFlagsConversionMismatchException;
 import java.util.Properties;
 import java.util.Random;
 
@@ -149,28 +148,28 @@ public class Provider
             log.error("Can't send xml {} on the xml protocol", xml, e);
             e.printStackTrace();
         }
-        log.info("xml file {1} has been sent", xml);
+        log.info("xml file {} has been sent", xml);
     }
 
 
-    private void sendJsonObject(String jsonString, Socket socket)
-    {
-        // log.debug("Start sending package with id {} on the protocol json", providerPackage.getId());
-        // Gson gson = new Gson();
-        // String json = gson.toJson(providerPackage);
-        // try
-        // {
-        // PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-        // out.println(json);
-        // out.flush();
-        // }
-        // catch (IOException e)
-        // {
-        // log.error("Error sending package with id {} on the protocol json", providerPackage.getId(), e);
-        // e.printStackTrace();
-        // }
-        // log.debug("The package with id {} was successfully sent on the protocol json", providerPackage.getId());
-    }
+//    private void sendJsonObject(String jsonString, Socket socket)
+//    {
+//         log.debug("Start sending package with id {} on the protocol json", providerPackage.getId());
+//         Gson gson = new Gson();
+//         String json = gson.toJson(providerPackage);
+//         try
+//         {
+//         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+//         out.println(json);
+//         out.flush();
+//         }
+//         catch (IOException e)
+//         {
+//         log.error("Error sending package with id {} on the protocol json", providerPackage.getId(), e);
+//         e.printStackTrace();
+//         }
+//         log.debug("The package with id {} was successfully sent on the protocol json", providerPackage.getId());
+//    }
 
 
     /**
@@ -182,20 +181,23 @@ public class Provider
         {
             log.info("ServerSocket is creating...");
             ServerSocket serverSocket = new ServerSocket(PORT_NUM);
-            log.info("ServerSocket was successfully created");
+            log.info("ServerSocket was successfully created on port {}", PORT_NUM);
 
             LogFormatter formatter = null;
             if (format == FORMAT_XML)
             {
-                formatter = new LogFormatter(logFileList[currentFileInLogFileList++]); // not null ever
+            	/**
+            	 * not null ever, logFileList can't be null
+            	 */
+                formatter = new LogFormatter(logFileList[currentFileInLogFileList++]); 
             }
             else if (format == FORMAT_JSON)
             {
-                // formater =
                 /**
                  * polymorphism: it means LogFormatter should be an interface or an abstract class for JSONLogFormatter,
                  * XMLLogFormatter
                  */
+            	 // formater = new JSONLogForrmater
             }
             try
             {
@@ -207,7 +209,6 @@ public class Provider
                     try
                     {
                         Random random = new Random();
-                        // int currentPosInIdList = 0;
                         while (!Thread.currentThread().isInterrupted())
                         {
 
@@ -221,9 +222,7 @@ public class Provider
                                 log.warn("Provider was interrupted when it was sleeping");
                                 return;
                             }
-                            // ProviderPackage providerPackage = new ProviderPackage(idList[currentPosInIdList],
-                            // random.nextInt(), providerName);
-                            // currentPosInIdList = (currentPosInIdList + 1) % idList.length;
+                            
                             if (format == FORMAT_XML)
                             {
                                 String xml = formatter.nextXML();
@@ -235,7 +234,7 @@ public class Provider
                                         return; // close socket and setverSocket in finnaly
                                     }
                                     /**
-                                     * not null if log files not changed in the process
+                                     * not null if smbd didn't change log files in the process
                                      */
                                     formatter = new LogFormatter(logFileList[currentFileInLogFileList++]);
                                     xml = formatter.nextXML();
