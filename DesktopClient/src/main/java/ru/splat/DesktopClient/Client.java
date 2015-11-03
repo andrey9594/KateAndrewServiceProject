@@ -54,6 +54,8 @@ public class Client
 {
 
     private static final Logger log = LoggerFactory.getLogger(Client.class);
+    
+    private final String PATH_TO_CONFIG_FILE = "resources/config.ini"; 
 
     private static String IP_BROKER;
 
@@ -111,7 +113,7 @@ public class Client
         log.info("Take parameters from property file");
         Properties props = new Properties();
 
-        props.load(new FileInputStream(new File("config.ini")));
+        props.load(new FileInputStream(new File(PATH_TO_CONFIG_FILE)));
 
         IP_BROKER = props.getProperty("IP_BROKER");
         EXCHANGE_NAME = props.getProperty("EXCHANGE_NAME");
