@@ -83,6 +83,7 @@ public class View implements Observer
                         viewTable.drawTable(matchid);
                     }
                 });
+                log.info("The information of the match with {} id was updated", matchid);
             }
         }
         if (operation == OperationType.REMOVED)
@@ -103,9 +104,6 @@ public class View implements Observer
 
         private TableItem selectedItem = null;
 
-        private Shell subShell;
-
-
         private void updateItem(int matchid, TableItem item)
         {
             item.setText(0, "" + matchid);
@@ -120,7 +118,7 @@ public class View implements Observer
             item.setText(3, "" + team2Name);
             item.setText(4, "" + new Date(model.getStartForMatchid(matchid)));
             matchidItemMap.put(matchid, item);
-            log.info("Table with info have been drawn");
+            log.info("Table with info have been drawn for matchid {}", matchid);
         }
 
 
@@ -131,6 +129,7 @@ public class View implements Observer
          */
         public void drawTable(int matchid)
         {
+        	log.info("drawTable for {}", matchid == -1 ? "all items" : matchid);
             if (table == null)
             {
                 table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
@@ -156,13 +155,14 @@ public class View implements Observer
                 table.addListener(SWT.MouseDoubleClick, new Listener()
                 {
                     private Table subTable;
-
+                    private Shell subShell;
 
                     @Override
                     public void handleEvent(Event event)
                     {
                         if (subShell == null)
                         {
+                        	log.debug("Creating subShell...");
                             subShell = new Shell(display);
                             subShell.addListener(SWT.Close, new Listener()
                             {
@@ -177,6 +177,7 @@ public class View implements Observer
                             subShell.setLayout(glSubShell);
                             glSubShell.numColumns = 1;
                             subShell.open();
+                            log.info("subShell was created");
                         }
 
                         int currentLineMatchid = Integer.parseInt(selectedItem.getText(0));
@@ -219,6 +220,7 @@ public class View implements Observer
                         {
                             subTable.dispose();
                         }
+                        log.debug("Creating subTable...");
                         subTable = new Table(subShell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
                         subTable.setLinesVisible(true);
                         subTable.setHeaderVisible(true);
@@ -245,6 +247,7 @@ public class View implements Observer
 
                         subShell.setVisible(true);
                         subShell.pack();
+                        log.info("subTable was created");
                     }
                 });
 
@@ -300,16 +303,7 @@ public class View implements Observer
                 log.info("Item with matchid = {} updated", matchid);
 
             }
-            shell.pack(); // ?????????????????????
+            shell.pack(); 
         }
-    }
-
-
-    /**
-     * Draws a graph
-     */
-    class ViewGraph
-    {
-
     }
 }

@@ -17,7 +17,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,7 +93,7 @@ public class Client
         log.debug("Creating view");
         view = new View(model, shlDesktopClient, display);
 
-        log.debug("VIew was created");
+        log.debug("View was created");
 
         model.registerObserver(view);
         viewTable = view.getViewTable();
@@ -106,11 +105,11 @@ public class Client
 
 
     /**
-     * take parameters from config.ini file
+     * take parameters from config file
      */
     public void config() throws IOException
     {
-        log.info("Take parameters from property file");
+        log.info("Takes parameters from property file");
         Properties props = new Properties();
 
         props.load(new FileInputStream(new File(PATH_TO_CONFIG_FILE)));
@@ -118,6 +117,7 @@ public class Client
         IP_BROKER = props.getProperty("IP_BROKER");
         EXCHANGE_NAME = props.getProperty("EXCHANGE_NAME");
         TYPE_OF_EXCHANGE = props.getProperty("TYPE_OF_EXCHANGE");
+        
         log.info("Configuration was successfully loaded");
     }
 
@@ -240,6 +240,7 @@ public class Client
             }
         };
         channel.basicConsume(queueName, true, consumer);
+        
         log.info("Consumer have been created and started ");
     }
 
