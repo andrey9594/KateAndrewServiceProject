@@ -104,6 +104,7 @@ public class View implements Observer
 
         private TableItem selectedItem = null;
 
+
         private void updateItem(int matchid, TableItem item)
         {
             item.setText(0, "" + matchid);
@@ -129,7 +130,7 @@ public class View implements Observer
          */
         public void drawTable(int matchid)
         {
-        	log.info("drawTable for {}", matchid == -1 ? "all items" : matchid);
+            log.info("drawTable for {}", matchid == -1 ? "all items" : matchid);
             if (table == null)
             {
                 table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
@@ -152,104 +153,10 @@ public class View implements Observer
                     }
                 });
 
-                table.addListener(SWT.MouseDoubleClick, new Listener()
-                {
-                    private Table subTable;
-                    private Shell subShell;
-
-                    @Override
-                    public void handleEvent(Event event)
-                    {
-                        if (subShell == null)
-                        {
-                        	log.debug("Creating subShell...");
-                            subShell = new Shell(display);
-                            subShell.addListener(SWT.Close, new Listener()
-                            {
-                                @Override
-                                public void handleEvent(Event event)
-                                {
-                                    subShell.setVisible(false);
-                                    event.doit = false;
-                                }
-                            });
-                            GridLayout glSubShell = new GridLayout();
-                            subShell.setLayout(glSubShell);
-                            glSubShell.numColumns = 1;
-                            subShell.open();
-                            log.info("subShell was created");
-                        }
-
-                        int currentLineMatchid = Integer.parseInt(selectedItem.getText(0));
-                        Map<StatisticType, String> statisticValues = new HashMap<>();
-                        StatisticType[] allStatistics = null;
-                        switch (model.getSportTypeForMatchid(currentLineMatchid))
-                        {
-                            case FOOTBALL:
-                                allStatistics = Football.values();
-                                break;
-                            case BASKETBALL:
-                                allStatistics = Basketball.values();
-                                break;
-                            case ICE_HOCKEY:
-                                allStatistics = Icehockey.values();
-                                break;
-                            case VOLLEYBALL:
-                                allStatistics = Volleyball.values();
-                                break;
-                            case HANDBALL:
-                                allStatistics = Handball.values();
-                                break;
-                            default:
-                                return;
-                        }
-                        for (StatisticType st : allStatistics)
-                        {
-                            Statistics statistics = model.getStatisticForMatchid(currentLineMatchid, st);
-                            if (statistics != null)
-                            {
-                                String value1 = statistics.getValue1() == -1 ? "?"
-                                        : "" + statistics.getValue1();
-                                String value2 = statistics.getValue2() == -1 ? "?"
-                                        : "" + statistics.getValue2();
-                                statisticValues.put(st, value1 + "-" + value2);
-                            }
-                        }
-                        
-                        if (subTable != null)
-                        {
-                            subTable.dispose();
-                        }
-                        log.debug("Creating subTable...");
-                        subTable = new Table(subShell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
-                        subTable.setLinesVisible(true);
-                        subTable.setHeaderVisible(true);
-                        GridData subData = new GridData(SWT.FILL, SWT.FILL, true, true);
-                        subTable.setLayoutData(subData);
-
-                        for (StatisticType st : statisticValues.keySet())
-                        {
-                            TableColumn column = new TableColumn(subTable, SWT.NONE);
-                            column.setText(st.toString());
-                        }
-                        for (int i = 0; i < statisticValues.size(); i++)
-                        {
-                            subTable.getColumn(i).pack();
-                        }
-
-                        TableItem item = new TableItem(subTable, SWT.NONE);
-                        int ii = 0;
-                        for (StatisticType st : statisticValues.keySet())
-                        {
-                            item.setText(ii, statisticValues.get(st));
-                            ii++;
-                        }
-
-                        subShell.setVisible(true);
-                        subShell.pack();
-                        log.info("subTable was created");
-                    }
-                });
+                /**
+                 * @class SubTableController is private, see at the end
+                 */
+                table.addListener(SWT.MouseDoubleClick, new SubTableController());
 
                 GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
                 data.heightHint = 350;
@@ -287,6 +194,9 @@ public class View implements Observer
             else
             {
                 TableItem item = null;
+                /**
+                 * if item for that matchid doesn't exist then creating it
+                 */
                 if (!matchidItemMap.containsKey(matchid))
                 {
                     item = new TableItem(table, SWT.NONE);
@@ -303,7 +213,117 @@ public class View implements Observer
                 log.info("Item with matchid = {} updated", matchid);
 
             }
-            shell.pack(); 
+            shell.pack();
+        }
+
+
+        /**
+         * Class for SubTable with statistics Create new subShell for shell and create new subTable with statistics for
+         * subShell
+         * 
+         * @author Andrey
+         *
+         */
+        private class SubTableController implements Listener
+        {
+            private Table subTable;
+
+            private Shell subShell;
+
+
+            @Override
+            public void handleEvent(Event event)
+            {
+                if (subShell == null)
+                {
+                    log.debug("Creating subShell...");
+                    subShell = new Shell(display);
+                    subShell.addListener(SWT.Close, new Listener()
+                    {
+                        @Override
+                        public void handleEvent(Event event)
+                        {
+                            subShell.setVisible(false);
+                            event.doit = false;
+                        }
+                    });
+                    GridLayout glSubShell = new GridLayout();
+                    subShell.setLayout(glSubShell);
+                    glSubShell.numColumns = 1;
+                    subShell.open();
+                    log.info("subShell was created");
+                }
+
+                int currentLineMatchid = Integer.parseInt(selectedItem.getText(0));
+                Map<StatisticType, String> statisticValues = new HashMap<>();
+                StatisticType[] allStatistics = null;
+                switch (model.getSportTypeForMatchid(currentLineMatchid))
+                {
+                    case FOOTBALL:
+                        allStatistics = Football.values();
+                        break;
+                    case BASKETBALL:
+                        allStatistics = Basketball.values();
+                        break;
+                    case ICE_HOCKEY:
+                        allStatistics = Icehockey.values();
+                        break;
+                    case VOLLEYBALL:
+                        allStatistics = Volleyball.values();
+                        break;
+                    case HANDBALL:
+                        allStatistics = Handball.values();
+                        break;
+                    default:
+                        return;
+                }
+                for (StatisticType st : allStatistics)
+                {
+                    Statistics statistics = model.getStatisticForMatchid(currentLineMatchid, st);
+                    if (statistics != null)
+                    {
+                        String value1 = statistics.getValue1() == -1 ? "?" : "" + statistics.getValue1();
+                        String value2 = statistics.getValue2() == -1 ? "?" : "" + statistics.getValue2();
+                        /**
+                         * TODO: st.name() -> english(russian?) word like FREE_KICK -> Free kicks(Свободные удары?)
+                         */
+                        statisticValues.put(st, value1 + "-" + value2);
+                    }
+                }
+
+                if (subTable != null)
+                {
+                    subTable.dispose();
+                }
+                log.debug("Creating subTable...");
+                subTable = new Table(subShell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+                subTable.setLinesVisible(true);
+                subTable.setHeaderVisible(true);
+                GridData subData = new GridData(SWT.FILL, SWT.FILL, true, true);
+                subTable.setLayoutData(subData);
+
+                for (StatisticType st : statisticValues.keySet())
+                {
+                    TableColumn column = new TableColumn(subTable, SWT.NONE);
+                    column.setText(st.toString());
+                }
+                for (int i = 0; i < statisticValues.size(); i++)
+                {
+                    subTable.getColumn(i).pack();
+                }
+
+                TableItem item = new TableItem(subTable, SWT.NONE);
+                int ii = 0;
+                for (StatisticType st : statisticValues.keySet())
+                {
+                    item.setText(ii, statisticValues.get(st));
+                    ii++;
+                }
+
+                subShell.setVisible(true);
+                subShell.pack();
+                log.info("subTable was created");
+            }
         }
     }
 }
